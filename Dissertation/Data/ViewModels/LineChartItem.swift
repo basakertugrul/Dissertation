@@ -1,34 +1,25 @@
 import Foundation
 
-struct LineChartItem: Identifiable, Equatable {
+// MARK: - LineChartItem structure
+struct LineChartItem {
     let id = UUID()
     let date: Date
     let moneySpent: Double
     let currency: String
-
-    var currencySymbol: String {
-        switch currency {
-        case "USD":
-            return "$"
-        case "GBP":
-            return "£"
-        default:
-            return "£"
-        }
+    
+    static func createWithPound(date: Date, moneySpent: Double) -> LineChartItem {
+        return LineChartItem(
+            date: date,
+            moneySpent: moneySpent,
+            currency: "GBP"
+        )
     }
-    var animate: Bool = false
+}
 
-    private init(date: Date, moneySpent: Double, currency: String) {
-        self.date = date
-        self.moneySpent = moneySpent
-        self.currency = currency
-    }
-
-    static func createWithPound(date: Date, moneySpent: Double) -> Self {
-        return LineChartItem(date: date, moneySpent: moneySpent, currency: "GBP")
-    }
-
-    func getRevenue(goalMoneySpent: Double) -> Double {
-        return goalMoneySpent - moneySpent
+extension LineChartItem: Equatable {
+    static func == (lhs: LineChartItem, rhs: LineChartItem) -> Bool {
+        return lhs.id == rhs.id &&
+               lhs.moneySpent == rhs.moneySpent &&
+               lhs.date == rhs.date
     }
 }

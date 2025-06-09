@@ -6,6 +6,7 @@ struct StatsCardsView: View {
     var daysSinceEarliest: Int
     var opacity: CGFloat
     @Binding var showingAllowanceSheet: Bool
+    @Binding var backgroundColor: Color
 
     var body: some View {
         HStack {
@@ -13,7 +14,8 @@ struct StatsCardsView: View {
             DailyAllowanceCardView(
                 dailyBalance: dailyBalance,
                 opacity: opacity,
-                showingAllowanceSheet: $showingAllowanceSheet
+                showingAllowanceSheet: $showingAllowanceSheet,
+                backgroundColor: $backgroundColor
             )
             
             /// Days Tracked Card

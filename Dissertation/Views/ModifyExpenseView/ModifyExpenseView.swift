@@ -11,6 +11,8 @@ struct ModifyExpenseView: View {
     @State private var expenseAmount: Double = .zero
     @State private var expenseDate: Date = Date()
     @State private var showDeleteConfirmation: Bool = false
+    
+    @State private var isVisible: Bool = false
 
     /// Track if we're in edit mode
     private var isEditMode: Bool {
@@ -37,41 +39,43 @@ struct ModifyExpenseView: View {
         ZStack {
             BackgroundView()
             
-            ScrollView {
-                VStack(spacing: Constraint.padding) {
-                    HeaderView(isEditMode: isEditMode)
-                    
-                    FormFieldsView(
-                        expenseName: $expenseName,
-                        expenseAmount: $expenseAmount,
-                        expenseDate: $expenseDate,
-                        dateRange: dateRange,
-                        dateFormatter: dateFormatter
-                    )
-                    
-                    Spacer(minLength: Constraint.extremeSize)
-
-                    ActionButtonsView(
-                        saveAction: saveExpense,
-                        deleteAction: { showDeleteConfirmation = true },
-                        saveButtonText: saveButtonText,
-                        isEditMode: isEditMode,
-                        isFormValid: isFormValid
-                    )
+            if isVisible {
+                ScrollView {
+                    VStack(spacing: Constraint.extremePadding) {
+                        HeaderView(isEditMode: isEditMode)
+                        
+                        FormFieldsView(
+                            expenseName: $expenseName,
+                            expenseAmount: $expenseAmount,
+                            expenseDate: $expenseDate,
+                            dateRange: dateRange,
+                            dateFormatter: dateFormatter
+                        )
+                        
+                        ActionButtonsView(
+                            saveAction: saveExpense,
+                            deleteAction: { showDeleteConfirmation = true },
+                            saveButtonText: saveButtonText,
+                            isEditMode: isEditMode,
+                            isFormValid: isFormValid
+                        )
+                        .padding(.vertical, Constraint.largePadding)
+                    }
                 }
-            }
-            .onTapGesture {
-                hideKeyboard()
-            }
-            .showDeleteConfirmationAlert(
-                isPresented: $showDeleteConfirmation,
-                buttonAction: { deleteExpense()
-                },
-                secondaryButtonAction:  {
-                DispatchQueue.main.async {
-                    showDeleteConfirmation = false
+                .onTapGesture {
+                    hideKeyboard()
                 }
-            })
+                .showDeleteConfirmationAlert(
+                    isPresented: $showDeleteConfirmation,
+                    buttonAction: { deleteExpense()
+                    },
+                    secondaryButtonAction:  {
+                        DispatchQueue.main.async {
+                            showDeleteConfirmation = false
+                        }
+                    })
+                .transition(.opacity)
+            }
         }
         .onAppear(perform: loadExpenseData)
     }
@@ -90,6 +94,9 @@ struct ModifyExpenseView: View {
             /// Format the amount to string
             expenseAmount = expense.amount
             expenseDate = expense.date
+        }
+        withAnimation(.smooth(duration: 1)){
+            isVisible = true
         }
     }
 
@@ -206,7 +213,7 @@ struct FormFieldsView: View {
     var dateFormatter: DateFormatter
     
     var body: some View {
-        VStack(spacing: Constraint.largePadding - Constraint.regularPadding) {
+        VStack(spacing: Constraint.largePadding) {
             /// Expense Name Field
             ExpenseNameFieldView(expenseName: $expenseName)
             
@@ -216,7 +223,7 @@ struct FormFieldsView: View {
             /// Date Selector
             DateSelectorView(expenseDate: $expenseDate, dateRange: dateRange, dateFormatter: dateFormatter)
         }
-        .padding(.horizontal)
+        .padding(.horizontal, Constraint.padding)
     }
 }
 
@@ -235,12 +242,9 @@ struct ExpenseNameFieldView: View {
             TextField("", text: $expenseName)
                 .font(TextFonts.bodySmallBold.font)
                 .foregroundColor(.white)
-                .padding(Constraint.smallPadding)
-                .background(Color.white.opacity(Constraint.Opacity.low))
-                .cornerRadius(Constraint.regularCornerRadius)
-                .overlay(
-                    RoundedRectangle(cornerRadius: Constraint.regularCornerRadius)
-                        .stroke(Color.white.opacity(Constraint.Opacity.low), lineWidth: Constraint.tinyLineLenght)
+                .addLayeredBackground(
+                    with: Color.customWhiteSand.opacity(Constraint.Opacity.medium),
+                    expandFullWidth: true
                 )
         }
     }
@@ -264,12 +268,9 @@ struct ExpenseAmountFieldView: View {
                     .font(TextFonts.bodySmallBold.font)
                     .foregroundColor(.white)
             }
-            .padding(Constraint.smallPadding)
-            .background(Color.white.opacity(Constraint.Opacity.low))
-            .cornerRadius(Constraint.regularCornerRadius)
-            .overlay(
-                RoundedRectangle(cornerRadius: Constraint.regularCornerRadius)
-                    .stroke(Color.white.opacity(Constraint.Opacity.low), lineWidth: Constraint.tinyLineLenght)
+            .addLayeredBackground(
+                with: Color.customWhiteSand.opacity(Constraint.Opacity.medium),
+                expandFullWidth: true
             )
         }
     }
@@ -297,7 +298,6 @@ struct DateSelectorView: View {
                     .labelsHidden()
                     .preferredColorScheme(.dark)
                     .tint(.customWhiteSand)
-                    .padding(Constraint.smallPadding)
 
                 Spacer()
 
@@ -306,11 +306,9 @@ struct DateSelectorView: View {
                     .font(.system(size: Constraint.regularIconSize))
                     .padding(.trailing, Constraint.padding)
             }
-            .background(Color.white.opacity(Constraint.Opacity.low))
-            .cornerRadius(Constraint.regularCornerRadius)
-            .overlay(
-                RoundedRectangle(cornerRadius: Constraint.regularCornerRadius)
-                    .stroke(Color.white.opacity(Constraint.Opacity.low), lineWidth: Constraint.tinyLineLenght)
+            .addLayeredBackground(
+                with: Color.customWhiteSand.opacity(Constraint.Opacity.medium),
+                expandFullWidth: true
             )
         }
     }
@@ -323,49 +321,35 @@ struct ActionButtonsView: View {
     var saveButtonText: String
     var isEditMode: Bool
     var isFormValid: Bool
-    
+
     var body: some View {
         VStack(spacing: Constraint.padding) {
             /// Save/Update Button
             Button(action: saveAction) {
-                Text(saveButtonText)
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(!isEditMode ? Color.white : Color.customGold)
+                CustomTextView(saveButtonText, font: .bodySmallBold, color: .customRichBlack.opacity(Constraint.Opacity.high))
                     .tracking(1)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Constraint.padding)
-                    .background(
-                        !isEditMode
-                        ? isFormValid
-                        ? Color.customBurgundy
-                        : Color.customBurgundy.opacity(Constraint.Opacity.low)
-                        : isFormValid
-                        ? Color.white
-                        : Color.white.opacity(Constraint.Opacity.low)
+                    .addLayeredBackground(
+                        with: isFormValid ? .white : .white.opacity(Constraint.Opacity.medium),
+                        expandFullWidth: true
                     )
-                    .cornerRadius(Constraint.cornerRadius)
-                    .shadow(color: Color.black.opacity(Constraint.Opacity.low / 2), radius: Constraint.shadowRadius + 1, x: 0, y: 2)
             }
             .disabled(!isFormValid)
 
             /// Delete button (only in edit mode)
             if isEditMode {
                 Button(action: deleteAction) {
-                    
-                    Text("DELETE")
-                        .font(TextFonts.bodySmallBold.font)
-                        .foregroundColor(.white)
+                    CustomTextView("DELETE", font: .bodySmallBold, color: .customWhiteSand)
                         .tracking(1)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, Constraint.padding)
-                        .background(Color.customBurgundy)
-                        .cornerRadius(Constraint.cornerRadius)
-                        .shadow(color: Color.black.opacity(Constraint.Opacity.low / 2), radius: Constraint.shadowRadius + 1, x: 0, y: 2)
+                        .addLayeredBackground(
+                            with: .customBurgundy,
+                            expandFullWidth: true,
+                            isTheLineSameColorAsBackground: true
+                        )
                 }
             }
         }
-        .padding(.horizontal)
-        .padding(.bottom, Constraint.largePadding - Constraint.regularPadding)
+        .padding(.horizontal, Constraint.smallPadding)
+        .padding(.bottom, Constraint.largePadding)
     }
 }
 

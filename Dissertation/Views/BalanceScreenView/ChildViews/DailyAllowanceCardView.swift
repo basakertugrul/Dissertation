@@ -5,6 +5,7 @@ struct DailyAllowanceCardView: View {
     var dailyBalance: Double
     var opacity: CGFloat
     @Binding var showingAllowanceSheet: Bool
+    @Binding var backgroundColor: Color
 
     var body: some View {
         Button(action: {
@@ -14,7 +15,7 @@ struct DailyAllowanceCardView: View {
         }) {
             VStack(alignment: .leading, spacing: Constraint.padding) {
                 CustomTextView(
-                    "Daily Allowance",
+                    "Daily limit",
                     font: .labelMedium,
                     color: .customWhiteSand.opacity(opacity),
                     uppercase: true
@@ -27,17 +28,21 @@ struct DailyAllowanceCardView: View {
 
                     /// Edit button
                     Circle()
-                        .fill(.customBurgundy.opacity(Constraint.Opacity.medium))
+                        .fill(
+                            backgroundColor == .customBurgundy
+                            ? .customOliveGreen
+                            : .customBurgundy
+                        )
                         .frame(width: Constraint.mediumIconSize, height: Constraint.mediumIconSize)
                         .overlay(
                             Image(systemName: "pencil")
                                 .resizable()
                                 .frame(width: Constraint.mediumIconSize * 1/2, height: Constraint.mediumIconSize * 1/2)
-                                .foregroundColor(.customWhiteSand.opacity(Constraint.Opacity.high))
+                                .foregroundColor(.customWhiteSand.opacity(opacity))
                         )
                 }
             }
-            .addLayeredBackground(with: .customRichBlack.opacity(Constraint.Opacity.high))
+            .addLayeredBackground(with: .customRichBlack.opacity(opacity))
         }
     }
 }

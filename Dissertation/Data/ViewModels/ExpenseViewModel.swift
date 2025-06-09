@@ -91,3 +91,34 @@ extension ExpenseViewModel: Equatable {
 
 extension ExpenseViewModel: Identifiable {}
 
+/// Helper functions for dates
+extension ExpenseViewModel {
+    func isToday() -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDate(date, inSameDayAs: Date())
+    }
+
+    func isYesterday() -> Bool {
+        let calendar = Calendar.current
+        let response = calendar.isDateInYesterday(date)
+        return response
+    }
+
+    func isInLastWeek() -> Bool {
+        let calendar = Calendar.current
+        let response = calendar.isDate(date, equalTo: Date(), toGranularity: .weekOfYear)
+        return response
+    }
+
+    func isInLastMonth() -> Bool {
+        let calendar = Calendar.current
+        let response = calendar.isDate(date, equalTo: Date(), toGranularity: .month)
+        return response
+    }
+
+    func isInLastYear() -> Bool {
+        let calendar = Calendar.current
+        let response = calendar.isDate(date, equalTo: Date(), toGranularity: .year)
+        return response
+    }
+}

@@ -11,47 +11,52 @@ struct BalanceScreenView: View {
     @State var timeFrame: TimeFrame
     @Binding var backgroundColor: Color
     @Binding var showingAllowanceSheet: Bool
+    @Binding var currentTab: CustomTabBarSection
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Constraint.smallPadding) {
-            /// Current Balance Card
-            CurrentBalanceCardView(
-                calculatedBalance: $calculatedBalance,
-                opacity: Constraint.Opacity.medium
-            )
+        ScrollView {
+            VStack(alignment: .leading, spacing: Constraint.padding) {
+                /// Current Balance Card
+                CurrentBalanceCardView(
+                    calculatedBalance: $calculatedBalance,
+                    opacity: Constraint.Opacity.high
+                )
 
-            /// Divider
-            DividerView()
+                /// Divider
+                DividerView()
 
-            /// Budget Zones View
-            BudgetZonesView(
-                expenses: $expenses,
-                totalBalance: $calculatedBalance,
-                timeFrame: $timeFrame,
-                dailyBalance: $dailyBalance,
-                backgroundColor: .init(get: {
-                    backgroundColor == .customOliveGreen ? .customBurgundy : .customOliveGreen
-                }, set: { _ in } )
-            )
+                /// Budget Zones View
+                BudgetZonesView(
+                    expenses: $expenses,
+                    totalBalance: $calculatedBalance,
+                    timeFrame: $timeFrame,
+                    dailyBalance: $dailyBalance,
+                    backgroundColor: .init(get: {
+                        backgroundColor == .customOliveGreen ? .customBurgundy : .customOliveGreen
+                    }, set: { _ in } )
+                )
 
-            /// Stats Cards
-            StatsCardsView(
-                dailyBalance: dailyBalance,
-                daysSinceEarliest: daysSinceEarliest,
-                opacity: Constraint.Opacity.medium,
-                showingAllowanceSheet: $showingAllowanceSheet
-            )
+                /// Stats Cards
+                StatsCardsView(
+                    dailyBalance: dailyBalance,
+                    daysSinceEarliest: daysSinceEarliest,
+                    opacity: Constraint.Opacity.high,
+                    showingAllowanceSheet: $showingAllowanceSheet,
+                    backgroundColor: $backgroundColor
+                )
 
-            /// Total Expenses Card
-            TotalExpensesCardView(
-                totalExpenses: totalExpenses,
-                opacity: Constraint.Opacity.medium,
-                expenses: $expenses,
-                timeFrame: $timeFrame
-            )
+                /// Total Expenses Card
+                TotalExpensesCardView(
+                    totalExpenses: totalExpenses,
+                    opacity: Constraint.Opacity.high,
+                    expenses: $expenses,
+                    timeFrame: $timeFrame,
+                    backgroundColor: $backgroundColor,
+                    currentTab: $currentTab
+                )
+            }
+            .padding(.horizontal, Constraint.padding)
         }
-        .padding(.horizontal, Constraint.padding)
-//        .ignoresSafeArea()
-//        .fixedSize(horizontal: false, vertical: true)
+        .ignoresSafeArea()
     }
 }

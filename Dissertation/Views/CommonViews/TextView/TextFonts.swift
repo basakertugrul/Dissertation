@@ -10,6 +10,7 @@ enum TextFonts {
 
     /// Body text styles
     case bodyLarge
+    case bodyLargeBold
     case bodySmall
     case bodySmallBold
 
@@ -35,6 +36,8 @@ enum TextFonts {
         case .titleSmallBold:
             return .system(size: 24, weight: .bold)
 
+        case .bodyLargeBold:
+            return .system(size: 20, weight: .bold)
         case .bodyLarge:
             return .system(size: 20, weight: .regular)
         case .bodySmall:
@@ -63,7 +66,7 @@ enum TextFonts {
             return 0.5
 
             /// Body text with normal tracking
-        case .bodyLarge, .bodySmall, .bodySmallBold:
+        case .bodyLarge, .bodySmall, .bodySmallBold, .bodyLargeBold:
             return 0
 
             /// Labels often have wider tracking, especially when uppercase

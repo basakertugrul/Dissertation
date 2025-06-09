@@ -6,18 +6,18 @@ struct CurrentBalanceCardView: View {
     @State var opacity: CGFloat
 
     var body: some View {
-        VStack(spacing: Constraint.padding) {
+        VStack(spacing: Constraint.smallPadding) {
             CustomTextView(
                 calculatedBalance >= 0 ? "Available" : "Overdrawn",
                 font: .bodySmall,
-                color: .customWhiteSand.opacity(opacity),
+                color: .white.opacity(opacity),
                 uppercase: true
             )
 
-            CustomTextView.currency(abs(calculatedBalance), font: .titleLarge, color: .customWhiteSand)
+            CustomTextView.currency(abs(calculatedBalance), font: .titleLarge, color: .white)
 
             CustomTextView(
-                calculatedBalance >= 0 ? "Within Budget" : "Over Budget",
+                calculatedBalance >= 0 ? "Crushing it!" : "Oops, went over!",
                 font: .labelLarge,
                 color: .customWhiteSand.opacity(opacity),
                 uppercase: true

@@ -6,118 +6,138 @@ struct BudgetZonesView: View {
     @Binding var totalBalance: Double
     @Binding var timeFrame: TimeFrame
     @Binding var dailyBalance: Double
-
-    @State var lineChartItems: [LineChartItem] = []
-
     @Binding var backgroundColor: Color
-    
-    init(
-        expenses: Binding<[ExpenseViewModel]>,
-        totalBalance: Binding<Double>,
-        timeFrame: Binding<TimeFrame>,
-        dailyBalance: Binding<Double>,
-        backgroundColor: Binding<Color>
-    ) {
-        self._expenses = expenses
-        self._totalBalance = totalBalance
-        self._timeFrame = timeFrame
-        self._dailyBalance = dailyBalance
-        self._backgroundColor = backgroundColor
-        assignNotificationObserver()
-    }
 
-    func assignNotificationObserver() {
-        NotificationCenter.default.addObserver(
-            forName: Notification.Name("ExpenseRefresh"),
-            object: .none,
-            queue: .main
-        ) { _ in
-            DispatchQueue.main.async {
-                assignLineChartItems()
-            }
-        }
-    }
+    @State private var lineChartItems: [LineChartItem] = []
 
     var body: some View {
-        VStack(spacing: Constraint.padding) {
+        VStack(spacing: Constraint.regularPadding) {
             timeFrameSelection(withColor: backgroundColor)
 
-            LineChartView(
-                data: $lineChartItems,
-                goalMoneySpent: $dailyBalance
-            )
-
+            BudgetLineChartView(data: $lineChartItems)
         }
         .onAppear {
+            assignLineChartItems()
+        }
+        .onChange(of: expenses) { _, _ in
+            assignLineChartItems()
+        }
+        .onChange(of: timeFrame) { _, _ in
+            assignLineChartItems()
+        }
+        .onChange(of: dailyBalance) { _, _ in
             assignLineChartItems()
         }
     }
 
     private func assignLineChartItems() {
-        let groupedExpenses: [Date: [ExpenseViewModel]] = Dictionary(
-            grouping: expenses,
-            by: { Calendar.current.startOfDay(for: $0.date) }
-        )
-        let minDate = groupedExpenses.keys.min() ?? .now
-        let newLineChartItems: [LineChartItem] = generateDateRange(from: minDate).map { date in
-            let totalSpent = groupedExpenses[date]?.reduce(0) { $0 + $1.amount } ?? .zero
-            return LineChartItem.createWithPound(date: date, moneySpent: totalSpent)
-        }
-        DispatchQueue.main.async {
-            lineChartItems = newLineChartItems
-        }
-    }
-
-    /// Time Frame Selection
-    private func timeFrameSelection(withColor color: Color) -> some View {
-        HStack(spacing: Constraint.smallPadding) {
-            ForEach(TimeFrame.allCases, id: \.self) { frame in
-                Button(action: {
-                    withAnimation {
-                        timeFrame = frame
-                        DataController.shared.saveTimeFrame(frame)
-                    }
-                }) {
-                    CustomTextView(
-                        frame.rawValue,
-                        font: timeFrame == frame ? .labelLargeBold : .labelLarge,
-                        color: timeFrame == frame ? .customWhiteSand : .customWhiteSand.opacity(Constraint.Opacity.medium),
-                        uppercase: true
-                    )
-                    .fixedSize(horizontal: true, vertical: false)
-                    .addLayeredBackground(
-                        with: timeFrame == frame
-                        ? color
-                        : .customRichBlack,
-                        expandFullWidth: false,
-                        spacing: .compact
-                    )
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    /// Helper methods for the line chart
-    private func generateDateRange(from startDate: Date) -> [Date] {
         let calendar = Calendar.current
-        let endDate = removeTimeStamp(fromDate: calendar.startOfDay(for: .now))
-        let startDate = removeTimeStamp(fromDate: startDate)
+        let now = Date()
+        let totalSpent: Double
 
-        if startDate > endDate { return [] }
-        if startDate == endDate { return [startDate] }
-        let dayCount = calendar.dateComponents([.day], from: startDate, to: endDate).day ?? 0
-
-        let returnArray: [Date] = (0...dayCount).compactMap {
-            calendar.date(byAdding: .day, value: $0, to: startDate)
+        /// Calculate timeframe limit
+        let timeFrameLimit: Double
+        
+        let startDay = expenses.sorted(by: { left, right in left.date < right.date }).first?.date ?? .now
+        switch timeFrame {
+        case .daily:
+            timeFrameLimit = dailyBalance
+        case .weekly:
+            var daysCount: Double
+            let staticNumber: Int = 7
+            if startDay < calendar.date(byAdding: .day, value: -staticNumber, to: now) ?? now {
+                daysCount = Double(staticNumber)
+            } else {
+                daysCount = daysBetween(startDay, now)
+            }
+            timeFrameLimit = dailyBalance * daysCount
+        case .monthly:
+            var daysCount: Double
+            let staticNumber: Int = calendar.range(of: .day, in: .month, for: now)?.count ?? 30
+            if startDay < calendar.date(byAdding: .day, value: -staticNumber, to: now) ?? now {
+                daysCount = Double(staticNumber)
+            } else {
+                daysCount = daysBetween(startDay, now)
+            }
+            timeFrameLimit = dailyBalance * daysCount
+        case .yearly:
+            var daysCount: Double
+            let staticNumber: Int = calendar.range(of: .day, in: .year, for: now)?.count ?? 165
+            if startDay < calendar.date(byAdding: .day, value: -staticNumber, to: now) ?? now {
+                daysCount = Double(staticNumber)
+            } else {
+                daysCount = daysBetween(startDay, now)
+            }
+            timeFrameLimit = dailyBalance * daysCount
         }
-        return returnArray.map { removeTimeStamp(fromDate: $0) }
+
+        switch timeFrame {
+        case .daily:
+            let startOfDay = calendar.startOfDay(for: now)
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? now
+            totalSpent = expenses.filter { $0.date >= startOfDay && $0.date < endOfDay }
+                .reduce(0) { $0 + $1.amount }
+
+        case .weekly:
+            let startOf7Days = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: now)) ?? now
+            let endOf7Days = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now)) ?? now
+            totalSpent = expenses.filter { $0.date >= startOf7Days && $0.date < endOf7Days }
+                .reduce(0) { $0 + $1.amount }
+
+        case .monthly:
+            let startOfMonth = calendar.dateInterval(of: .month, for: now)?.start ?? now
+            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth) ?? now
+            totalSpent = expenses.filter { $0.date >= startOfMonth && $0.date < endOfMonth }
+                .reduce(0) { $0 + $1.amount }
+
+        case .yearly:
+            let startOfYear = calendar.dateInterval(of: .year, for: now)?.start ?? now
+            let endOfYear = calendar.date(byAdding: .year, value: 1, to: startOfYear) ?? now
+            totalSpent = expenses.filter { $0.date >= startOfYear && $0.date < endOfYear }
+                .reduce(0) { $0 + $1.amount }
+        }
+
+        lineChartItems = [
+            LineChartItem.createWithPound(date: now, moneySpent: timeFrameLimit), /// Limit bar
+            LineChartItem.createWithPound(date: now, moneySpent: totalSpent) /// Spent bar
+        ]
     }
 
-    func removeTimeStamp(fromDate date: Date) -> Date {
-        guard let newDate = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: date)) else {
-            fatalError("Failed to strip time from Date object")
-        }
-        return newDate
+    private func timeFrameSelection(withColor color: Color) -> some View {
+         HStack(spacing: Constraint.smallPadding) {
+             ForEach(TimeFrame.allCases, id: \.self) { frame in
+                 Button(action: {
+                     withAnimation {
+                         if timeFrame != frame {
+                             timeFrame = frame
+                             DataController.shared.saveTimeFrame(frame)
+                         }
+                     }
+                 }) {
+                     CustomTextView(
+                         frame.rawValue,
+                         font: timeFrame == frame ? .labelLargeBold : .labelLarge,
+                         color: timeFrame == frame ? .customWhiteSand : .customWhiteSand.opacity(Constraint.Opacity.medium),
+                         uppercase: true
+                     )
+                     .fixedSize(horizontal: true, vertical: false)
+                     .addLayeredBackground(
+                         with: timeFrame == frame
+                         ? color
+                         : .customRichBlack,
+                         expandFullWidth: false,
+                         spacing: .compact,
+                         keepTheColor: timeFrame == frame
+                     )
+                 }
+             }
+         }
+         .frame(maxWidth: .infinity, alignment: .center)
+     }
+
+    func daysBetween(_ date1: Date, _ date2: Date) -> Double {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: date1, to: date2)
+        return Double(abs(components.day ?? 0))
     }
 }

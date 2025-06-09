@@ -8,17 +8,13 @@ struct ExpensesScreenView: View {
     private var groupedExpenses: [String: [ExpenseViewModel]] {
         Dictionary(grouping: expenses) { expense in
             /// Group by date
-            let dateFormatter = DateFormatter()
-            let calendar = Calendar(identifier: .iso8601)
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-
-            if calendar.isDateInToday(expense.date) {
+            if expense.isToday() {
                 return "TODAY"
-            } else if calendar.isDateInYesterday(expense.date) {
+            } else if expense.isYesterday() {
                 return "YESTERDAY"
-            } else if calendar.isDate(expense.date, equalTo: Date(), toGranularity: .weekOfYear) {
+            } else if expense.isInLastWeek() {
                 return "THIS WEEK"
-            } else if calendar.isDate(expense.date, equalTo: Date(), toGranularity: .month) {
+            } else if expense.isInLastMonth() {
                 return "THIS MONTH"
             } else {
                 return "EARLIER"
@@ -44,7 +40,7 @@ struct ExpensesScreenView: View {
                             CustomTextView(
                                 key,
                                 font: .labelLarge,
-                                color: Color.customWhiteSand.opacity(Constraint.Opacity.medium)
+                                color: Color.customWhiteSand.opacity(Constraint.Opacity.high)
                             )
 
                             ForEach(expensesForDate) { expense in
@@ -70,23 +66,22 @@ struct ExpenseItemView: View {
     var body: some View {
         Button(action: onTap) {
             HStack {
-                /// Name
-                CustomTextView(expense.name, font: .bodySmall)
-
-                Spacer()
-
-                /// Amount and date
-                VStack(alignment: .trailing, spacing: Constraint.tinyPadding) {
-                    CustomTextView("£" + String(format: "%.2f", expense.amount), font: .bodySmallBold)
-
-                    CustomTextView(expense.getDateString(), font: .labelMedium, color: .customWhiteSand.opacity(Constraint.Opacity.medium))
+                /// Name and date
+                VStack(alignment: .leading, spacing: Constraint.tinyPadding) {
+                    CustomTextView(expense.name, font: .bodySmall, color: .customWhiteSand)
+                        .frame(height: 20)
+                    CustomTextView(expense.getDateString(), font: .labelMedium, color: .customWhiteSand.opacity(Constraint.Opacity.high))
                 }
+                Spacer()
+                /// Amount
+                CustomTextView.currency(expense.amount, font: .bodySmallBold, color: .white)
             }
-            .padding(.vertical, Constraint.smallPadding)
-            .padding(.horizontal, Constraint.padding)
-            .background(.customRichBlack.opacity(Constraint.Opacity.low))
-            .cornerRadius(Constraint.regularCornerRadius)
-            .buttonStyle(.bordered)
+            .addLayeredBackground(
+                with: .customGold,
+                spacing: .compact,
+                isRounded: true,
+                isTheLineSameColorAsBackground: true
+            )
         }
     }
 }

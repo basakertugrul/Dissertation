@@ -18,7 +18,7 @@ enum CustomTabBarSection: Int, CaseIterable {
         switch self {
         case .balance:
             let firstString: String = "Remaining".uppercased()
-            let secondString: String = "Balance".uppercased()
+            let secondString: String = "Budget".uppercased()
 
             var attributedString = AttributedString( ("\(firstString) \(secondString)") )
 

@@ -6,21 +6,51 @@ extension View {
         with color: Color,
         expandFullWidth: Bool = true,
         spacing: ContentSpacing = .regular,
-        layerWeight: LayerWeight = .heavy
+        isRounded: Bool = false,
+        layerWeight: LayerWeight = .heavy,
+        isTheLineSameColorAsBackground: Bool = false,
+        keepTheColor: Bool = false
     ) -> some View {
-        let cornerRadius: CGFloat = switch spacing {
-        case .compact: Constraint.smallPadding
-        case .regular: Constraint.padding
+        let cornerRadius: CGFloat = switch (isRounded, spacing) {
+        case (true, .compact): Constraint.cornerRadius
+        case (true, .regular): Constraint.cornerRadius * 2
+        case (false, .compact): Constraint.smallCornerRadius
+        case (false, .regular): Constraint.cornerRadius
         }
         return self
             .padding(spacing.padding)
             .frame(maxWidth: expandFullWidth ? .infinity : .none)
             .background(
-                color
-                    .opacity(layerWeight.getValue())
-                    .ignoresSafeArea()
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(
+                        LinearGradient(
+                            stops: [
+                                .init(color: color.opacity(keepTheColor ? 1.0 : 0.8), location: 0.0),
+                                .init(color: color.opacity(keepTheColor ? 1.0 : 0.4), location: 1.0)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .stroke(isTheLineSameColorAsBackground
+                                    ? color.opacity(Constraint.Opacity.low)
+                                    : .customWhiteSand.opacity(Constraint.Opacity.low),
+                                    lineWidth: 1.5)
+                    )
+                    .background(
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(.ultraThinMaterial.opacity(keepTheColor ? 0 : 1))
+                            .environment(\.colorScheme, .dark)
+                    )
+                    .shadow(
+                        color: .customRichBlack.opacity(Constraint.Opacity.low),
+                        radius: Constraint.shadowRadius,
+                        x: 0,
+                        y: 5
+                    )
             )
-            .cornerRadius(cornerRadius)
     }
 }
 

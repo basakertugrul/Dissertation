@@ -7,17 +7,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "1C71044C-7C6D-418D-8C02-9003FE8CCF58"
+            uuid = "858B2C59-844E-4E6C-802D-5D0B035B953F"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dissertation/Views/BalanceScreenView/ChildViews/BudgetZonesView.swift"
+            filePath = "Dissertation/Views/BalanceScreenView/ChildViews/ChangeDailyAllowanceView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "assignNotificationObserver()"
-            landmarkType = "7">
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

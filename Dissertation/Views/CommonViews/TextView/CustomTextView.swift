@@ -43,7 +43,7 @@ struct CustomTextView: View {
         currencySymbol: String = "£",
         color: Color
     ) -> some View {
-        let formattedValue = String(format: "%.2f", abs(value))
+        let formattedValue = value.formatted()
 
         return HStack(spacing: .zero) {
             Text(currencySymbol)

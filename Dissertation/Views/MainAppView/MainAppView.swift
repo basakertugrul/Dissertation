@@ -22,7 +22,7 @@ struct MainAppView: View {
 
     var backgroundColor: Color {
         currentTab == .balance
-        ? (calculatedMetrics().calculatedBalance >= 0 ? Color.customOliveGreen : Color.customBurgundy)
+        ? (appState.calculatedBalance >= 0 ? Color.customOliveGreen : Color.customBurgundy)
         : Color.customBurgundy
     }
 
@@ -67,27 +67,26 @@ private extension MainAppView {
 
     @ViewBuilder
     var contentSection: some View {
-        let metrics = calculatedMetrics()
-
         switch currentTab {
         case .balance:
             BalanceScreenView(
                 expenses: $appState.expenseViewModels,
                 dailyBalance: $appState.dailyBalance,
                 daysSinceEarliest: .init(get: {
-                    metrics.daysSinceEarliest
+                    appState.daysSinceEarliest
                 }, set: { _ in }),
                 totalExpenses: .init(get: {
-                    metrics.totalExpenses
+                    appState.totalExpenses
                 }, set: { _ in }),
                 calculatedBalance: .init(get: {
-                    metrics.calculatedBalance
+                    appState.calculatedBalance
                 }, set: { _ in }),
                 timeFrame: DataController.shared.fetchTimeFrame(),
                 backgroundColor: .init(get: {
                     backgroundColor
                 }, set: { _ in}),
-                showingAllowanceSheet: $showingAllowanceSheet
+                showingAllowanceSheet: $showingAllowanceSheet,
+                currentTab: $currentTab
             )
 
         case .expenses:
@@ -119,13 +118,6 @@ private extension MainAppView {
 
 // MARK: - Computed Properties & Handlers
 private extension MainAppView {
-    func calculatedMetrics() -> ExpenseMetrics {
-        ExpenseMetrics(
-            expenseViewModels: appState.expenseViewModels,
-            dailyBalance: appState.dailyBalance
-        )
-    }
-
     var expenseContextPublisher: NotificationCenter.Publisher {
         NotificationCenter.default.publisher(
             for: .NSManagedObjectContextObjectsDidChange,

@@ -64,26 +64,27 @@ struct DailyAllowanceEditView: View {
             /// Alert header
             VStack(spacing: Constraint.padding) {
                 CustomTextView(
-                    "Adjust Daily Budget",
+                    "Set Daily Limit",
                     font: .bodySmallBold,
                     color: .white
                 )
                 
                 CustomTextView(
-                    "Set your daily spending limit",
+                    "Control daily spending with smart limits",
                     font: .labelLarge,
                     color: .customWhiteSand
                 )
                 .multilineTextAlignment(.center)
                 
                 /// Amount Input
-                HStack(spacing: Constraint.smallPadding) {
+                ZStack {
                     CustomTextView(
                         "£",
                         font: .titleSmall,
                         color: .customWhiteSand
                     )
-                    
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
                     TextField("0", text: $amountText)
                         .font(TextFonts.titleSmall.font)
                         .foregroundColor(.white)

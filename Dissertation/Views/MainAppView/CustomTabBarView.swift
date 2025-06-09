@@ -28,7 +28,7 @@ struct CustomTabBar: View {
                 longPressInProgress: $longPressInProgress,
                 targetSpending: targetSpending,
                 onAddTap: {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    withAnimation(.smooth) {
                         showAddExpenseSheet = true
                     }
                 },
