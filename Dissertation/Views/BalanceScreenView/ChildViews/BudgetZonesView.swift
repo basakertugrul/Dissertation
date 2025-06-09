@@ -10,6 +10,33 @@ struct BudgetZonesView: View {
     @State var lineChartItems: [LineChartItem] = []
 
     @Binding var backgroundColor: Color
+    
+    init(
+        expenses: Binding<[ExpenseViewModel]>,
+        totalBalance: Binding<Double>,
+        timeFrame: Binding<TimeFrame>,
+        dailyBalance: Binding<Double>,
+        backgroundColor: Binding<Color>
+    ) {
+        self._expenses = expenses
+        self._totalBalance = totalBalance
+        self._timeFrame = timeFrame
+        self._dailyBalance = dailyBalance
+        self._backgroundColor = backgroundColor
+        assignNotificationObserver()
+    }
+
+    func assignNotificationObserver() {
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name("ExpenseRefresh"),
+            object: .none,
+            queue: .main
+        ) { _ in
+            DispatchQueue.main.async {
+                assignLineChartItems()
+            }
+        }
+    }
 
     var body: some View {
         VStack(spacing: Constraint.padding) {

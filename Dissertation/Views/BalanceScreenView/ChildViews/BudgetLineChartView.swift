@@ -26,7 +26,7 @@ struct LineChartView: View {
                     x: .value("Days", item.date, unit: .day),
                     y: .value("Expenses", item.animate ? item.getRevenue(goalMoneySpent: goalMoneySpent) : 0)
                 )
-                .foregroundStyle(.customOliveGreen.gradient)
+                .foregroundStyle(item.getRevenue(goalMoneySpent: goalMoneySpent) >= 0 ? .customOliveGreen : .customBurgundy)
             }
         }
         .chartXAxis {
@@ -64,8 +64,9 @@ struct LineChartView: View {
     }
 
     func animateChart() {
+        let duration: Double = (1.0 / Double(data.count))
         for (index, _) in data.enumerated() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * duration) {
                 withAnimation(.easeIn(duration: 0.8)) {
                     data[index].animate = true
                 }
