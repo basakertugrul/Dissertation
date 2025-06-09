@@ -11,6 +11,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		17B9DBB22DD56D5300F67C01 /* BudgetMate-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "BudgetMate-Info.plist"; sourceTree = "<group>"; };
 		17DBB7D92D6915F100422DAC /* BudgetMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -37,6 +38,7 @@
 		17DBB7D02D6915F100422DAC = {
 			isa = PBXGroup;
 			children = (
+				17B9DBB22DD56D5300F67C01 /* BudgetMate-Info.plist */,
 				17DBB7DB2D6915F100422DAC /* Dissertation */,
 				17DBB7DA2D6915F100422DAC /* Products */,
 			);
@@ -265,6 +267,9 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Dissertation/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "BudgetMate-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for taking photos of receipts for tracking expenses";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo library is used to save and access receipt photos for your expense records.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -293,6 +298,9 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Dissertation/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "BudgetMate-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for taking photos of receipts for tracking expenses";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo library is used to save and access receipt photos for your expense records.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

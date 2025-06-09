@@ -6,25 +6,65 @@ class ExpenseViewModel {
     var date: Date
     var amount: Double
     var currencyCode: String
-    var createDate: Date
-    var id: UUID = UUID()
+    let createDate: Date
+    let id: UUID
 
     private init(
         name: String,
         date: Date,
         amount: Double,
         createDate: Date,
-        currencyCode: String
+        currencyCode: String,
+        id: UUID
     ) {
         self.name = name
         self.date = date
         self.amount = amount
         self.createDate = createDate
         self.currencyCode = currencyCode
+        self.id = id
     }
 
-    static func createWithPound(name: String, date: Date, amount: Double, createDate: Date) -> ExpenseViewModel {
-        return ExpenseViewModel(name: name, date: date, amount: amount, createDate: createDate, currencyCode: "GBP")
+    func updateProperties(
+        name: String,
+        date: Date,
+        amount: Double
+    ) {
+        self.name = name
+        self.date = date
+        self.amount = amount
+    }
+
+    static func createWithPound(
+        name: String,
+        date: Date,
+        amount: Double,
+        createDate: Date
+    ) -> ExpenseViewModel {
+        return .createWithPound(
+            id: .none,
+            name: name,
+            date: date,
+            amount: amount,
+            createDate: createDate
+        )
+    }
+
+    private static func createWithPound(
+        id: UUID?,
+        name: String,
+        date: Date,
+        amount: Double,
+        createDate: Date
+    ) -> ExpenseViewModel {
+        return ExpenseViewModel(
+            name: name,
+            date: date,
+            amount: amount,
+            createDate: createDate,
+            currencyCode: "GBP",
+            id: id ?? UUID()
+        )
     }
 
     init(from model: ExpenseModel) {

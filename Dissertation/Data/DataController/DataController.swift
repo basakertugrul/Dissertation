@@ -12,6 +12,12 @@ struct DataController {
         targetSpendingModelContainer.viewContext
     }
 
+    /// UserDefaults Keys
+    private struct UserDefaultsKeys {
+        static let timeFrame = "selectedTimeFrame"
+        static let targetSpending = "targetSpendingAmount"
+    }
+
     private init() {
         expenseModelContainer = NSPersistentContainer(name: "ExpenseModel")
         expenseModelContainer.loadPersistentStores { _, error in
@@ -26,6 +32,62 @@ struct DataController {
                 fatalError("Unresolved error \(error)")
             }
         }
+    }
+
+    /// TimeFrame UserDefaults Methods
+    public func saveTimeFrame(_ timeFrame: TimeFrame) {
+        UserDefaults.standard.set(timeFrame.rawValue, forKey: UserDefaultsKeys.timeFrame)
+        print("✅ TimeFrame saved: \(timeFrame.rawValue)")
+    }
+
+    public func fetchTimeFrame() -> TimeFrame {
+        let savedTimeFrameString = UserDefaults.standard.string(forKey: UserDefaultsKeys.timeFrame)
+
+        if let savedTimeFrameString = savedTimeFrameString,
+           let timeFrame = TimeFrame(rawValue: savedTimeFrameString) {
+            return timeFrame
+        }
+
+        // Return default value if nothing is saved or invalid value
+        return .weekly
+    }
+
+    public func resetTimeFrame() {
+        UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.timeFrame)
+        print("🗑️ TimeFrame reset to default")
+    }
+    
+    /// Target Spending UserDefaults Methods
+    public func saveTargetSpending(to amount: Double) {
+        UserDefaults.standard.set(amount, forKey: UserDefaultsKeys.targetSpending)
+        print("✅ Target Spending saved: £\(amount)")
+        NotificationCenter.default.post(
+            name: Notification.Name("TargetSpendingMoneyUpdated"),
+            object: nil
+        )
+    }
+    
+    public func fetchTargetSpendingMoney() -> Double? {
+        let savedAmount = UserDefaults.standard.double(forKey: UserDefaultsKeys.targetSpending)
+        
+        // UserDefaults returns 0.0 if key doesn't exist, but we want to distinguish
+        // between "not set" and "set to 0", so we check if key exists
+        if UserDefaults.standard.object(forKey: UserDefaultsKeys.targetSpending) != nil {
+            print("✅ Target Spending fetched: £\(savedAmount)")
+            return savedAmount
+        } else {
+            print("⚠️ No target spending found")
+            return nil // Default daily budget
+        }
+    }
+    
+    public func resetTargetSpending() {
+        UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.targetSpending)
+        print("🗑️ Target Spending reset to default")
+        NotificationCenter.default.post(
+            name: Notification.Name("TargetSpendingMoneyUpdated"),
+            object: nil
+        )
     }
 
     public func save() {
@@ -60,6 +122,10 @@ struct DataController {
         do {
             try expenseModelContext.save()
             print("✅ Expense saved")
+            NotificationCenter.default.post(
+                name: Notification.Name("ExpenseRefresh"),
+                object: .none
+            )
         } catch {
             print("❌ Failed to save: \(error)")
         }
@@ -71,11 +137,16 @@ struct DataController {
 
         do {
             let results = try expenseModelContext.fetch(request)
-            for expense in results {
-                expenseModelContext.delete(expense)
+            for expensex in results {
+                expenseModelContext.delete(expensex)
             }
             try expenseModelContext.save()
             print("🗑️ Expense deleted")
+
+            NotificationCenter.default.post(
+                name: Notification.Name("ExpenseRefresh"),
+                object: .none
+            )
         } catch {
             print("❌ Failed to delete expense: \(error)")
         }
@@ -101,14 +172,14 @@ struct DataController {
             try expenseModelContext.save()
             print("✅ Expense updated")
             NotificationCenter.default.post(
-                name: Notification.Name("ExpenseUpdated"),
-                object: nil
+                name: Notification.Name("ExpenseRefresh"),
+                object: .none
             )
         } catch {
             print("❌ Failed to update expense: \(error)")
         }
     }
-    
+
     public func resetExpenses() {
         let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
 
@@ -119,6 +190,10 @@ struct DataController {
             }
             try expenseModelContext.save()
             print("🗑️")
+            NotificationCenter.default.post(
+                name: Notification.Name("ExpenseRefresh"),
+                object: .none
+            )
         } catch {
             print("❌: \(error)")
         }
@@ -130,70 +205,11 @@ struct DataController {
         do {
             let result = try expenseModelContext.fetch(request)
             return result.map {
-                ExpenseViewModel.createWithPound(
-                    name: $0.name ?? "",
-                    date: $0.date ?? .now,
-                    amount: $0.amount,
-                    createDate: $0.createDate ?? .now
-                )
+                ExpenseViewModel(from: $0)
             }
         } catch {
             print("❌ Failed to fetch expenses: \(error)")
             return []
         }
     }
-
-    public func saveTargetSpending(to data: Double) {
-        let newTargetSpending = TargetSpendingModel(context: targetSpendingModelContext)
-        newTargetSpending.amount = data
-        newTargetSpending.currencyCode = "GBP"
-
-        do {
-            try targetSpendingModelContext.save()
-            NotificationCenter.default.post(
-                name: Notification.Name("TargetSpendingMoneyUpdated"),
-                object: nil
-            )
-            print("✅ Target Spending saved")
-        } catch {
-            print("❌ Failed to save: \(error)")
-        }
-    }
-
-    public func resetTargetSpending() {
-        let request: NSFetchRequest<TargetSpendingModel> = TargetSpendingModel.fetchRequest()
-
-        do {
-            let results = try targetSpendingModelContext.fetch(request)
-            for targetSpending in results {
-                targetSpendingModelContext.delete(targetSpending)
-            }
-            try targetSpendingModelContext.save()
-            NotificationCenter.default.post(
-                name: Notification.Name("TargetSpendingMoneyUpdated"),
-                object: nil
-            )
-            print("🗑️ Target spending deleted")
-        } catch {
-            print("❌ Failed to delete target spending: \(error)")
-        }
-    }
-
-    public func fetchTargetSpendingMoney() -> Double? {
-        let request: NSFetchRequest<TargetSpendingModel> = TargetSpendingModel.fetchRequest()
-        request.fetchLimit = 1
-
-        do {
-            if let result = try targetSpendingModelContext.fetch(request)
-                .first?
-                .amount {
-                return result
-            }
-        } catch {
-            print("❌ Failed to fetch expenses: \(error)")
-        }
-        return nil
-    }
 }
-
-//TODO: Aylık görme - haftalık görme - yıllık görme olsun
