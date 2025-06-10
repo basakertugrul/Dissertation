@@ -38,13 +38,13 @@ struct MainAppView: View {
             isPresented: $isShowingAddExpenseSheet,
             onDismiss: clearAddExpenseData
         ) {
-            ModifyExpenseView(expenseToModify: .constant(.none))
+            ModifyExpenseView(expenseToModify: .constant(.none), startDay: appState.startDate)
         }
         .sheet(
             isPresented: .init(get: { expenseToEdit != .none }, set: { _ in }),
             onDismiss: clearEditExpenseData
         ) {
-            ModifyExpenseView(expenseToModify: $expenseToEdit)
+            ModifyExpenseView(expenseToModify: $expenseToEdit, startDay: appState.startDate)
         }
         .sheet(isPresented: $willOpenCameraView) { cameraSheet }
         .showDailyAllowanceSheet(

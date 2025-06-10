@@ -4,6 +4,10 @@ import SwiftUI
 struct ExpensesScreenView: View {
     @Binding var expenses: [ExpenseViewModel]
     let onExpenseEdit: (ExpenseViewModel) -> Void
+    
+    @State private var showContent: Bool = false
+    @State private var sectionOpacity: Double = 0.0
+    @State private var sectionOffset: CGFloat = 30
 
     private var groupedExpenses: [String: [ExpenseViewModel]] {
         Dictionary(grouping: expenses) { expense in
@@ -34,7 +38,7 @@ struct ExpensesScreenView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constraint.smallPadding) {
-                ForEach(sortedKeys, id: \.self) { key in
+                ForEach(Array(sortedKeys.enumerated()), id: \.element) { index, key in
                     if let expensesForDate = groupedExpenses[key] {
                         VStack(alignment: .leading, spacing: Constraint.smallPadding) {
                             CustomTextView(
@@ -42,18 +46,67 @@ struct ExpensesScreenView: View {
                                 font: .labelLarge,
                                 color: Color.customRichBlack.opacity(Constraint.Opacity.medium)
                             )
+                            .opacity(sectionOpacity)
+                            .offset(x: sectionOffset)
 
-                            ForEach(expensesForDate) { expense in
+                            ForEach(Array(expensesForDate.enumerated()), id: \.element.id) { expenseIndex, expense in
                                 ExpenseItemView(expense: expense) {
                                     onExpenseEdit(expense)
                                 }
+                                .opacity(sectionOpacity)
+                                .offset(x: sectionOffset)
                             }
                         }
                         .padding(.vertical, Constraint.tinyPadding)
+                        .onAppear {
+                            animateSectionAppearance(delay: Double(index) * 0.1)
+                        }
                     }
                 }
             }
             .padding(Constraint.padding)
+        }
+        .onAppear {
+            animateContentAppearance()
+        }
+        .onChange(of: expenses) { _, _ in
+            animateContentUpdate()
+        }
+    }
+    
+    private func animateContentAppearance() {
+        withAnimation(.smooth(duration: 0.4)) {
+            showContent = true
+        }
+        
+        // Staggered section animations
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            withAnimation(.smooth(duration: 0.6)) {
+                sectionOpacity = 1.0
+                sectionOffset = 0
+            }
+        }
+    }
+    
+    private func animateSectionAppearance(delay: Double) {
+        // Individual section animation with delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                // This will be handled by the main animation
+            }
+        }
+    }
+    
+    private func animateContentUpdate() {
+        // Subtle update animation when expenses change
+        withAnimation(.easeInOut(duration: 0.3)) {
+            sectionOpacity = 0.8
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation(.smooth(duration: 0.4)) {
+                sectionOpacity = 1.0
+            }
         }
     }
 }
@@ -62,9 +115,16 @@ struct ExpensesScreenView: View {
 struct ExpenseItemView: View {
     let expense: ExpenseViewModel
     let onTap: () -> Void
+    
+    @State private var itemScale: CGFloat = 0.95
+    @State private var itemOpacity: Double = 0.0
+    @State private var isPressed: Bool = false
 
     var body: some View {
-        Button(action: onTap) {
+        Button(action: {
+            animateButtonPress()
+            onTap()
+        }) {
             HStack {
                 /// Name and date
                 VStack(alignment: .leading, spacing: Constraint.tinyPadding) {
@@ -82,6 +142,31 @@ struct ExpenseItemView: View {
                 isRounded: true,
                 isTheLineSameColorAsBackground: true
             )
+        }
+        .scaleEffect(isPressed ? 0.95 : 1.0)
+        .scaleEffect(itemScale)
+        .opacity(itemOpacity)
+        .onAppear {
+            animateItemAppearance()
+        }
+    }
+    
+    private func animateItemAppearance() {
+        withAnimation(.spring(response: 0.5, dampingFraction: 0.7).delay(0.1)) {
+            itemScale = 1.0
+            itemOpacity = 1.0
+        }
+    }
+    
+    private func animateButtonPress() {
+        withAnimation(.easeInOut(duration: 0.1)) {
+            isPressed = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                isPressed = false
+            }
         }
     }
 }

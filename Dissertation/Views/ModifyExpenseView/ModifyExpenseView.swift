@@ -6,6 +6,7 @@ struct ModifyExpenseView: View {
 
     /// Optional expense to modify - .none means we're adding a new expense
     @Binding var expenseToModify: ExpenseViewModel?
+    var startDay: Date
 
     @State private var expenseName: String = ""
     @State private var expenseAmount: Double = .zero
@@ -20,9 +21,8 @@ struct ModifyExpenseView: View {
     }
 
     private var dateRange: ClosedRange<Date> {
-        let now: Date = Date()
-        let distantPast: Date = .distantPast
-        return distantPast...now
+        let now: Date = .now
+        return startDay...now
     }
 
     /// Button text based on mode
@@ -355,7 +355,7 @@ struct ActionButtonsView: View {
 
 // MARK: - Preview
 #Preview("Add Mode") {
-    ModifyExpenseView(expenseToModify: .constant(.none))
+    ModifyExpenseView(expenseToModify: .constant(.none), startDay: .now)
 }
 
 #Preview("Edit Mode") {
@@ -366,5 +366,5 @@ struct ActionButtonsView: View {
         createDate: .now
     )
     
-    ModifyExpenseView(expenseToModify: .constant(sampleExpense))
+    ModifyExpenseView(expenseToModify: .constant(sampleExpense), startDay: .now)
 }

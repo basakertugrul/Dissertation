@@ -9,7 +9,6 @@ struct BudgetLineChartView: View {
     @State private var showChart: Bool = false
     @State private var colorGradientProgress: Double = 0.0
     @State private var isOverLimit: Bool = false
-    @State private var showGradient: Bool = false
 
     var body: some View {
         VStack(spacing: Constraint.smallPadding) {
@@ -77,21 +76,8 @@ struct BudgetLineChartView: View {
     }
     
     private var expensesBarStyle: AnyShapeStyle {
-        if showGradient {
-            // Show animated gradient during transition
-            return AnyShapeStyle(
-                LinearGradient(
-                    colors: [.customOliveGreen, .customBurgundy],
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-                .opacity(0.8)
-            )
-        } else {
-            // Show solid color based on current state
-            let finalColor: Color = isOverLimit ? .customBurgundy : .customOliveGreen
-            return AnyShapeStyle(finalColor)
-        }
+        let finalColor: Color = isOverLimit ? .customBurgundy : .customOliveGreen
+        return AnyShapeStyle(finalColor)
     }
     
     private func animateChart() {
@@ -99,11 +85,10 @@ struct BudgetLineChartView: View {
         showChart = false
         animatedLimitValue = 0
         animatedSpentValue = 0
-        showGradient = false
         colorGradientProgress = 0.0
         
         let spentMoney = data.count > 1 ? data[1].moneySpent : 0
-        let willBeOverLimit = spentMoney > dailyLimit
+        let willBeOverLimit = spentMoney >= dailyLimit
         let colorNeedsChange = willBeOverLimit != isOverLimit
         
         /// Progressive animation sequence
@@ -132,15 +117,9 @@ struct BudgetLineChartView: View {
     }
     
     private func animateColorTransition(to overLimit: Bool) {
-        // Phase 1: Show gradient
-        withAnimation(.easeInOut(duration: 0.3)) {
-            showGradient = true
-        }
-        
         // Phase 2: Hide gradient and set final color
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             withAnimation(.easeInOut(duration: 0.3)) {
-                showGradient = false
                 isOverLimit = overLimit
             }
         }
