@@ -1,12 +1,11 @@
 import SwiftUI
 import CoreData
-// TODO: check the number it should be with a dot: 99.44
 
 // MARK: - App Entry Point
 @main
 struct BudgetMateApp: App {
     @Environment(\.scenePhase) var scenePhase
-    @StateObject private var appState = AppStateManager()
+    @StateObject private var appState = AppStateManager.shared
 
     let dataController = DataController.shared
 
@@ -19,11 +18,6 @@ struct BudgetMateApp: App {
                 .onChange(of: scenePhase, { _, newValue in
                     handleScenePhaseChange(newValue)
                 })
-//                .onAppear {
-//                    dataController.resetTargetSpending()
-//                    dataController.resetExpenses()
-//                    dataController.resetTimeFrame()
-//                }
         }
     }
 }
@@ -31,7 +25,7 @@ struct BudgetMateApp: App {
 // MARK: - App Setup & Event Handling
 private extension BudgetMateApp {
     func setupApp() {
-        appState.loadInitialData()
+        appState.loadInitialData() // 🎯 SIMPLIFIED: Let AppStateManager handle start date
         setupNotificationObservers()
     }
 
@@ -61,45 +55,5 @@ private extension BudgetMateApp {
                 appState.refreshDailyBalance()
             }
         }
-    }
-}
-
-// MARK: - App State Manager
-class AppStateManager: ObservableObject {
-    @Published var dailyBalance: Double = .zero
-    @Published var expenseViewModels: [ExpenseViewModel] = []
-
-    private let dataController = DataController.shared
-
-    var daysSinceEarliest: Int {
-        guard let earliestDate = expenseViewModels.map({ $0.date }).min() else {
-            return 0
-        }
-
-        let calendar = Calendar.current
-        return calendar.dateComponents([.day],
-                                       from: calendar.startOfDay(for: earliestDate),
-                                       to: calendar.startOfDay(for: Date())).day ?? 0
-    }
-
-    var totalExpenses: Double {
-        expenseViewModels.reduce(0) { $0 + $1.amount }
-    }
-
-    var calculatedBalance: Double {
-        dailyBalance * Double(daysSinceEarliest) - totalExpenses
-    }
-
-    func loadInitialData() {
-        refreshDailyBalance()
-        refreshExpenses()
-    }
-
-    func refreshDailyBalance() {
-        dailyBalance = dataController.fetchTargetSpendingMoney() ?? 0
-    }
-
-    func refreshExpenses() {
-        expenseViewModels = dataController.fetchExpenses()
     }
 }

@@ -2,6 +2,7 @@ import CoreData
 
 struct DataController {
     public static let shared = DataController()
+    /// Model Contianers
     let expenseModelContainer: NSPersistentContainer
     var expenseModelContext: NSManagedObjectContext {
         expenseModelContainer.viewContext
@@ -16,6 +17,7 @@ struct DataController {
     private struct UserDefaultsKeys {
         static let timeFrame = "selectedTimeFrame"
         static let targetSpending = "targetSpendingAmount"
+        static let startdate = "startDate"
     }
 
     private init() {
@@ -34,7 +36,7 @@ struct DataController {
         }
     }
 
-    /// TimeFrame UserDefaults Methods
+    // MARK: - TIME FRAME
     public func saveTimeFrame(_ timeFrame: TimeFrame) {
         UserDefaults.standard.set(timeFrame.rawValue, forKey: UserDefaultsKeys.timeFrame)
         print("✅ TimeFrame saved: \(timeFrame.rawValue)")
@@ -47,8 +49,6 @@ struct DataController {
            let timeFrame = TimeFrame(rawValue: savedTimeFrameString) {
             return timeFrame
         }
-
-        // Return default value if nothing is saved or invalid value
         return .weekly
     }
 
@@ -57,7 +57,7 @@ struct DataController {
         print("🗑️ TimeFrame reset to default")
     }
     
-    /// Target Spending UserDefaults Methods
+    // MARK: - TARGET SPENDING MONEY
     public func saveTargetSpending(to amount: Double) {
         UserDefaults.standard.set(amount, forKey: UserDefaultsKeys.targetSpending)
         print("✅ Target Spending saved: £\(amount)")
@@ -69,15 +69,12 @@ struct DataController {
     
     public func fetchTargetSpendingMoney() -> Double? {
         let savedAmount = UserDefaults.standard.double(forKey: UserDefaultsKeys.targetSpending)
-        
-        // UserDefaults returns 0.0 if key doesn't exist, but we want to distinguish
-        // between "not set" and "set to 0", so we check if key exists
         if UserDefaults.standard.object(forKey: UserDefaultsKeys.targetSpending) != nil {
             print("✅ Target Spending fetched: £\(savedAmount)")
             return savedAmount
         } else {
             print("⚠️ No target spending found")
-            return nil // Default daily budget
+            return nil
         }
     }
     
@@ -90,6 +87,7 @@ struct DataController {
         )
     }
 
+    // MARK: - GENERAL
     public func save() {
         let expenseModelContext = expenseModelContainer.viewContext
         if expenseModelContext.hasChanges {
@@ -110,6 +108,7 @@ struct DataController {
         }
     }
 
+    // MARK: - EXPENSES
     public func saveExpense(of expense: ExpenseViewModel) {
         let newExpense = ExpenseModel(context: expenseModelContext)
         newExpense.amount = expense.amount
@@ -211,5 +210,25 @@ struct DataController {
             print("❌ Failed to fetch expenses: \(error)")
             return []
         }
+    }
+
+    // MARK: - START DAY
+    func fetchTargetSetDate() -> Date? {
+        let savedDate = UserDefaults.standard.string(forKey: UserDefaultsKeys.startdate)
+        if let savedDate = savedDate {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            return formatter.date(from: savedDate)
+        }
+        return nil
+    }
+
+    func saveTargetSetDate(_ date: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateString = formatter.string(from: date)
+
+        UserDefaults.standard.set(dateString, forKey: UserDefaultsKeys.startdate)
+        print("✅ Start date saved: £\(dateString)")
     }
 }

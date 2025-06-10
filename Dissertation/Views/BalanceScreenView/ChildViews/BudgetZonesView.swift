@@ -1,32 +1,72 @@
 import SwiftUI
 import Charts
 
+// MARK: - Animated Budget Zones View
 struct BudgetZonesView: View {
     @Binding var expenses: [ExpenseViewModel]
     @Binding var totalBalance: Double
     @Binding var timeFrame: TimeFrame
     @Binding var dailyBalance: Double
-    @Binding var backgroundColor: Color
+    @Binding var startDay: Date
+    
+    var backgroundColor: Color {
+        totalBalance < 0 ? .customOliveGreen : .customBurgundy
+    }
 
     @State private var lineChartItems: [LineChartItem] = []
+    @State private var showContent: Bool = false
+    @State private var animatedScale: CGFloat = 0.95
+    @State private var animatedOpacity: Double = 0.0
 
     var body: some View {
         VStack(spacing: Constraint.regularPadding) {
             timeFrameSelection(withColor: backgroundColor)
+                .scaleEffect(animatedScale)
+                .opacity(animatedOpacity)
 
-            BudgetLineChartView(data: $lineChartItems)
+            BudgetLineChartView(data: $lineChartItems, dailyLimit: $dailyBalance)
+                .scaleEffect(animatedScale)
+                .opacity(animatedOpacity)
         }
         .onAppear {
             assignLineChartItems()
+            animateAppearance()
         }
         .onChange(of: expenses) { _, _ in
             assignLineChartItems()
+            animateContentChange()
         }
         .onChange(of: timeFrame) { _, _ in
             assignLineChartItems()
+            animateContentChange()
         }
         .onChange(of: dailyBalance) { _, _ in
             assignLineChartItems()
+            animateContentChange()
+        }
+    }
+    
+    private func animateAppearance() {
+        withAnimation(.smooth(duration: 0.3).delay(0.1)) {
+            showContent = true
+            animatedScale = 1.0
+            animatedOpacity = 1.0
+        }
+    }
+    
+    private func animateContentChange() {
+        // Quick scale down animation
+        withAnimation(.smooth(duration: 0.15)) {
+            animatedScale = 0.98
+            animatedOpacity = 0.8
+        }
+        
+        // Scale back up with spring animation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                animatedScale = 1.0
+                animatedOpacity = 1.0
+            }
         }
     }
 
@@ -38,7 +78,7 @@ struct BudgetZonesView: View {
         /// Calculate timeframe limit
         let timeFrameLimit: Double
         
-        let startDay = expenses.sorted(by: { left, right in left.date < right.date }).first?.date ?? .now
+        let startDay = startDay
         switch timeFrame {
         case .daily:
             timeFrameLimit = dailyBalance
@@ -50,7 +90,8 @@ struct BudgetZonesView: View {
             } else {
                 daysCount = daysBetween(startDay, now)
             }
-            timeFrameLimit = dailyBalance * daysCount
+            let totalTimeFrameLimit = dailyBalance * daysCount
+            timeFrameLimit = totalTimeFrameLimit == 0 ? dailyBalance : totalTimeFrameLimit
         case .monthly:
             var daysCount: Double
             let staticNumber: Int = calendar.range(of: .day, in: .month, for: now)?.count ?? 30
@@ -59,7 +100,8 @@ struct BudgetZonesView: View {
             } else {
                 daysCount = daysBetween(startDay, now)
             }
-            timeFrameLimit = dailyBalance * daysCount
+            let totalTimeFrameLimit = dailyBalance * daysCount
+            timeFrameLimit = totalTimeFrameLimit == 0 ? dailyBalance : totalTimeFrameLimit
         case .yearly:
             var daysCount: Double
             let staticNumber: Int = calendar.range(of: .day, in: .year, for: now)?.count ?? 165
@@ -68,7 +110,8 @@ struct BudgetZonesView: View {
             } else {
                 daysCount = daysBetween(startDay, now)
             }
-            timeFrameLimit = dailyBalance * daysCount
+            let totalTimeFrameLimit = dailyBalance * daysCount
+            timeFrameLimit = totalTimeFrameLimit == 0 ? dailyBalance : totalTimeFrameLimit
         }
 
         switch timeFrame {
@@ -107,7 +150,7 @@ struct BudgetZonesView: View {
          HStack(spacing: Constraint.smallPadding) {
              ForEach(TimeFrame.allCases, id: \.self) { frame in
                  Button(action: {
-                     withAnimation {
+                     withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                          if timeFrame != frame {
                              timeFrame = frame
                              DataController.shared.saveTimeFrame(frame)
@@ -129,7 +172,9 @@ struct BudgetZonesView: View {
                          spacing: .compact,
                          keepTheColor: timeFrame == frame
                      )
+                     .scaleEffect(timeFrame == frame ? 1.05 : 1.0)
                  }
+                 .buttonStyle(PlainButtonStyle())
              }
          }
          .frame(maxWidth: .infinity, alignment: .center)

@@ -3,6 +3,7 @@ import SwiftUI
 enum TextFonts {
     /// Title styles
     case titleLarge
+    case titleLargeBold
     case titleMedium
     case titleMediumBold
     case titleSmall
@@ -27,6 +28,8 @@ enum TextFonts {
             /// Title styles
         case .titleLarge:
             return .system(size: 54, weight: .light)
+        case .titleLargeBold:
+            return .system(size: 54, weight: .bold, design: .rounded)
         case .titleMedium:
             return .system(size: 32, weight: .light)
         case .titleMediumBold:
@@ -62,7 +65,7 @@ enum TextFonts {
     var tracking: CGFloat {
         switch self {
             /// Titles typically have tighter tracking
-        case .titleLarge, .titleSmall, .titleSmallBold, .titleMedium, .titleMediumBold:
+        case .titleLarge, .titleLargeBold, .titleSmall, .titleSmallBold, .titleMedium, .titleMediumBold:
             return 0.5
 
             /// Body text with normal tracking

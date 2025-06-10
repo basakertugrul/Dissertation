@@ -71,9 +71,6 @@ private extension MainAppView {
             BalanceScreenView(
                 expenses: $appState.expenseViewModels,
                 dailyBalance: $appState.dailyBalance,
-                daysSinceEarliest: .init(get: {
-                    appState.daysSinceEarliest
-                }, set: { _ in }),
                 totalExpenses: .init(get: {
                     appState.totalExpenses
                 }, set: { _ in }),
@@ -85,7 +82,8 @@ private extension MainAppView {
                     backgroundColor
                 }, set: { _ in}),
                 showingAllowanceSheet: $showingAllowanceSheet,
-                currentTab: $currentTab
+                currentTab: $currentTab,
+                startDay: $appState.startDate
             )
 
         case .expenses:

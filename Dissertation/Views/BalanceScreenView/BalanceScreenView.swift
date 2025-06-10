@@ -5,22 +5,23 @@ import SwiftData
 struct BalanceScreenView: View {
     @Binding var expenses: [ExpenseViewModel]
     @Binding var dailyBalance: Double
-    @Binding var daysSinceEarliest: Int
     @Binding var totalExpenses: Double
     @Binding var calculatedBalance: Double
     @State var timeFrame: TimeFrame
     @Binding var backgroundColor: Color
     @Binding var showingAllowanceSheet: Bool
     @Binding var currentTab: CustomTabBarSection
+    @Binding var startDay: Date
+    
+    var daySinceEarliest: Int {
+        (Calendar.current.dateComponents([.day], from: startDay, to: Date()).day ?? 0) + 1
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constraint.padding) {
                 /// Current Balance Card
-                CurrentBalanceCardView(
-                    calculatedBalance: $calculatedBalance,
-                    backgrounColor: $backgroundColor
-                )
+                CurrentBalanceCardView()
 
                 /// Budget Zones View
                 BudgetZonesView(
@@ -28,15 +29,13 @@ struct BalanceScreenView: View {
                     totalBalance: $calculatedBalance,
                     timeFrame: $timeFrame,
                     dailyBalance: $dailyBalance,
-                    backgroundColor: .init(get: {
-                        backgroundColor == .customOliveGreen ? .customBurgundy : .customOliveGreen
-                    }, set: { _ in } )
+                    startDay: $startDay
                 )
 
                 /// Stats Cards
                 StatsCardsView(
                     dailyBalance: dailyBalance,
-                    daysSinceEarliest: daysSinceEarliest,
+                    daysSinceEarliest: daySinceEarliest,
                     opacity: Constraint.Opacity.high,
                     showingAllowanceSheet: $showingAllowanceSheet,
                     backgroundColor: $backgroundColor
