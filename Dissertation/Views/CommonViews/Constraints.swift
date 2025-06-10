@@ -37,6 +37,7 @@ struct Constraint {
     static let extremeImageSize: CGFloat = 480
     
     static let blurRadius: CGFloat = 10
+    static let smallBlurRadius: CGFloat = 7
     
     static let animationDuration: Double = 0.75
     static let animationDurationShort: Double = 0.3

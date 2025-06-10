@@ -3,14 +3,14 @@ import SwiftUI
 // MARK: - Current Balance Card View
 struct CurrentBalanceCardView: View {
     @Binding var calculatedBalance: Double
-    @State var opacity: CGFloat
+    @Binding var backgrounColor: Color
 
     var body: some View {
         VStack(spacing: Constraint.smallPadding) {
             CustomTextView(
                 calculatedBalance >= 0 ? "Available" : "Overdrawn",
                 font: .bodySmall,
-                color: .white.opacity(opacity),
+                color: .white.opacity(Constraint.Opacity.high),
                 uppercase: true
             )
 
@@ -19,10 +19,15 @@ struct CurrentBalanceCardView: View {
             CustomTextView(
                 calculatedBalance >= 0 ? "Crushing it!" : "Oops, went over!",
                 font: .labelLarge,
-                color: .customWhiteSand.opacity(opacity),
+                color: .customWhiteSand.opacity(Constraint.Opacity.high),
                 uppercase: true
             )
         }
-        .frame(maxWidth: .infinity, alignment: .center)
+        .addLayeredBackground(
+            with: backgrounColor,
+            expandFullWidth: true,
+            keepTheColor: true
+        )
+       
     }
 }

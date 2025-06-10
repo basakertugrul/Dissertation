@@ -23,12 +23,12 @@ enum CustomTabBarSection: Int, CaseIterable {
             var attributedString = AttributedString( ("\(firstString) \(secondString)") )
 
             if let helloRange = attributedString.range(of: firstString) {
-                attributedString[helloRange].foregroundColor = .customWhiteSand.opacity(Constraint.Opacity.high)
+                attributedString[helloRange].foregroundColor = .customRichBlack.opacity(Constraint.Opacity.high)
                 attributedString[helloRange].font = TextFonts.titleSmall.font
             }
 
             if let worldRange = attributedString.range(of: secondString) {
-                attributedString[worldRange].foregroundColor = .customWhiteSand
+                attributedString[worldRange].foregroundColor = .customRichBlack
                 attributedString[worldRange].font = TextFonts.titleSmallBold.font
             }
             return attributedString
@@ -37,7 +37,7 @@ enum CustomTabBarSection: Int, CaseIterable {
             let string: String = "Expenses".uppercased()
 
             var attributedString = AttributedString( string )
-            attributedString.foregroundColor = .customWhiteSand
+            attributedString.foregroundColor = .customRichBlack
             attributedString.font = TextFonts.titleSmallBold.font
             return attributedString
         }

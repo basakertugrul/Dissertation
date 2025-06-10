@@ -1,25 +1,29 @@
 import SwiftUI
+import PhotosUI
 
 struct CameraView: View {
     @ObservedObject var viewModel = CameraViewModel()
+    @StateObject var photosViewModel = PhotosPickerViewModel()
+
     @State private var isFocused = false
     @State private var isScaled = false
     @State private var focusLocation: CGPoint = .zero
     @State private var currentZoomFactor: CGFloat = 1.0
     @State private var showImagePreview = false
-    @State private var showPhotoPicker: Bool = false
 
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
+                // Flash Button
                 Button(action: {
                     viewModel.switchFlash()
-                }, label: {
+                }) {
                     Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
-                        .font(.system(size: 20, weight: .medium, design: .default))
-                })
-                .accentColor(viewModel.isFlashOn ? .yellow : .white)
-
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundColor(viewModel.isFlashOn ? .yellow : .white)
+                }
+                
+                // Camera Preview with Focus and Zoom
                 ZStack {
                     CameraPreview(session: viewModel.session) { tapPoint in
                         isFocused = true
@@ -27,133 +31,151 @@ struct CameraView: View {
                         viewModel.setFocus(point: tapPoint)
                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                     }
-                    .gesture(MagnificationGesture()
-                        .onChanged { value in
-                            self.currentZoomFactor += value - 1.0 /// Calculate the zoom factor change
-                            self.currentZoomFactor = min(max(self.currentZoomFactor, 0.5), 10)
-                            self.viewModel.zoom(with: currentZoomFactor)
-                        })
+                    .gesture(
+                        MagnificationGesture()
+                            .onChanged { value in
+                                currentZoomFactor += value - 1.0
+                                currentZoomFactor = min(max(currentZoomFactor, 0.5), 10)
+                                viewModel.zoom(with: currentZoomFactor)
+                            }
+                    )
                     .animation(.easeInOut, value: 0.5)
                     
+                    // Focus View
                     if isFocused {
                         FocusView(position: $focusLocation)
                             .scaleEffect(isScaled ? 0.8 : 1)
                             .onAppear {
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.6, blendDuration: 0)) {
-                                    self.isScaled = true
+                                withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+                                    isScaled = true
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                        self.isFocused = false
-                                        self.isScaled = false
+                                        isFocused = false
+                                        isScaled = false
                                     }
                                 }
                             }
                     }
                 }
+                
+                // Bottom Controls
                 HStack {
-                    // Modified PhotoThumbnail with tap action
-                    PhotoThumbnail(image: $viewModel.capturedImage)
-                        .onTapGesture {
-                            if viewModel.capturedImage != .none {
-                                showImagePreview = true
-                            } else {
-                                showPhotoPicker = true
-                            }
-                        }
-                        .onLongPressGesture {
-                            showPhotoPicker = true
-                        }
+                    // Photo Library Access via Thumbnail
+                    PhotosPicker(
+                        selection: $photosViewModel.selectedPhotos,
+                        maxSelectionCount: 1,
+                        selectionBehavior: .ordered,
+                        matching: .images
+                    ) {
+                        PhotoThumbnail()
+                    }
+                    
                     Spacer()
+                    
+                    // Capture Button
                     CaptureButton {
                         viewModel.captureImage()
-                        // Show the preview after a short delay to ensure the image is processed
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showImagePreview = true
                         }
                     }
+                    
                     Spacer()
-                    CameraSwitchButton { viewModel.switchCamera() }
+                    
+                    // Camera Switch Button
+                    CameraSwitchButton {
+                        viewModel.switchCamera()
+                    }
                 }
                 .padding(Constraint.padding)
             }
             .padding(Constraint.padding)
-
-            /// Full-screen image preview overlay
+            
+            // Full-screen Image Preview Overlay (for both captured and selected photos)
             if showImagePreview, let image = viewModel.capturedImage {
-                ImagePreviewOverlay(image: image, isVisible: $showImagePreview, viewModel: viewModel)
-                    .transition(.opacity)
-                    .zIndex(2)
-            }
-        }
-        .sheet(isPresented: $showPhotoPicker) {
-            NavigationView {
-                PhotosPickerView { image in
-                    viewModel.capturedImage = image
-                    showPhotoPicker = false
-                }
-                .navigationBarItems(
-                    leading: Button("Cancel") {
-                        showPhotoPicker = false
-                    }
+                ImagePreviewOverlay(
+                    image: image,
+                    isVisible: $showImagePreview,
+                    viewModel: viewModel
                 )
+                .preferredColorScheme(.dark)
+                .transition(.opacity)
+                .zIndex(2)
             }
         }
         .showPhotoLibraryErrorAlert(isPresented: $viewModel.showPhotoErrorAlert) {
-            DispatchQueue.main.async {
-                viewModel.showPhotoErrorAlert = false
-            }
+            viewModel.showPhotoErrorAlert = false
         }
         .showCameraErrorAlert(isPresented: $viewModel.showCameraErrorAlert) {
-            DispatchQueue.main.async {
-                viewModel.showCameraErrorAlert = false
-            }
+            viewModel.showCameraErrorAlert = false
         }
         .showSettingsErrorAlert(isPresented: $viewModel.showSettingAlert) {
-            DispatchQueue.main.async {
-                self.openSettings()
-            }
+            openSettings()
         }
         .onAppear {
             viewModel.setupBindings()
             viewModel.requestCameraPermission()
         }
+        .onChange(of: photosViewModel.selectedPhotos) { _, newValue in
+            handlePhotoSelection()
+        }
     }
 
-    func openSettings() {
-        let settingsUrl = URL(string: UIApplication.openSettingsURLString)
-        if let url = settingsUrl {
-            UIApplication.shared.open(url, options: [:])
+    private func handlePhotoSelection() {
+        guard let selectedPhoto = photosViewModel.selectedPhotos.first else { return }
+        
+        Task {
+            if let imageData = try? await selectedPhoto.loadTransferable(type: Data.self),
+               let uiImage = UIImage(data: imageData) {
+                DispatchQueue.main.async {
+                    // Set the selected image as captured image and show preview
+                    self.viewModel.capturedImage = uiImage
+                    self.showImagePreview = true
+                    
+                    // Clear the selection for next time
+                    self.photosViewModel.selectedPhotos.removeAll()
+                }
+            }
+        }
+    }
+
+    private func openSettings() {
+        if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsUrl)
         }
     }
 }
 
+// MARK: - Supporting Views
+
 struct CaptureButton: View {
-    var action: () -> Void
+    let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Circle()
                 .foregroundColor(.white)
-                .frame(width: 70, height: 70, alignment: .center)
+                .frame(width: 70, height: 70)
                 .overlay(
                     Circle()
                         .stroke(Color.black.opacity(0.8), lineWidth: 2)
-                        .frame(width: 59, height: 59, alignment: .center)
+                        .frame(width: 59, height: 59)
                 )
         }
     }
 }
 
 struct CameraSwitchButton: View {
-    var action: () -> Void
+    let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Circle()
                 .foregroundColor(Color.gray.opacity(0.2))
-                .frame(width: 45, height: 45, alignment: .center)
+                .frame(width: 45, height: 45)
                 .overlay(
                     Image(systemName: "camera.rotate.fill")
-                        .foregroundColor(.white))
+                        .foregroundColor(.white)
+                )
         }
     }
 }
@@ -163,7 +185,7 @@ struct FocusView: View {
 
     var body: some View {
         Circle()
-            .frame(width: 70, height: 70)
+            .frame(width: 72, height: 72)
             .foregroundColor(.clear)
             .border(Color.yellow, width: 1.5)
             .position(x: position.x, y: position.y)

@@ -20,7 +20,6 @@ final class ReceiptTextRecognizer {
         self.usesLanguageCorrection = usesLanguageCorrection
     }
 
-    // MARK: - Public Method
     func recognizeReceiptData(from image: UIImage, completion: @escaping CompletionHandler) {
         guard let cgImage = image.cgImage else {
             completion(.failure(.invalidImage))
@@ -28,6 +27,25 @@ final class ReceiptTextRecognizer {
         }
 
         performTextRecognition(on: cgImage, completion: completion)
+    }
+    
+    func recognizeReceiptData(from images: [UIImage]) {
+        guard !images.isEmpty else { return }
+
+        for image in images {
+            recognizeReceiptData(from: image) { result in
+                print("---")
+                switch result {
+                case let .success(data):
+                    print(data.merchantName ?? "")
+                    print(data.date ?? "")
+                    print(data.formattedAmount ?? "")
+
+                case let .failure(error):
+                    print(error)
+                }
+            }
+        }
     }
 }
 
@@ -99,11 +117,9 @@ private extension ReceiptTextRecognizer {
 
 // MARK: - Receipt Data Extractor
 struct ReceiptDataExtractor {
-    let text: String
     let lines: [String]
     
     init(text: String) {
-        self.text = text
         self.lines = text.components(separatedBy: .newlines)
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
@@ -114,10 +130,10 @@ struct ReceiptDataExtractor {
     }
     
     var date: Date? {
-        extractDate(from: lines, text)
+        extractDate(from: lines)
     }
     
     var amount: Double? {
-        extractAmount()
+        extractAmount(from: lines)
     }
 }

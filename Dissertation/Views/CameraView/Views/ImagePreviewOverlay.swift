@@ -29,6 +29,7 @@ struct ImagePreviewOverlay: View {
                     /// Option to retake photo
                     withAnimation(.spring()) {
                         isVisible = false
+                        viewModel.capturedImage = nil
                     }
                 }) {
                     VStack {

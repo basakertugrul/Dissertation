@@ -11,6 +11,7 @@ struct BudgetLineChartView: View {
         VStack(spacing: Constraint.smallPadding) {
             CustomTextView("Budget", font: .bodyLargeBold, color: .customRichBlack)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, Constraint.padding)
 
             Chart {
                 /// Daily Limit Bar

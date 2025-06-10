@@ -40,7 +40,7 @@ struct ExpensesScreenView: View {
                             CustomTextView(
                                 key,
                                 font: .labelLarge,
-                                color: Color.customWhiteSand.opacity(Constraint.Opacity.high)
+                                color: Color.customRichBlack.opacity(Constraint.Opacity.medium)
                             )
 
                             ForEach(expensesForDate) { expense in

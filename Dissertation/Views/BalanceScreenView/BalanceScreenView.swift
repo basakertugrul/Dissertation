@@ -19,11 +19,8 @@ struct BalanceScreenView: View {
                 /// Current Balance Card
                 CurrentBalanceCardView(
                     calculatedBalance: $calculatedBalance,
-                    opacity: Constraint.Opacity.high
+                    backgrounColor: $backgroundColor
                 )
-
-                /// Divider
-                DividerView()
 
                 /// Budget Zones View
                 BudgetZonesView(

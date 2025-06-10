@@ -236,7 +236,7 @@ struct ExpenseNameFieldView: View {
             CustomTextView(
                 "NAME",
                 font: .labelLarge,
-                color: .customWhiteSand.opacity(Constraint.Opacity.medium)
+                color: .customWhiteSand
             )
             
             TextField("", text: $expenseName)
@@ -259,7 +259,7 @@ struct ExpenseAmountFieldView: View {
             CustomTextView(
                 "AMOUNT",
                 font: .labelLarge,
-                color: .customWhiteSand.opacity(Constraint.Opacity.medium)
+                color: .customWhiteSand
             )
 
             HStack {
@@ -287,7 +287,7 @@ struct DateSelectorView: View {
             CustomTextView(
                 "DATE",
                 font: .labelLarge,
-                color: .customWhiteSand.opacity(Constraint.Opacity.medium)
+                color: .customWhiteSand
             )
             
             HStack {

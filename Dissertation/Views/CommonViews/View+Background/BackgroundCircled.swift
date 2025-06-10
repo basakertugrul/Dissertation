@@ -21,18 +21,18 @@ extension View {
 
             /// First circle with animated position
             Circle()
-                .stroke(.customWhiteSand.opacity(Constraint.Opacity.high), lineWidth: Constraint.mediumLineLenght)
+                .stroke(color == .customWhiteSand ? .customRichBlack.opacity(Constraint.Opacity.medium) : .customWhiteSand, lineWidth: Constraint.mediumLineLenght)
                 .frame(width: Constraint.regularImageSize, height: Constraint.regularImageSize)
                 .position(firstPosition)
-                .blur(radius: Constraint.blurRadius)
+                .blur(radius: Constraint.smallBlurRadius)
                 .animation(.smooth(duration: Constraint.animationDuration), value: firstPosition)
 
             /// Second circle with animated position
             Circle()
-                .stroke(.customWhiteSand.opacity(Constraint.Opacity.high), lineWidth: Constraint.mediumLineLenght)
+                .stroke(color == .customWhiteSand ? .customRichBlack.opacity(Constraint.Opacity.medium) : .customWhiteSand, lineWidth: Constraint.mediumLineLenght)
                 .frame(width: Constraint.largeImageSize, height: Constraint.largeImageSize)
                 .position(secondPosition)
-                .blur(radius: Constraint.blurRadius)
+                .blur(radius: Constraint.smallBlurRadius)
                 .animation(.smooth(duration: Constraint.animationDuration), value: firstPosition)
 
             self

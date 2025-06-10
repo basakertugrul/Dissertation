@@ -48,7 +48,7 @@ enum TextFonts {
         case .labelLarge:
             return .system(size: 14, weight: .light)
         case .labelLargeBold:
-            return .system(size: 14, weight: .medium)
+            return .system(size: 14, weight: .bold)
         case .labelMedium:
             return .system(size: 12, weight: .light)
         case .labelSmall:

@@ -22,19 +22,18 @@ struct MainAppView: View {
 
     var backgroundColor: Color {
         currentTab == .balance
-        ? (appState.calculatedBalance >= 0 ? Color.customOliveGreen : Color.customBurgundy)
-        : Color.customBurgundy
+        ? (appState.calculatedBalance >= 0 ? .customOliveGreen : .customBurgundy)
+        : .customWhiteSand
     }
 
     var body: some View {
         VStack(spacing: .zero) {
             navigationSection
             contentSection
-            Spacer()
             tabBarSection
         }
         .ignoresSafeArea(.keyboard)
-        .addCircledBackground(with: backgroundColor)
+        .addCircledBackground(with: .customWhiteSand)
         .sheet(
             isPresented: $isShowingAddExpenseSheet,
             onDismiss: clearAddExpenseData
