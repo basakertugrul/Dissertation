@@ -28,11 +28,12 @@ struct CustomTextView: View {
             if isBold { return font.font.weight(.semibold) }
             return font.font
         }
-
             Text(displayText)
                 .font(newFont)
                 .bold()
                 .tracking(font.tracking)
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.center)
                 .foregroundColor(color)
     }
 

@@ -6,18 +6,28 @@ import CoreData
 struct BudgetMateApp: App {
     @Environment(\.scenePhase) var scenePhase
     @StateObject private var appState = AppStateManager.shared
+    
+    @State var hasLoggedIn: Bool = false
+    @State var isLoading: Bool = false
 
     let dataController = DataController.shared
 
     var body: some Scene {
         WindowGroup {
-            MainAppView()
-                .environmentObject(appState)
-                .environment(\.managedObjectContext, dataController.expenseModelContext)
-                .onAppear(perform: setupApp)
-                .onChange(of: scenePhase, { _, newValue in
-                    handleScenePhaseChange(newValue)
-                })
+            ZStack {
+                if hasLoggedIn {
+                    MainAppView()
+                        .environmentObject(appState)
+                        .environment(\.managedObjectContext, dataController.expenseModelContext)
+                        .onAppear(perform: setupApp)
+                        .onChange(of: scenePhase, { _, newValue in
+                            handleScenePhaseChange(newValue)
+                        })
+                } else {
+                    SignInView(isLoading: $isLoading)
+                }
+            }
+            .loadingOverlay($isLoading)
         }
     }
 }
@@ -25,7 +35,7 @@ struct BudgetMateApp: App {
 // MARK: - App Setup & Event Handling
 private extension BudgetMateApp {
     func setupApp() {
-        appState.loadInitialData() // 🎯 SIMPLIFIED: Let AppStateManager handle start date
+        appState.loadInitialData()
         setupNotificationObservers()
     }
 

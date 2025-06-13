@@ -11,6 +11,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		176604BC2DFA4B760007C4D1 /* BudgetMate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BudgetMate.entitlements; sourceTree = "<group>"; };
 		17B9DBB22DD56D5300F67C01 /* BudgetMate-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "BudgetMate-Info.plist"; sourceTree = "<group>"; };
 		17DBB7D92D6915F100422DAC /* BudgetMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -38,6 +39,7 @@
 		17DBB7D02D6915F100422DAC = {
 			isa = PBXGroup;
 			children = (
+				176604BC2DFA4B760007C4D1 /* BudgetMate.entitlements */,
 				17B9DBB22DD56D5300F67C01 /* BudgetMate-Info.plist */,
 				17DBB7DB2D6915F100422DAC /* Dissertation */,
 				17DBB7DA2D6915F100422DAC /* Products */,
@@ -262,9 +264,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BudgetMate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Dissertation/Preview Content\"";
+				DEVELOPMENT_TEAM = J4MP6X34JN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BudgetMate-Info.plist";
@@ -293,9 +297,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BudgetMate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Dissertation/Preview Content\"";
+				DEVELOPMENT_TEAM = J4MP6X34JN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BudgetMate-Info.plist";

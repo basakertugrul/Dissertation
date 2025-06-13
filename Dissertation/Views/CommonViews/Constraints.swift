@@ -24,6 +24,7 @@ struct Constraint {
     static let cornerRadius: CGFloat = 16
     
     static let shadowRadius: CGFloat = 4
+    static let largeShadowRadius: CGFloat = 10
     
     static let mainButtonOffset: CGFloat = -20
     

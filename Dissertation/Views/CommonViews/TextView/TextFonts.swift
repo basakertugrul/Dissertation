@@ -4,6 +4,8 @@ enum TextFonts {
     /// Title styles
     case titleLarge
     case titleLargeBold
+    case titleRegular
+    case titleRegularBold
     case titleMedium
     case titleMediumBold
     case titleSmall
@@ -14,6 +16,8 @@ enum TextFonts {
     case bodyLargeBold
     case bodySmall
     case bodySmallBold
+    case bodyTinyBold
+    case bodyTiny
 
     /// Label styles
     case labelLarge
@@ -30,6 +34,10 @@ enum TextFonts {
             return .system(size: 54, weight: .light)
         case .titleLargeBold:
             return .system(size: 54, weight: .bold, design: .rounded)
+        case .titleRegular:
+            return .system(size: 40, weight: .light)
+        case .titleRegularBold:
+            return .system(size: 40, weight: .semibold)
         case .titleMedium:
             return .system(size: 32, weight: .light)
         case .titleMediumBold:
@@ -47,6 +55,10 @@ enum TextFonts {
             return .system(size: 18, weight: .regular)
         case .bodySmallBold:
             return .system(size: 18, weight: .bold)
+        case .bodyTinyBold:
+            return .system(size: 15, weight: .bold)
+        case .bodyTiny:
+            return .system(size: 15, weight: .regular)
 
         case .labelLarge:
             return .system(size: 14, weight: .light)
@@ -65,11 +77,23 @@ enum TextFonts {
     var tracking: CGFloat {
         switch self {
             /// Titles typically have tighter tracking
-        case .titleLarge, .titleLargeBold, .titleSmall, .titleSmallBold, .titleMedium, .titleMediumBold:
+        case .titleLarge,
+                .titleLargeBold,
+                .titleRegular,
+                .titleRegularBold,
+                .titleSmall,
+                .titleSmallBold,
+                .titleMedium,
+                .titleMediumBold:
             return 0.5
 
             /// Body text with normal tracking
-        case .bodyLarge, .bodySmall, .bodySmallBold, .bodyLargeBold:
+        case .bodyLarge,
+                .bodySmall,
+                .bodySmallBold,
+                .bodyLargeBold,
+                .bodyTiny,
+                .bodyTinyBold:
             return 0
 
             /// Labels often have wider tracking, especially when uppercase

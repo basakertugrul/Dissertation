@@ -13,6 +13,7 @@ class AppStateManager: ObservableObject {
     @Published var dailyBalance: Double
     @Published var expenseViewModels: [ExpenseViewModel]
     @Published var startDate: Date
+
     private let dataController = DataController.shared
 
     /// Days since the app start date was set
