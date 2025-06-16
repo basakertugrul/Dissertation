@@ -6,28 +6,33 @@ import CoreData
 struct BudgetMateApp: App {
     @Environment(\.scenePhase) var scenePhase
     @StateObject private var appState = AppStateManager.shared
-    
-    @State var hasLoggedIn: Bool = false
-    @State var isLoading: Bool = false
-
     let dataController = DataController.shared
 
     var body: some Scene {
         WindowGroup {
             ZStack {
-                if hasLoggedIn {
-                    MainAppView()
-                        .environmentObject(appState)
-                        .environment(\.managedObjectContext, dataController.expenseModelContext)
-                        .onAppear(perform: setupApp)
-                        .onChange(of: scenePhase, { _, newValue in
-                            handleScenePhaseChange(newValue)
-                        })
+                if appState.hasLoggedIn {
+                    if appState.dailyBalance == .none {
+                        BalanceEntranceView() { daily in
+                            appState.dailyBalance = daily
+                        } onTouchedBackground: {}
+                    } else {
+                        MainAppView()
+                    }
                 } else {
-                    SignInView(isLoading: $isLoading)
+                    SignInView(isLoading: $appState.isLoading)
+                        .onAppear(perform: {
+                            appState.dailyBalance = .none
+                        })
                 }
             }
-            .loadingOverlay($isLoading)
+            .loadingOverlay($appState.isLoading)
+            .environmentObject(appState)
+            .environment(\.managedObjectContext, dataController.expenseModelContext)
+            .onAppear(perform: setupApp)
+            .onChange(of: scenePhase, { _, newValue in
+                handleScenePhaseChange(newValue)
+            })
         }
     }
 }

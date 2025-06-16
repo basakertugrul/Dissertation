@@ -23,7 +23,7 @@ struct LoginButtonView: View {
                 CustomTextView(title, font: .labelLargeBold, color: textColor)
             }
             .padding(.vertical, Constraint.regularPadding)
-            .addLayeredBackground(with: backgroundFill, spacing: .compact)
+            .addLayeredBackground(backgroundFill)
             .scaleEffect(isPressed ? 0.98 : 1.0)
             .shadow(
                 color: isSelected ? .white.opacity(Constraint.Opacity.low) : .black.opacity(Constraint.Opacity.tiny),
@@ -42,7 +42,7 @@ struct LoginButtonView: View {
     
     private var backgroundFill: Color {
         if isApple {
-            return .black
+            return .customRichBlack
         } else if isGlass {
             return .customGold
         }

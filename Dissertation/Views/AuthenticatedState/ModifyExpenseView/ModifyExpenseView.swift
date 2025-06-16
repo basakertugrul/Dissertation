@@ -242,10 +242,8 @@ struct ExpenseNameFieldView: View {
             TextField("", text: $expenseName)
                 .font(TextFonts.bodySmallBold.font)
                 .foregroundColor(.white)
-                .addLayeredBackground(
-                    with: Color.customWhiteSand.opacity(Constraint.Opacity.medium),
-                    expandFullWidth: true
-                )
+                .frame(height: 32)
+                .addLayeredBackground(.customWhiteSand.opacity(Constraint.Opacity.medium))
         }
     }
 }
@@ -268,10 +266,8 @@ struct ExpenseAmountFieldView: View {
                     .font(TextFonts.bodySmallBold.font)
                     .foregroundColor(.white)
             }
-            .addLayeredBackground(
-                with: Color.customWhiteSand.opacity(Constraint.Opacity.medium),
-                expandFullWidth: true
-            )
+            .frame(height: 32)
+            .addLayeredBackground(.customWhiteSand.opacity(Constraint.Opacity.medium))
         }
     }
 }
@@ -306,10 +302,8 @@ struct DateSelectorView: View {
                     .font(.system(size: Constraint.regularIconSize))
                     .padding(.trailing, Constraint.padding)
             }
-            .addLayeredBackground(
-                with: Color.customWhiteSand.opacity(Constraint.Opacity.medium),
-                expandFullWidth: true
-            )
+            .frame(height: 32)
+            .addLayeredBackground(.customWhiteSand.opacity(Constraint.Opacity.medium))
         }
     }
 }
@@ -329,8 +323,7 @@ struct ActionButtonsView: View {
                 CustomTextView(saveButtonText, font: .bodySmallBold, color: .customRichBlack.opacity(Constraint.Opacity.high))
                     .tracking(1)
                     .addLayeredBackground(
-                        with: isFormValid ? .white : .white.opacity(Constraint.Opacity.medium),
-                        expandFullWidth: true
+                        isFormValid ? .white : .white.opacity(Constraint.Opacity.medium),
                     )
             }
             .disabled(!isFormValid)
@@ -340,11 +333,7 @@ struct ActionButtonsView: View {
                 Button(action: deleteAction) {
                     CustomTextView("DELETE", font: .bodySmallBold, color: .customWhiteSand)
                         .tracking(1)
-                        .addLayeredBackground(
-                            with: .customBurgundy,
-                            expandFullWidth: true,
-                            isTheLineSameColorAsBackground: true
-                        )
+                        .addLayeredBackground(.customBurgundy)
                 }
             }
         }

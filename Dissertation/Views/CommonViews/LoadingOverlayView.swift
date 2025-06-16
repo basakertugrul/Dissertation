@@ -15,10 +15,9 @@ struct LoadingOverlayView: View {
         if isPresented {
             ZStack {
                 /// Background overlay
-                Color.customRichBlack
-                    .opacity(Constraint.Opacity.low)
+                Rectangle()
+                    .fill(.ultraThinMaterial.opacity(Constraint.Opacity.medium))
                     .ignoresSafeArea()
-                    .background(.ultraThinMaterial)
                     .transition(.opacity)
                 
                 /// Loading content
@@ -73,15 +72,11 @@ struct LoadingOverlayView: View {
                     CustomTextView("Loading...", font: .bodyLargeBold, color: .white)
                 }
                 .padding(Constraint.largePadding)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(
-                    RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                        .fill(.ultraThinMaterial)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                                .stroke(Color.customWhiteSand.opacity(Constraint.Opacity.low), lineWidth: 1)
-                        )
+                    Color.customWhiteSand
+                        .opacity(Constraint.Opacity.low)
                 )
-                .shadow(color: .customRichBlack.opacity(Constraint.Opacity.low), radius: Constraint.shadowRadius, x: 0, y: 10)
                 .scaleEffect(contentScale)
                 .opacity(contentOpacity)
                 .transition(.scale.combined(with: .opacity))
@@ -99,18 +94,18 @@ struct LoadingOverlayView: View {
     // MARK: - Animation Control
     private func startAnimations() {
         /// Content entrance animation
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+        withAnimation(.smooth()) {
             contentScale = 1.0
             contentOpacity = 1.0
         }
         
         /// Continuous rotation animation
-        withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+        withAnimation(.smooth(duration: 1.5).repeatForever(autoreverses: false)) {
             rotationAngle = 360
         }
         
         /// Pulse animation
-        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: false)) {
+        withAnimation(.smooth(duration: 1.5).repeatForever(autoreverses: false)) {
             pulseScale = 1.5
         }
     }

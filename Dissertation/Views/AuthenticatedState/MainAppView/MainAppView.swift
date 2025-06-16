@@ -49,9 +49,12 @@ struct MainAppView: View {
         .sheet(isPresented: $willOpenCameraView) { cameraSheet }
         .showDailyAllowanceSheet(
             isPresented: $showingAllowanceSheet,
-            currentAmount: appState.dailyBalance,
+            currentAmount: appState.dailyBalance ?? .zero,
             onSave: { amount in
                 DataController.shared.saveTargetSpending(to: amount)
+                withAnimation(.smooth) {
+                    showingAllowanceSheet = false
+                }
             }
         )
         .onReceive(expenseContextPublisher, perform: handleExpenseContextChange)
@@ -70,7 +73,15 @@ private extension MainAppView {
         case .balance:
             BalanceScreenView(
                 expenses: $appState.expenseViewModels,
-                dailyBalance: $appState.dailyBalance,
+                dailyBalance: .init(get: {
+                    if let balance = appState.dailyBalance {
+                        return balance
+                    } else {
+                        return .zero
+                    }
+                }, set: { value in
+                    appState.dailyBalance = value
+                }),
                 totalExpenses: .init(get: {
                     appState.totalExpenses
                 }, set: { _ in }),
@@ -102,7 +113,6 @@ private extension MainAppView {
         CustomTabBar(
             selectedTab: $currentTab,
             showAddExpenseSheet: $isShowingAddExpenseSheet,
-            targetSpending: appState.dailyBalance,
             willOpenCameraView: $willOpenCameraView
         )
     }

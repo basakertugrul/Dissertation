@@ -33,7 +33,7 @@ struct CurrentBalanceCardView: View {
     }
 
     var body: some View {
-        VStack(spacing: Constraint.padding) {
+        VStack(spacing: Constraint.smallPadding) {
             HStack(spacing: Constraint.smallPadding) {
                 Circle()
                     .fill(Color.white.opacity(0.3))
@@ -55,11 +55,7 @@ struct CurrentBalanceCardView: View {
                 .opacity(motivationOpacity)
                 .offset(y: motivationOffset)
         }
-        .addLayeredBackground(
-            with: currentBackgroundColor,
-            expandFullWidth: true,
-            keepTheColor: true
-        )
+        .addLayeredBackground(currentBackgroundColor, style: .banner)
         .scaleEffect(cardScale)
         .opacity(cardOpacity)
         .onAppear {
@@ -86,7 +82,7 @@ struct CurrentBalanceCardView: View {
         
         // Animate status with delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+            withAnimation(.smooth()) {
                 statusOpacity = 1.0
                 circleScale = 1.0
             }
@@ -94,7 +90,7 @@ struct CurrentBalanceCardView: View {
         
         // Animate balance number
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.6)) {
+            withAnimation(.smooth()) {
                 balanceScale = 1.0
             }
             // Animate the number counting up
@@ -114,7 +110,7 @@ struct CurrentBalanceCardView: View {
         let colorNeedsChange = (oldValue >= 0) != (newValue >= 0)
         
         // Animate number change with bounce
-        withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+        withAnimation(.smooth()) {
             balanceScale = 1.15
         }
         
@@ -123,7 +119,7 @@ struct CurrentBalanceCardView: View {
         
         // Scale back to normal
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+            withAnimation(.smooth()) {
                 balanceScale = 1.0
             }
         }
@@ -136,13 +132,13 @@ struct CurrentBalanceCardView: View {
         }
         
         // Animate status and motivation text
-        withAnimation(.easeInOut(duration: 0.3)) {
+        withAnimation(.smooth()) {
             statusOpacity = 0.7
             motivationOpacity = 0.7
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            withAnimation(.easeInOut(duration: 0.3)) {
+            withAnimation(.smooth(duration: 0.3)) {
                 statusOpacity = 1.0
                 motivationOpacity = 1.0
             }

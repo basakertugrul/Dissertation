@@ -5,4 +5,8 @@ struct User: Codable {
     let email: String
     let authState: String
     var hasFaceIDEnabled: Bool
+
+    var firstName: String {
+        fullName.split(separator: " ").first?.capitalized ?? ""
+    }
 }

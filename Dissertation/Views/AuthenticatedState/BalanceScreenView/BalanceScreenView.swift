@@ -19,7 +19,7 @@ struct BalanceScreenView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Constraint.padding) {
+            VStack(alignment: .center, spacing: Constraint.padding) {
                 /// Current Balance Card
                 CurrentBalanceCardView()
 
@@ -53,6 +53,6 @@ struct BalanceScreenView: View {
             }
             .padding(.horizontal, Constraint.padding)
         }
-        .ignoresSafeArea()
+        .frame(width: UIScreen.main.bounds.width)
     }
 }

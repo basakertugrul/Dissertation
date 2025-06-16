@@ -1,20 +1,31 @@
-import Foundation
+import SwiftUI
 
 // MARK: - App State Manager
-class AppStateManager: ObservableObject {
+final class AppStateManager: ObservableObject {
     public static let shared = AppStateManager()
  
     private init() {
-        self.dailyBalance = .zero
         self.expenseViewModels = []
         self.startDate = .now
     }
 
-    @Published var dailyBalance: Double
+    @Published var dailyBalance: Double?
     @Published var expenseViewModels: [ExpenseViewModel]
     @Published var startDate: Date
 
     private let dataController = DataController.shared
+    
+    /// SignIn Variables
+    private lazy var signInWithApple = SignInWithAppleCoordinator()
+    @Published var user: User?
+    @Published var hasLoggedIn: Bool = false {
+        didSet {
+            print(hasLoggedIn)
+        }
+    }
+
+    /// Loading variable
+    @Published var isLoading: Bool = false
 
     /// Days since the app start date was set
     var daysSinceStart: Int {
@@ -26,7 +37,7 @@ class AppStateManager: ObservableObject {
 
     /// Total budget accumulated since start date
     var totalBudgetAccumulated: Double {
-        dailyBalance * Double(daysSinceStart)
+        (dailyBalance ?? .zero) * Double(daysSinceStart)
     }
 
     var totalExpenses: Double {
@@ -45,7 +56,7 @@ class AppStateManager: ObservableObject {
     }
 
     func refreshDailyBalance() {
-        dailyBalance = dataController.fetchTargetSpendingMoney() ?? 0
+        dailyBalance = dataController.fetchTargetSpendingMoney()
     }
 
     func refreshExpenses() {
@@ -76,5 +87,80 @@ class AppStateManager: ObservableObject {
     /// Reset start date to today
     func resetStartDate() {
         updateStartDate(Date())
+    }
+}
+
+extension AppStateManager {
+    func getUserInfo() {
+        if let userData = UserDefaults.standard.data(forKey: "user"),
+           let userDecoded = try? JSONDecoder().decode(User.self, from: userData) {
+            user = userDecoded
+        }
+    }
+
+    func authenticateUserOnLaunch() {
+        guard let user = user, user.hasFaceIDEnabled else { return }
+        enableLoadingView()
+        signInWithApple.authenticateWithFaceID { result in // TODO: Show an error if error occurs
+            self.disableLoadingView()
+            switch result {
+            case .success: self.logIn()
+            case .failure: break
+            }
+        }
+    }
+    
+    private func logIn() {
+        DispatchQueue.main.async() {
+            self.hasLoggedIn = true
+        }
+    }
+
+    private func disableLoadingView() {
+        withAnimation {
+            isLoading = false
+        }
+    }
+
+    private func enableLoadingView() {
+        withAnimation {
+            isLoading = true
+        }
+    }
+}
+
+extension AppStateManager: LoginActions {
+    func handleFaceIDSignIn() {
+        enableLoadingView()
+        signInWithApple.authenticateWithFaceID { result in // TODO: Show an error if error occurs
+            self.disableLoadingView()
+            switch result {
+            case .success: self.logIn()
+            case .failure: break
+            }
+        }
+    }
+
+    func handleAppleSignIn() {
+        enableLoadingView()
+        signInWithApple.getAppleRequest { result in // TODO: Show an error if error occurs
+            self.disableLoadingView()
+            switch result {
+            case .success: self.logIn()
+            case .failure: break
+            }
+        }
+    }
+
+    func handleEmailPasswordSignIn(email: String, password: String) {
+        print("handleEmailPasswordSignIn...")
+    }
+
+    func handleTermsTap() {
+        print("Opening terms of service...")
+    }
+
+    func handlePrivacyTap() {
+        print("Opening privacy policy...")
     }
 }

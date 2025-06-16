@@ -91,7 +91,7 @@ struct ExpensesScreenView: View {
     private func animateSectionAppearance(delay: Double) {
         // Individual section animation with delay
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+            withAnimation(.smooth()) {
                 // This will be handled by the main animation
             }
         }
@@ -99,7 +99,7 @@ struct ExpensesScreenView: View {
     
     private func animateContentUpdate() {
         // Subtle update animation when expenses change
-        withAnimation(.easeInOut(duration: 0.3)) {
+        withAnimation(.smooth(duration: 0.3)) {
             sectionOpacity = 0.8
         }
         
@@ -136,12 +136,7 @@ struct ExpenseItemView: View {
                 /// Amount
                 CustomTextView.currency(expense.amount, font: .bodySmallBold, color: .white)
             }
-            .addLayeredBackground(
-                with: .customGold,
-                spacing: .compact,
-                isRounded: true,
-                isTheLineSameColorAsBackground: true
-            )
+            .addLayeredBackground(.customGold, style: .card())
         }
         .scaleEffect(isPressed ? 0.95 : 1.0)
         .scaleEffect(itemScale)
@@ -152,19 +147,19 @@ struct ExpenseItemView: View {
     }
     
     private func animateItemAppearance() {
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.7).delay(0.1)) {
+        withAnimation(.smooth().delay(0.1)) {
             itemScale = 1.0
             itemOpacity = 1.0
         }
     }
     
     private func animateButtonPress() {
-        withAnimation(.easeInOut(duration: 0.1)) {
+        withAnimation(.smooth(duration: 0.1)) {
             isPressed = true
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+            withAnimation(.smooth()) {
                 isPressed = false
             }
         }

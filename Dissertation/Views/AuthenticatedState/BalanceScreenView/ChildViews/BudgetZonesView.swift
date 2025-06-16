@@ -14,6 +14,7 @@ struct BudgetZonesView: View {
     }
 
     @State private var lineChartItems: [LineChartItem] = []
+    @State var timeFrameBalanceLimit: Double = .zero
     @State private var showContent: Bool = false
     @State private var animatedScale: CGFloat = 0.95
     @State private var animatedOpacity: Double = 0.0
@@ -24,7 +25,7 @@ struct BudgetZonesView: View {
                 .scaleEffect(animatedScale)
                 .opacity(animatedOpacity)
 
-            BudgetLineChartView(data: $lineChartItems, dailyLimit: $dailyBalance)
+            BudgetLineChartView(data: $lineChartItems, totalBudgetAccumulated: $timeFrameBalanceLimit)
                 .scaleEffect(animatedScale)
                 .opacity(animatedOpacity)
         }
@@ -63,7 +64,7 @@ struct BudgetZonesView: View {
         
         // Scale back up with spring animation
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+            withAnimation(.smooth()) {
                 animatedScale = 1.0
                 animatedOpacity = 1.0
             }
@@ -140,6 +141,7 @@ struct BudgetZonesView: View {
                 .reduce(0) { $0 + $1.amount }
         }
 
+        timeFrameBalanceLimit = timeFrameLimit
         lineChartItems = [
             LineChartItem.createWithPound(date: now, moneySpent: timeFrameLimit), /// Limit bar
             LineChartItem.createWithPound(date: now, moneySpent: totalSpent) /// Spent bar
@@ -150,7 +152,7 @@ struct BudgetZonesView: View {
          HStack(spacing: Constraint.smallPadding) {
              ForEach(TimeFrame.allCases, id: \.self) { frame in
                  Button(action: {
-                     withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                     withAnimation(.smooth()) {
                          if timeFrame != frame {
                              timeFrame = frame
                              DataController.shared.saveTimeFrame(frame)
@@ -160,17 +162,15 @@ struct BudgetZonesView: View {
                      CustomTextView(
                          frame.rawValue,
                          font: timeFrame == frame ? .labelLargeBold : .labelLarge,
-                         color: timeFrame == frame ? .customWhiteSand : .customWhiteSand.opacity(Constraint.Opacity.medium),
+                         color: timeFrame == frame ? .customWhiteSand : .customWhiteSand.opacity(Constraint.Opacity.high),
                          uppercase: true
                      )
                      .fixedSize(horizontal: true, vertical: false)
                      .addLayeredBackground(
-                         with: timeFrame == frame
-                         ? color
-                         : .customRichBlack,
-                         expandFullWidth: false,
-                         spacing: .compact,
-                         keepTheColor: timeFrame == frame
+                        timeFrame == frame
+                        ? backgroundColor == .customBurgundy ? .customOliveGreen : .customBurgundy
+                        : .customRichBlack.opacity(Constraint.Opacity.medium),
+                        style: .compact(isColorFilled: timeFrame == frame ? true : false)
                      )
                      .scaleEffect(timeFrame == frame ? 1.05 : 1.0)
                  }

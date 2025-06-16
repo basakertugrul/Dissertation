@@ -3,7 +3,7 @@ import Charts
 
 struct BudgetLineChartView: View {
     @Binding var data: [LineChartItem]
-    @Binding var dailyLimit: Double
+    @Binding var totalBudgetAccumulated: Double
     @State private var animatedLimitValue: Double = 0
     @State private var animatedSpentValue: Double = 0
     @State private var showChart: Bool = false
@@ -72,7 +72,7 @@ struct BudgetLineChartView: View {
         )
         .onAppear { animateChart() }
         .onChange(of: data) { animateChart() }
-        .onChange(of: dailyLimit) { animateChart() }
+        .onChange(of: totalBudgetAccumulated) { animateChart() }
     }
     
     private var expensesBarStyle: AnyShapeStyle {
@@ -88,7 +88,7 @@ struct BudgetLineChartView: View {
         colorGradientProgress = 0.0
         
         let spentMoney = data.count > 1 ? data[1].moneySpent : 0
-        let willBeOverLimit = spentMoney >= dailyLimit
+        let willBeOverLimit = spentMoney >= totalBudgetAccumulated
         let colorNeedsChange = willBeOverLimit != isOverLimit
         
         /// Progressive animation sequence
@@ -98,14 +98,14 @@ struct BudgetLineChartView: View {
         
         /// Animate limit bar first
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation(.spring(response: 0.8, dampingFraction: 0.7, blendDuration: 0)) {
-                animatedLimitValue = dailyLimit
+            withAnimation(.smooth()) {
+                animatedLimitValue = totalBudgetAccumulated
             }
         }
         
         /// Animate spent bar after limit bar
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            withAnimation(.spring(response: 0.9, dampingFraction: 0.6, blendDuration: 0)) {
+            withAnimation(.smooth()) {
                 animatedSpentValue = spentMoney
             }
             
@@ -119,7 +119,7 @@ struct BudgetLineChartView: View {
     private func animateColorTransition(to overLimit: Bool) {
         // Phase 2: Hide gradient and set final color
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            withAnimation(.easeInOut(duration: 0.3)) {
+            withAnimation(.smooth(duration: 0.3)) {
                 isOverLimit = overLimit
             }
         }

@@ -13,7 +13,7 @@ struct DailyAllowanceCardView: View {
                 self.showingAllowanceSheet = true
             }
         }) {
-            VStack(alignment: .leading, spacing: Constraint.padding) {
+            VStack(alignment: .leading, spacing: Constraint.regularPadding) {
                 CustomTextView(
                     "Daily limit",
                     font: .labelMedium,
@@ -28,11 +28,7 @@ struct DailyAllowanceCardView: View {
 
                     /// Edit button
                     Circle()
-                        .fill(
-                            backgroundColor == .customBurgundy
-                            ? .customOliveGreen
-                            : .customBurgundy
-                        )
+                        .fill(backgroundColor)
                         .frame(width: Constraint.mediumIconSize, height: Constraint.mediumIconSize)
                         .overlay(
                             Image(systemName: "pencil")
@@ -42,7 +38,7 @@ struct DailyAllowanceCardView: View {
                         )
                 }
             }
-            .addLayeredBackground(with: .customRichBlack.opacity(opacity))
+            .addLayeredBackground(.customRichBlack.opacity(opacity), style: .card())
         }
     }
 }

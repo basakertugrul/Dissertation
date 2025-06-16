@@ -46,7 +46,7 @@ struct CameraView: View {
                         FocusView(position: $focusLocation)
                             .scaleEffect(isScaled ? 0.8 : 1)
                             .onAppear {
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+                                withAnimation(.smooth()) {
                                     isScaled = true
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                         isFocused = false

@@ -59,12 +59,12 @@ struct StatsCardsView: View {
     
     private func animateContentUpdate() {
         // Subtle bounce animation when content updates
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+        withAnimation(.smooth()) {
             cardScale = 1.05
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+            withAnimation(.smooth()) {
                 cardScale = 1.0
             }
         }

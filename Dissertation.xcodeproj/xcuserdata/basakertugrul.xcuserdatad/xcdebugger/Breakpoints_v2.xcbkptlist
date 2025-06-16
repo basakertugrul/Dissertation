@@ -7,63 +7,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "858B2C59-844E-4E6C-802D-5D0B035B953F"
+            uuid = "78DB9CCB-508A-46CE-948C-1EF8C8398330"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dissertation/Views/BalanceScreenView/ChildViews/ChangeDailyAllowanceView.swift"
+            filePath = "Dissertation/Views/AuthenticatedState/BalanceScreenView/ChildViews/DaysTrackedCardView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
             landmarkName = "body"
             landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "44A24C8F-2AA6-41B0-99F0-E5AE9207B9FA"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Dissertation/Views/CameraView/Views/PhotosPickerView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16"
-            endingLineNumber = "16"
-            landmarkName = "convertDataToImage()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "44A24C8F-2AA6-41B0-99F0-E5AE9207B9FA - 5b12d1173aadd66"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(2) suspend resume partial function for closure #1 () async -&gt; () in BudgetMate.PhotosPickerViewModel.convertDataToImage() -&gt; ()"
-                  moduleName = "BudgetMate.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/basakertugrul/Development/Dissertation/Dissertation/Views/CameraView/Views/PhotosPickerView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16">
-               </Location>
-               <Location
-                  uuid = "44A24C8F-2AA6-41B0-99F0-E5AE9207B9FA - 2de8293cc9c39964"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for closure #1 () async -&gt; () in BudgetMate.PhotosPickerViewModel.convertDataToImage() -&gt; ()"
-                  moduleName = "BudgetMate.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/basakertugrul/Development/Dissertation/Dissertation/Views/CameraView/Views/PhotosPickerView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

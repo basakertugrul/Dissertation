@@ -6,7 +6,7 @@ struct DaysTrackedCardView: View {
     var opacity: CGFloat
     
     var body: some View {
-        VStack(alignment: .leading, spacing: Constraint.padding) {
+        VStack(alignment: .leading, spacing: Constraint.regularPadding) {
             CustomTextView(
                 "Days Tracked",
                 font: .labelMedium,
@@ -30,6 +30,6 @@ struct DaysTrackedCardView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .addLayeredBackground(with: .customRichBlack.opacity(Constraint.Opacity.high))
+        .addLayeredBackground(.customRichBlack.opacity(Constraint.Opacity.high), style: .card())
     }
 }

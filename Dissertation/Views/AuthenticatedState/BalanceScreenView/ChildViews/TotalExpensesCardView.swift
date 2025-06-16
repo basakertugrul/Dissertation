@@ -21,16 +21,13 @@ struct TotalExpensesCardView: View {
     var body: some View {
         HStack(spacing: Constraint.smallPadding) {
             Button {
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+                withAnimation(.smooth()) {
                     currentTab = .expenses
                 }
                 animateButtonPress()
             } label: {
                 Circle()
-                    .fill(backgroundColor == .customBurgundy
-                          ? .customOliveGreen
-                          : .customBurgundy
-                    )
+                    .fill(backgroundColor)
                     .frame(width: Constraint.largeIconSize, height: Constraint.largeIconSize)
                     .overlay(
                         Image(systemName: "target")
@@ -58,7 +55,7 @@ struct TotalExpensesCardView: View {
                 .opacity(cardOpacity)
                 .offset(x: numberOffset)
         }
-        .addLayeredBackground(with: .customRichBlack.opacity(opacity))
+        .addLayeredBackground(.customRichBlack.opacity(opacity), style: .card())
         .scaleEffect(cardScale)
         .onAppear {
             animateCardAppearance()
@@ -86,14 +83,14 @@ struct TotalExpensesCardView: View {
         
         // Icon animation
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+            withAnimation(.smooth()) {
                 iconScale = 1.0
             }
         }
         
         // Number animation
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+            withAnimation(.smooth()) {
                 numberScale = 1.0
             }
         }
@@ -101,13 +98,13 @@ struct TotalExpensesCardView: View {
     
     private func animateButtonPress() {
         // Button press feedback
-        withAnimation(.easeInOut(duration: 0.1)) {
+        withAnimation(.smooth(duration: 0.1)) {
             iconScale = 0.9
             iconRotation = 15
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+            withAnimation(.smooth()) {
                 iconScale = 1.0
                 iconRotation = 0
             }
@@ -116,12 +113,12 @@ struct TotalExpensesCardView: View {
     
     private func animateNumberUpdate() {
         // Animate number changes
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+        withAnimation(.smooth()) {
             numberScale = 1.1
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+            withAnimation(.smooth()) {
                 numberScale = 1.0
             }
         }
@@ -134,7 +131,7 @@ struct TotalExpensesCardView: View {
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+            withAnimation(.smooth()) {
                 cardScale = 1.0
             }
         }

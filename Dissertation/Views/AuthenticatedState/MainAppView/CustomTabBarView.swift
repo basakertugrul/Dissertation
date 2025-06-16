@@ -5,7 +5,6 @@ struct CustomTabBar: View {
     @Binding var showAddExpenseSheet: Bool
     @State private var showCameraOption: Bool = false
     @State private var longPressInProgress: Bool = false
-    var targetSpending: Double
     @Binding var willOpenCameraView: Bool
 
     var body: some View {
@@ -15,7 +14,7 @@ struct CustomTabBar: View {
                 icon: "chart.bar.xaxis",
                 isSelected: selectedTab == .balance
             ) {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(.smooth(duration: 0.2)) {
                     selectedTab = .balance
                 }
             }
@@ -26,21 +25,20 @@ struct CustomTabBar: View {
             MainAddButton(
                 showCameraOption: $showCameraOption,
                 longPressInProgress: $longPressInProgress,
-                targetSpending: targetSpending,
                 onAddTap: {
                     withAnimation(.smooth) {
                         showAddExpenseSheet = true
                     }
                 },
                 onCameraTap: {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    withAnimation(.smooth()) {
                         willOpenCameraView = true
                         showCameraOption = false
                         longPressInProgress = false
                     }
                 },
                 onLongPress: { isPressing in
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    withAnimation(.smooth()) {
                         longPressInProgress = isPressing
                         if isPressing {
                             showCameraOption = true
@@ -49,14 +47,14 @@ struct CustomTabBar: View {
 
                     if !isPressing && showCameraOption {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            withAnimation(.smooth()) {
                                 showCameraOption = false
                             }
                         }
                     }
                 },
                 onDragCamera: {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    withAnimation(.smooth()) {
                         willOpenCameraView = true
                         showCameraOption = false
                         longPressInProgress = false
@@ -71,7 +69,7 @@ struct CustomTabBar: View {
                 icon: "list.bullet",
                 isSelected: selectedTab == .expenses
             ) {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(.smooth(duration: 0.2)) {
                     selectedTab = .expenses
                 }
             }
@@ -121,7 +119,6 @@ private struct TabButton: View {
 private struct MainAddButton: View {
     @Binding var showCameraOption: Bool
     @Binding var longPressInProgress: Bool
-    let targetSpending: Double?
     let onAddTap: () -> Void
     let onCameraTap: () -> Void
     let onLongPress: (Bool) -> Void

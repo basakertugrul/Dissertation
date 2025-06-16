@@ -11,7 +11,7 @@ struct ImagePreviewOverlay: View {
             Color.black
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
-                    withAnimation(.spring()) {
+                    withAnimation(.smooth()) {
                         isVisible = false
                     }
                 }
@@ -27,7 +27,7 @@ struct ImagePreviewOverlay: View {
             HStack(spacing: Constraint.largePadding) {
                 Button(action: {
                     /// Option to retake photo
-                    withAnimation(.spring()) {
+                    withAnimation(.smooth()) {
                         isVisible = false
                         viewModel.capturedImage = nil
                     }
@@ -44,7 +44,7 @@ struct ImagePreviewOverlay: View {
                 }
                 Button(action: {
                     /// Option to use image (save or select for expense)
-                    withAnimation(.spring()) {
+                    withAnimation(.smooth()) {
                         viewModel.saveImageToGallery(image: image) // ww: 1
                     }
                 }) {
