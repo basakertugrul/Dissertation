@@ -169,7 +169,7 @@ struct BudgetZonesView: View {
                      .addLayeredBackground(
                         timeFrame == frame
                         ? backgroundColor == .customBurgundy ? .customOliveGreen : .customBurgundy
-                        : .customRichBlack.opacity(Constraint.Opacity.medium),
+                        : .customRichBlack.opacity(Constraint.Opacity.high),
                         style: .compact(isColorFilled: timeFrame == frame ? true : false)
                      )
                      .scaleEffect(timeFrame == frame ? 1.05 : 1.0)

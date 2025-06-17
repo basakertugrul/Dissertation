@@ -4,12 +4,11 @@ extension View {
     /// Show Delete Confirm Alert
     func showDeleteConfirmationAlert(
         isPresented: Binding<Bool>,
-        buttonAction: @escaping () -> Void = {},
-        secondaryButtonAction: @escaping () -> Void = {}
+        buttonAction: @escaping () -> Void,
+        secondaryButtonAction: @escaping () -> Void
     ) -> some View {
         ZStack {
             self
-
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
@@ -26,6 +25,31 @@ extension View {
         .animation(.smooth(duration: Constraint.animationDurationShort))
     }
 
+    /// Show Logout Confirm Alert
+    func showLogOutConfirmationAlert(
+        isPresented: Binding<Bool>,
+        buttonAction: @escaping () -> Void,
+        secondaryButtonAction: @escaping () -> Void
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Sign Out",
+                    message: "Are you sure you want to sign out of BudgetMate?",
+                    buttonText: "Sign Out",
+                    buttonAction: buttonAction,
+                    secondaryButtonText: "Cancel",
+                    secondaryButtonAction: secondaryButtonAction,
+                    alertColor: .customBurgundy
+                )
+            }
+        }
+        .animation(.smooth(duration: Constraint.animationDurationShort))
+    }
+
+
     /// Show Camera Error Alert
     func showCameraErrorAlert(
         isPresented: Binding<Bool>,
@@ -33,7 +57,6 @@ extension View {
     ) -> some View {
         ZStack {
             self
-    
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
@@ -57,7 +80,6 @@ extension View {
     ) -> some View {
         ZStack {
             self
-    
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
@@ -78,10 +100,9 @@ extension View {
     func showSettingsErrorAlert(
         isPresented: Binding<Bool>,
         buttonAction: @escaping () -> Void = {},
-    ) -> some View { // TODO: Add this to required places
+    ) -> some View {
         ZStack {
             self
-            
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
@@ -97,5 +118,26 @@ extension View {
         }
         .animation(.smooth(duration: Constraint.animationDurationShort))
     }
+
+    /// Show Photo Library Error Alert
+    func showAddedExpenseAlert(
+        isPresented: Binding<Bool>
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Added Expense",
+                    message: "Great! Keep monitoring your budget!",
+                    buttonText: "OK",
+                    buttonAction: { isPresented.wrappedValue = false },
+                    secondaryButtonText: .none,
+                    secondaryButtonAction: .none,
+                    alertColor: .customOliveGreen
+                )
+            }
+        }
+    }
 }
- /// For report: these two to be used later the release
+ /// For report: the request ones are for to be used later the release

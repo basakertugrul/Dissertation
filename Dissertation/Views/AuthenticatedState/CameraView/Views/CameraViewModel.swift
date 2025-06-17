@@ -48,6 +48,8 @@ class CameraViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isPermissionGranted = true
                 }
+            } else {
+                self.showSettingAlert = true
             }
         }
     }
@@ -62,7 +64,6 @@ class CameraViewModel: ObservableObject {
 
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-
             if videoStatus == .authorized {
                 self.isPermissionGranted = true
                 self.cameraManager.ensureCaptureSessionIsRunning()

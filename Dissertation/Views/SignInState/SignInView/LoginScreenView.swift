@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Login Style Enum
 enum LoginStyle {
-    case newUser
+    case newUser(User?)
     case returningUser(User)
 }
 
@@ -10,16 +10,15 @@ enum LoginStyle {
 protocol LoginActions {
     func handleAppleSignIn()
     func handleFaceIDSignIn()
-    func handleEmailPasswordSignIn(email: String, password: String)
-    func handleTermsTap()
-    func handlePrivacyTap()
+    func handleTermsAndPrivacyTap()
+    func changeUser()
 }
 
 // MARK: - Minimal Modern Login Screen
 struct LoginScreenView: View {
-    let loginStyle: LoginStyle
+    @State var loginStyle: LoginStyle
     let actions: LoginActions
-    
+
     @Binding var isLoading: Bool
 
     /// UI related variables
@@ -30,16 +29,6 @@ struct LoginScreenView: View {
     @State private var showSubtitle = false
     @State private var cardOffset: CGFloat = 300
     @State private var showFooter = false
-    @State private var selectedButton: String? = nil
-    
-    /// Email/Password form variables
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var showEmailPassword = false
-    @State private var isEmailFocused = false
-    @State private var isPasswordFocused = false
-    @State private var showPassword = false
-    @State private var showEmailPasswordForReturningUser = false
     
     var body: some View {
         VStack(spacing: Constraint.padding) {
@@ -130,14 +119,21 @@ struct LoginScreenView: View {
                 .opacity(showContent ? 1 : 0)
                 .offset(y: showContent ? 0 : -20)
 
-            LoginButtonView(
-                title: "Continue with Apple",
-                icon: "applelogo",
-                isApple: true,
-                isSelected: selectedButton == "apple"
-            ) {
-                isLoading = true
-                handleSignIn("apple", action: actions.handleAppleSignIn)
+            VStack(spacing: Constraint.padding) {
+                LoginButtonView(
+                    title: "Continue with Apple",
+                    icon: "applelogo",
+                    isApple: true,
+                    isSelected: false
+                ) {
+                    isLoading = true
+                    actions.handleAppleSignIn()
+                }
+
+                // Face ID login option if user exists
+                if case let .newUser(user) = loginStyle, user != nil {
+                    faceIDLoginOption
+                }
             }
             .opacity(showContent ? 1 : 0)
             .offset(y: showContent ? 0 : 20)
@@ -177,10 +173,107 @@ struct LoginScreenView: View {
     }
 
     private var footerSection: some View {
-        SecureAndPrivateView(handleTermsTap: actions.handleTermsTap, handlePrivacyTap: actions.handlePrivacyTap)
+        VStack(spacing: Constraint.padding) {
+            // Switch User Button (only for returning users)
+            if case .returningUser = loginStyle {
+                switchUserButton
+            }
+            
+            SecureAndPrivateView(onTap: actions.handleTermsAndPrivacyTap)
+        }
         .opacity(showFooter ? Constraint.Opacity.high : 0)
         .offset(y: showFooter ? 0 : 20)
         .padding(.bottom, Constraint.largePadding)
+    }
+    
+    // MARK: - Face ID Login Option
+    private var faceIDLoginOption: some View {
+        VStack(spacing: Constraint.regularPadding) {
+            // Divider
+            HStack {
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.customRichBlack.opacity(Constraint.Opacity.low))
+                
+                CustomTextView(
+                    "or",
+                    font: .labelMedium,
+                    color: .customRichBlack.opacity(Constraint.Opacity.medium)
+                )
+                .padding(.horizontal, Constraint.smallPadding)
+                
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.customRichBlack.opacity(Constraint.Opacity.low))
+            }
+            
+            // Face ID Button
+            Button {
+                actions.handleFaceIDSignIn()
+            } label: {
+                VStack(spacing: Constraint.smallPadding) {
+                    Image(systemName: "faceid")
+                        .font(.system(size: 24))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.customOliveGreen, .customBurgundy],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                    
+                    CustomTextView(
+                        "Sign in with Face ID",
+                        font: .bodySmall,
+                        color: .customRichBlack.opacity(Constraint.Opacity.high)
+                    )
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, Constraint.regularPadding)
+                .background(
+                    RoundedRectangle(cornerRadius: Constraint.cornerRadius)
+                        .fill(.customOliveGreen.opacity(Constraint.Opacity.tiny))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Constraint.cornerRadius)
+                                .stroke(.customOliveGreen.opacity(Constraint.Opacity.low), lineWidth: 1)
+                        )
+                )
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    private var switchUserButton: some View {
+        Button {
+            withAnimation {
+                if case let .returningUser(user) = loginStyle {
+                   loginStyle = .newUser(user)
+                }
+            }
+            actions.changeUser()
+        } label: {
+            HStack(spacing: Constraint.smallPadding) {
+                Image(systemName: "person.2.fill")
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(Constraint.Opacity.medium))
+                
+                CustomTextView(
+                    "Switch User",
+                    font: .labelMedium,
+                    color: .white.opacity(Constraint.Opacity.medium)
+                )
+            }
+            .padding(.horizontal, Constraint.regularPadding)
+            .padding(.vertical, Constraint.smallPadding)
+            .background(
+                RoundedRectangle(cornerRadius: Constraint.cornerRadius)
+                    .fill(.ultraThinMaterial.opacity(Constraint.Opacity.low))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Constraint.cornerRadius)
+                            .stroke(.white.opacity(Constraint.Opacity.low), lineWidth: 1)
+                    )
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Methods
@@ -214,38 +307,27 @@ struct LoginScreenView: View {
     }
     
     private func handleSignIn(_ type: String, action: @escaping () -> Void) {
-        selectedButton = type
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            if type == "apple" {
-            actions.handleAppleSignIn()
-        }
+        action()
     }
     
     private func returningUserCard(for user: User) -> some View {
-        VStack(spacing: Constraint.largePadding) {
+        VStack(spacing: Constraint.largePadding * 2) {
             /// Personalized greeting
             VStack(spacing: Constraint.smallPadding) {
                 let greeting = user.firstName.isEmpty ? "Hi!" : "Hi \(user.firstName)!"
-                CustomTextView(greeting, font: .titleLargeBold, color: .customRichBlack)
+                CustomTextView(greeting, font: .titleLargeBold, color: .customRichBlack.opacity(Constraint.Opacity.high))
                 CustomTextView("Good to see you again", font: .bodySmall, color: .customRichBlack.opacity(Constraint.Opacity.medium))
             }
             .opacity(showContent ? 1 : 0)
             .offset(y: showContent ? 0 : -20)
 
-            // Show either Face ID prompt or email/password form
-            if showEmailPasswordForReturningUser {
-                returningUserEmailPasswordForm
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .bottom).combined(with: .opacity),
-                        removal: .move(edge: .top).combined(with: .opacity)
-                    ))
-            } else {
-                returningUserFaceIDPrompt(for: user)
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .top).combined(with: .opacity),
-                        removal: .move(edge: .bottom).combined(with: .opacity)
-                    ))
-            }
+            returningUserFaceIDPrompt(for: user)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .top).combined(with: .opacity),
+                    removal: .move(edge: .bottom).combined(with: .opacity)
+                ))
+            
         }
         .padding(Constraint.largePadding)
         .background(cardBackground)
@@ -256,212 +338,44 @@ struct LoginScreenView: View {
     // Separate Face ID prompt view
     private func returningUserFaceIDPrompt(for user: User) -> some View {
         VStack(spacing: Constraint.regularPadding) {
-            // Face ID content or email/password button
-            if user.hasFaceIDEnabled {
-                // Face ID UI
-                VStack(spacing: Constraint.regularPadding) {
-                    CustomTextView("Would you like to use Face ID?", font: .bodyLarge, color: .customRichBlack)
-                        .opacity(showContent ? 1 : 0)
-                        .offset(y: showContent ? 0 : 10)
-
-                    Image(systemName: "faceid")
-                        .renderingMode(.template)
-                        .resizable()
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [.customRichBlack, .customRichBlack.opacity(0.7)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+            VStack(spacing: Constraint.regularPadding) {
+                CustomTextView("Would you like to use Face ID?", font: .bodyLarge, color: .customRichBlack)
+                    .opacity(showContent ? 1 : 0)
+                    .offset(y: showContent ? 0 : 10)
+                
+                Image(systemName: "faceid")
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [.customRichBlack, .customRichBlack.opacity(0.7)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
                         )
-                        .frame(width: Constraint.regularImageSize / 3,
-                               height: Constraint.regularImageSize / 3)
-                        .opacity(showContent ? 1 : 0)
-                        .scaleEffect(showContent ? 1 : 0.5)
-                        .onTapGesture {
-                            actions.handleFaceIDSignIn()
-                        }
-                }
-            }
-            
-            // Always show "Use another method" button
-            Button {
-                withAnimation(.smooth()) {
-                    showEmailPasswordForReturningUser = true
-                }
-            } label: {
-                CustomTextView("Use another method", font: .labelMedium, color: .customRichBlack.opacity(Constraint.Opacity.high))
-            }
-            .opacity(showContent ? 1 : 0)
-            .offset(y: showContent ? 0 : 10)
-        }
-    }
-
-    // Email/password form for returning users
-    private var returningUserEmailPasswordForm: some View {
-        VStack(spacing: Constraint.regularPadding) {
-            // Back button
-            HStack {
-                Button {
-                    withAnimation(.smooth()) {
-                        showEmailPasswordForReturningUser = false
-                        email = ""
-                        password = ""
-                    }
-                } label: {
-                    HStack(spacing: Constraint.tinyPadding) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 14, weight: .medium))
-                        CustomTextView("Back", font: .labelMedium, color: .customRichBlack.opacity(Constraint.Opacity.high))
-                    }
-                }
-                
-                Spacer()
-            }
-            
-            VStack(spacing: Constraint.padding) {
-                // Email and password fields (same as before)
-                CustomTextFieldView(
-                    text: $email,
-                    placeholder: "Email address",
-                    isSecure: false,
-                    isFocused: $isEmailFocused,
-                    keyboardType: .emailAddress,
-                    icon: "envelope"
-                )
-                
-                CustomTextFieldView(
-                    text: $password,
-                    placeholder: "Password",
-                    isSecure: !showPassword,
-                    isFocused: $isPasswordFocused,
-                    keyboardType: .default,
-                    icon: "lock",
-                    trailingIcon: showPassword ? "eye.slash" : "eye"
-                ) {
-                    showPassword.toggle()
-                }
-                
-                // Sign In Button
-                Button {
-                    if !email.isEmpty && !password.isEmpty {
-                        isLoading = true
-                        actions.handleEmailPasswordSignIn(email: email, password: password)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            withAnimation {
-                                isLoading = false
-                            }
-                        }
-                    }
-                } label: {
-                    HStack {
-                        if isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .scaleEffect(0.8)
-                        } else {
-                            CustomTextView("Sign In", font: .bodySmallBold, color: .white)
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(Constraint.regularPadding)
-                    .background(
-                        RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                            .fill(
-                                LinearGradient(
-                                    colors: [.customOliveGreen, .customBurgundy],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
                     )
-                }
-                .disabled(email.isEmpty || password.isEmpty || isLoading)
-                .opacity((email.isEmpty || password.isEmpty) ? Constraint.Opacity.medium : 1)
+                    .frame(width: Constraint.regularImageSize / 3,
+                           height: Constraint.regularImageSize / 3)
+                    .opacity(showContent ? 1 : 0)
+                    .scaleEffect(showContent ? 1 : 0.5)
+                    .onTapGesture {
+                        actions.handleFaceIDSignIn()
+                    }
             }
         }
     }
 }
 
-// MARK: - Custom Text Field View
-struct CustomTextFieldView: View {
-    @Binding var text: String
-    let placeholder: String
-    let isSecure: Bool
-    @Binding var isFocused: Bool
-    let keyboardType: UIKeyboardType
-    let icon: String
-    let trailingIcon: String?
-    let trailingAction: (() -> Void)?
-    
-    init(
-        text: Binding<String>,
-        placeholder: String,
-        isSecure: Bool = false,
-        isFocused: Binding<Bool>,
-        keyboardType: UIKeyboardType = .default,
-        icon: String,
-        trailingIcon: String? = nil,
-        trailingAction: (() -> Void)? = nil
-    ) {
-        self._text = text
-        self.placeholder = placeholder
-        self.isSecure = isSecure
-        self._isFocused = isFocused
-        self.keyboardType = keyboardType
-        self.icon = icon
-        self.trailingIcon = trailingIcon
-        self.trailingAction = trailingAction
-    }
-    
-    var body: some View {
-        HStack(spacing: Constraint.smallPadding) {
-            Image(systemName: icon)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(.customRichBlack.opacity(Constraint.Opacity.medium))
-                .frame(width: 20)
-            
-            if isSecure {
-                SecureField(placeholder, text: $text)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .keyboardType(keyboardType)
-                    
-            } else {
-                TextField(placeholder, text: $text)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .keyboardType(keyboardType)
-                    
-            }
-            
-            if let trailingIcon = trailingIcon {
-                Button(action: trailingAction ?? {}) {
-                    Image(systemName: trailingIcon)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.customRichBlack.opacity(Constraint.Opacity.medium))
-                }
-            }
-        }
-        .padding(Constraint.regularPadding)
-        .background(
-            RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                .fill(Color.white.opacity(0.1))
-                .overlay(
-                    RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                        .stroke(
-                            isFocused ?
-                                LinearGradient(
-                                    colors: [.customOliveGreen, .customBurgundy],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                ) :
-                                LinearGradient(
-                                    colors: [Color.customRichBlack.opacity(Constraint.Opacity.low)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                ),
-                            lineWidth: isFocused ? 2 : 1
-                        )
-                )
-        )
-    }
+#Preview {
+    LoginScreenView(
+        loginStyle: .newUser(.none),
+        actions: MockLoginActions(),
+        isLoading: .constant(false)
+    )
+}
+
+class MockLoginActions: LoginActions {
+    func handleAppleSignIn() { }
+    func handleFaceIDSignIn() { }
+    func handleTermsAndPrivacyTap() { }
+    func changeUser() { print("Switch user tapped") }
 }

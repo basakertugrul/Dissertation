@@ -1,8 +1,39 @@
 import CoreData
 
+// MARK: - DataController Errors
+enum DataControllerError: Error, LocalizedError {
+    case saveFailure
+    case deleteFailure
+    case fetchFailure
+    case updateFailure
+    case expenseNotFound
+    case dateParsingFailure
+    case timeFrameNotFound
+
+    var errorDescription: String {
+        switch self {
+        case .saveFailure:
+            return "Couldn't save your expense. Please try again."
+        case .deleteFailure:
+            return "Unable to delete expense. Please try again."
+        case .fetchFailure:
+            return "Couldn't load your expenses. Check your connection and try again."
+        case .updateFailure:
+            return "Failed to update expense. Please try again."
+        case .expenseNotFound:
+            return "This expense no longer exists."
+        case .dateParsingFailure:
+            return "Invalid date format. Please check your date settings."
+        case .timeFrameNotFound:
+            return "Unable to load your time preferences. Using default settings."
+        }
+    }
+}
+
 struct DataController {
     public static let shared = DataController()
-    /// Model Contianers
+    
+    /// Model Containers
     let expenseModelContainer: NSPersistentContainer
     var expenseModelContext: NSManagedObjectContext {
         expenseModelContainer.viewContext
@@ -37,198 +68,190 @@ struct DataController {
     }
 
     // MARK: - TIME FRAME
-    public func saveTimeFrame(_ timeFrame: TimeFrame) {
+    public func saveTimeFrame(_ timeFrame: TimeFrame) -> Result<Void, DataControllerError> {
         UserDefaults.standard.set(timeFrame.rawValue, forKey: UserDefaultsKeys.timeFrame)
-        print("✅ TimeFrame saved: \(timeFrame.rawValue)")
+        return .success(())
     }
 
-    public func fetchTimeFrame() -> TimeFrame {
+    public func fetchTimeFrame() -> Result<TimeFrame, DataControllerError> {
         let savedTimeFrameString = UserDefaults.standard.string(forKey: UserDefaultsKeys.timeFrame)
-
         if let savedTimeFrameString = savedTimeFrameString,
            let timeFrame = TimeFrame(rawValue: savedTimeFrameString) {
-            return timeFrame
+            return .success(timeFrame)
         }
-        return .weekly
+        return .success(.weekly)
     }
 
-    public func resetTimeFrame() {
+    public func resetTimeFrame() -> Result<Void, DataControllerError> {
         UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.timeFrame)
         print("🗑️ TimeFrame reset to default")
+        return .success(())
     }
-    
+
     // MARK: - TARGET SPENDING MONEY
-    public func saveTargetSpending(to amount: Double) {
+    public func saveTargetSpending(to amount: Double) -> Result<Void, DataControllerError> {
         UserDefaults.standard.set(amount, forKey: UserDefaultsKeys.targetSpending)
         print("✅ Target Spending saved: £\(amount)")
         NotificationCenter.default.post(
             name: Notification.Name("TargetSpendingMoneyUpdated"),
             object: nil
         )
+        return .success(())
     }
-    
-    public func fetchTargetSpendingMoney() -> Double? {
+
+    public func fetchTargetSpendingMoney() -> Result<Double?, DataControllerError> {
         let savedAmount = UserDefaults.standard.double(forKey: UserDefaultsKeys.targetSpending)
         if UserDefaults.standard.object(forKey: UserDefaultsKeys.targetSpending) != nil {
-            print("✅ Target Spending fetched: £\(savedAmount)")
-            return savedAmount
+            return .success(savedAmount)
         } else {
-            print("⚠️ No target spending found")
-            return nil
+            return .success(nil)
         }
     }
-    
-    public func resetTargetSpending() {
+
+    public func resetTargetSpending() -> Result<Void, DataControllerError> {
         UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.targetSpending)
         print("🗑️ Target Spending reset to default")
         NotificationCenter.default.post(
             name: Notification.Name("TargetSpendingMoneyUpdated"),
             object: nil
         )
+        return .success(())
     }
 
     // MARK: - GENERAL
-    public func save() {
-        let expenseModelContext = expenseModelContainer.viewContext
-        if expenseModelContext.hasChanges {
-            do {
+    public func save() -> Result<Void, DataControllerError> {
+        do {
+            let expenseModelContext = expenseModelContainer.viewContext
+            if expenseModelContext.hasChanges {
                 try expenseModelContext.save()
-            } catch {
-                print(error)
             }
-        }
-
-        let targetSpendingModelContext = targetSpendingModelContainer.viewContext
-        if targetSpendingModelContext.hasChanges {
-            do {
+            let targetSpendingModelContext = targetSpendingModelContainer.viewContext
+            if targetSpendingModelContext.hasChanges {
                 try targetSpendingModelContext.save()
-            } catch {
-                print(error)
             }
+            return .success(())
+        } catch {
+            return .failure(.saveFailure)
         }
     }
 
     // MARK: - EXPENSES
-    public func saveExpense(of expense: ExpenseViewModel) {
-        let newExpense = ExpenseModel(context: expenseModelContext)
-        newExpense.amount = expense.amount
-        newExpense.date = expense.date
-        newExpense.id = expense.id
-        newExpense.name = expense.name
-        newExpense.currencyCode = expense.currencyCode
-        newExpense.createDate = expense.createDate
-
+    public func saveExpense(of expense: ExpenseViewModel) -> Result<Void, DataControllerError> {
         do {
+            let newExpense = ExpenseModel(context: expenseModelContext)
+            newExpense.amount = expense.amount
+            newExpense.date = expense.date
+            newExpense.id = expense.id
+            newExpense.name = expense.name
+            newExpense.currencyCode = expense.currencyCode
+            newExpense.createDate = expense.createDate
             try expenseModelContext.save()
-            print("✅ Expense saved")
             NotificationCenter.default.post(
                 name: Notification.Name("ExpenseRefresh"),
                 object: .none
             )
+            return .success(())
         } catch {
-            print("❌ Failed to save: \(error)")
+            return .failure(.saveFailure)
         }
     }
 
-    public func deleteExpense(of expense: ExpenseViewModel) {
-        let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", expense.id as CVarArg)
-
+    public func deleteExpense(of expense: ExpenseViewModel) -> Result<Void, DataControllerError> {
         do {
+            let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", expense.id as CVarArg)
             let results = try expenseModelContext.fetch(request)
-            for expensex in results {
-                expenseModelContext.delete(expensex)
+            guard !results.isEmpty else {
+                return .failure(.expenseNotFound)
+            }
+            for expenseModel in results {
+                expenseModelContext.delete(expenseModel)
             }
             try expenseModelContext.save()
-            print("🗑️ Expense deleted")
-
             NotificationCenter.default.post(
                 name: Notification.Name("ExpenseRefresh"),
                 object: .none
             )
+            return .success(())
         } catch {
-            print("❌ Failed to delete expense: \(error)")
+            return .failure(.deleteFailure)
         }
     }
 
-    func updateExpense(of updatedExpense: ExpenseViewModel) {
-        let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", updatedExpense.id as CVarArg)
-
+    func updateExpense(of updatedExpense: ExpenseViewModel) -> Result<Void, DataControllerError> {
         do {
+            let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", updatedExpense.id as CVarArg)
             let results = try expenseModelContext.fetch(request)
             guard let existingExpense = results.first else {
                 print("⚠️ No matching expense found to update")
-                return
+                return .failure(.expenseNotFound)
             }
-
             existingExpense.name = updatedExpense.name
             existingExpense.amount = updatedExpense.amount
             existingExpense.currencyCode = updatedExpense.currencyCode
             existingExpense.date = updatedExpense.date
             existingExpense.createDate = updatedExpense.createDate
-
             try expenseModelContext.save()
             print("✅ Expense updated")
             NotificationCenter.default.post(
                 name: Notification.Name("ExpenseRefresh"),
                 object: .none
             )
+            return .success(())
         } catch {
-            print("❌ Failed to update expense: \(error)")
+            return .failure(.updateFailure)
         }
     }
 
-    public func resetExpenses() {
-        let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
-
+    public func resetExpenses() -> Result<Void, DataControllerError> {
         do {
+            let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
             let results = try expenseModelContext.fetch(request)
-            for targetSpending in results {
-                expenseModelContext.delete(targetSpending)
+            for expense in results {
+                expenseModelContext.delete(expense)
             }
             try expenseModelContext.save()
-            print("🗑️")
+            print("🗑️ All expenses deleted")
             NotificationCenter.default.post(
                 name: Notification.Name("ExpenseRefresh"),
                 object: .none
             )
+            return .success(())
         } catch {
-            print("❌: \(error)")
+            return .failure(.deleteFailure)
         }
     }
 
-    public func fetchExpenses() -> [ExpenseViewModel] {
-        let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
-
+    public func fetchExpenses() -> Result<[ExpenseViewModel], DataControllerError> {
         do {
+            let request: NSFetchRequest<ExpenseModel> = ExpenseModel.fetchRequest()
             let result = try expenseModelContext.fetch(request)
-            return result.map {
-                ExpenseViewModel(from: $0)
-            }
+            let expenses = result.map { ExpenseViewModel(from: $0) }
+            return .success(expenses)
         } catch {
-            print("❌ Failed to fetch expenses: \(error)")
-            return []
+            return .failure(.fetchFailure)
         }
     }
 
     // MARK: - START DAY
-    func fetchTargetSetDate() -> Date? {
-        let savedDate = UserDefaults.standard.string(forKey: UserDefaultsKeys.startdate)
-        if let savedDate = savedDate {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            return formatter.date(from: savedDate)
+    func fetchTargetSetDate() -> Result<Date?, DataControllerError> {
+        guard let savedDate = UserDefaults.standard.string(forKey: UserDefaultsKeys.startdate) else {
+            return .success(nil)
         }
-        return nil
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let date = formatter.date(from: savedDate) else {
+            return .failure(.dateParsingFailure)
+        }
+        return .success(date)
     }
 
-    func saveTargetSetDate(_ date: Date) {
+    func saveTargetSetDate(_ date: Date) -> Result<Void, DataControllerError> {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         let dateString = formatter.string(from: date)
-
         UserDefaults.standard.set(dateString, forKey: UserDefaultsKeys.startdate)
-        print("✅ Start date saved: £\(dateString)")
+        return .success(())
     }
 }

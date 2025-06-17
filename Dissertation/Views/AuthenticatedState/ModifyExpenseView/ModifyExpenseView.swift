@@ -3,6 +3,7 @@ import SwiftUI
 struct ModifyExpenseView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismissView
+    @EnvironmentObject var appStateManager: AppStateManager
 
     /// Optional expense to modify - .none means we're adding a new expense
     @Binding var expenseToModify: ExpenseViewModel?
@@ -112,7 +113,16 @@ struct ModifyExpenseView: View {
                 amount: expenseAmount
             )
 
-            DataController.shared.updateExpense(of: existingExpense) // TODO: Add here a result so that you can check if something goes wrong
+            switch DataController.shared.updateExpense(of: existingExpense) {
+            case .success:
+                withAnimation {
+                    appStateManager.hasUpdatedExpense = true
+                }
+            case let .failure(comingError):
+                withAnimation {
+                    appStateManager.error = comingError
+                }
+            }
         } else {
             /// Create a new expense
             let newExpense = ExpenseViewModel.createWithPound(
@@ -121,7 +131,16 @@ struct ModifyExpenseView: View {
                 amount: expenseAmount,
                 createDate: .now
             )
-            DataController.shared.saveExpense(of: newExpense)
+            switch DataController.shared.saveExpense(of: newExpense) {
+            case .success:
+                withAnimation {
+                    appStateManager.hasAddedExpense = true
+                }
+            case let .failure(comingError):
+                withAnimation {
+                    appStateManager.error = comingError
+                }
+            }
         }
 
         dismiss()
@@ -129,7 +148,16 @@ struct ModifyExpenseView: View {
 
     private func deleteExpense() {
         if let expense = expenseToModify {
-            DataController.shared.deleteExpense(of: expense)
+            switch DataController.shared.deleteExpense(of: expense) {
+            case .success:
+                withAnimation {
+                    appStateManager.hasDeletedExpense = true
+                }
+            case let .failure(comingError):
+                withAnimation {
+                    appStateManager.error = comingError
+                }
+            }
             dismiss()
         }
     }

@@ -13,17 +13,15 @@ struct BudgetMateApp: App {
             ZStack {
                 if appState.hasLoggedIn {
                     if appState.dailyBalance == .none {
-                        BalanceEntranceView() { daily in
-                            appState.dailyBalance = daily
+                        BalanceEntranceView() { dailyAmount in
+                            DataController.shared.saveTargetSpending(to: dailyAmount)
+                            
                         } onTouchedBackground: {}
                     } else {
                         MainAppView()
                     }
                 } else {
                     SignInView(isLoading: $appState.isLoading)
-                        .onAppear(perform: {
-                            appState.dailyBalance = .none
-                        })
                 }
             }
             .loadingOverlay($appState.isLoading)

@@ -175,39 +175,3 @@ struct BalanceEntranceView: View {
         .animation(.easeInOut(duration: 0.2), value: isSelected)
     }
 }
-
-// MARK: - Alternative: Binding Version
-struct BalanceEntranceViewWithBinding: View {
-    @Binding var balanceText: String
-    @State private var selectedPreset: Double? = nil
-    let onSave: (Double) -> Void
-
-    private let presetAmounts: [Double] = [10, 20, 40, 50]
-    
-    private var isValidAmount: Bool {
-        guard let amount = Int(balanceText), amount > 0, amount <= 9999 else { return false }
-        return true
-    }
-    
-    private var parsedAmount: Double {
-        Double(balanceText) ?? .zero
-    }
-    
-    var body: some View {
-        // Same body implementation as above
-        ZStack {
-            Rectangle()
-                .fill(.ultraThinMaterial.opacity(Constraint.Opacity.medium))
-                .ignoresSafeArea()
-            
-            // Rest of the view...
-            Text("Binding version - same UI as above")
-        }
-        .onAppear {
-            // Set selected preset if balance matches
-            if let balance = Double(balanceText), presetAmounts.contains(balance) {
-                selectedPreset = balance
-            }
-        }
-    }
-}

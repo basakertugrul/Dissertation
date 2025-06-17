@@ -46,15 +46,13 @@ struct CustomTextView: View {
     ) -> some View {
         let formattedValue = value.formatted()
 
-        return HStack(spacing: .zero) {
+        return HStack(alignment: .bottom, spacing: .zero) {
             Text(currencySymbol)
-                .font(font.font.weight(.semibold))
+                .font(font.font)
                 .tracking(font.tracking)
-                .baselineOffset(font == .titleLarge ? 5 : 0)
-            
+
             Text(formattedValue)
-                .font(font.font.weight(.semibold))
-                .bold()
+                .font(font.font)
                 .tracking(font.tracking)
         }
         .foregroundColor(color)

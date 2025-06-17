@@ -12,7 +12,6 @@ struct MainAppView: View {
         animation: .smooth
     )
     private var expenses: FetchedResults<ExpenseModel>
-
     /// UI State
     @State private var currentTab: CustomTabBarSection = .balance
     @State private var isShowingAddExpenseSheet: Bool = false
@@ -57,6 +56,19 @@ struct MainAppView: View {
                 }
             }
         )
+        .sheet(isPresented: $appState.isProfileScreenOpen) {
+            ProfileScreen(
+                username: appState.user?.fullName ?? "",
+                dailyBudget: .init(get: {
+                    appState.dailyBalance ?? .zero
+                }, set: { amount in
+                    appState.dailyBalance = amount
+                }),
+                delegate: appState
+            )
+            .presentationDetents([.height(UIScreen.main.bounds.height)])
+        }
+        .showAddedExpenseAlert(isPresented: $appState.hasAddedExpense)
         .onReceive(expenseContextPublisher, perform: handleExpenseContextChange)
     }
 }
@@ -64,7 +76,7 @@ struct MainAppView: View {
 // MARK: - MainAppView Extensions
 private extension MainAppView {
     var navigationSection: some View {
-        CustomNavigationBarView(selectedTab: $currentTab)
+        return CustomNavigationBarView(selectedTab: $currentTab, isProfileScreenOpen: $appState.isProfileScreenOpen)
     }
 
     @ViewBuilder
@@ -96,7 +108,7 @@ private extension MainAppView {
                 currentTab: $currentTab,
                 startDay: $appState.startDate
             )
-
+            
         case .expenses:
             ExpensesScreenView(
                 expenses: $appState.expenseViewModels,

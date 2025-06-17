@@ -3,10 +3,26 @@ import SwiftUI
 /// Custom Navigation Bar View
 struct CustomNavigationBarView: View {
     @Binding var selectedTab: CustomTabBarSection
+    @Binding var isProfileScreenOpen: Bool
 
     var body: some View {
-        CustomNavigationBarTitleView(title: selectedTab.title)
-            .animation(.easeInOut, value: selectedTab)
+        HStack(alignment: .center, spacing: .zero) {
+            CustomNavigationBarTitleView(title: selectedTab.title)
+                .animation(.easeInOut, value: selectedTab)
+
+            Button {
+                withAnimation(.smooth) {
+                    isProfileScreenOpen = true
+                }
+            } label: {
+                Image(systemName: "person.fill")
+                    .renderingMode(.template)
+                    .resizable()
+                    .frame(width: Constraint.mediumIconSize, height: Constraint.mediumIconSize)
+                    .foregroundColor(.customRichBlack)
+                    .padding(Constraint.padding)
+            }
+        }
     }
 }
 

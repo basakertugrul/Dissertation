@@ -1,21 +1,19 @@
 import SwiftUI
 
 struct SecureAndPrivateView: View {
-    let handleTermsTap: () -> Void
-    let handlePrivacyTap: () -> Void
+    let onTap: () -> Void
 
     var body: some View {
         VStack(spacing: Constraint.tinyPadding) {
             CustomTextView("Secure & Private", font: .bodyLarge, color: .customWhiteSand)
-            HStack(spacing: Constraint.smallPadding) {
-                Button(action: handleTermsTap) {
+            Button(action: onTap) {
+                HStack(spacing: Constraint.smallPadding) {
                     CustomTextView("Terms", font: .labelSmallBold, color: .customWhiteSand)
-                }
-                Circle()
-                    .fill(.customWhiteSand)
-                    .frame(width: 4, height: 4)
-                Button(action: handlePrivacyTap) {
+                    Circle()
+                        .fill(.customWhiteSand)
+                        .frame(width: 4, height: 4)
                     CustomTextView("Privacy", font: .labelSmallBold, color: .customWhiteSand)
+                    
                 }
             }
         }

@@ -14,7 +14,7 @@ struct SignInView: View {
             )
         } else {
             LoginScreenView(
-                loginStyle: .newUser,
+                loginStyle: .newUser(.none),
                 actions: appState,
                 isLoading: $isLoading
             )
@@ -24,7 +24,7 @@ struct SignInView: View {
                     appState.authenticateUserOnLaunch()
                 }
             }
-            .shadow(color: Color.secondary.opacity(0.5), radius: 10, y: 8)
+            .shadow(color: .customRichBlack.opacity(0.5), radius: 10, y: 8)
         }
     }
 }
