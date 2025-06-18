@@ -155,7 +155,7 @@ struct BudgetZonesView: View {
                      withAnimation(.smooth()) {
                          if timeFrame != frame {
                              timeFrame = frame
-                             DataController.shared.saveTimeFrame(frame)
+                             let _ = DataController.shared.saveTimeFrame(frame)
                          }
                      }
                  }) {

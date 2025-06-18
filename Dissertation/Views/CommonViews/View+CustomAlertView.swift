@@ -20,9 +20,9 @@ extension View {
                     secondaryButtonAction: secondaryButtonAction,
                     alertColor: .customBurgundy
                 )
+                .animation(.smooth, value: isPresented.wrappedValue)
             }
         }
-        .animation(.smooth(duration: Constraint.animationDurationShort))
     }
 
     /// Show Logout Confirm Alert
@@ -37,16 +37,16 @@ extension View {
                 CustomAlertView(
                     isShowing: isPresented,
                     title: "Sign Out",
-                    message: "Are you sure you want to sign out of BudgetMate?",
+                    message: "Are you sure you want to sign out of FundBud?",
                     buttonText: "Sign Out",
                     buttonAction: buttonAction,
                     secondaryButtonText: "Cancel",
                     secondaryButtonAction: secondaryButtonAction,
                     alertColor: .customBurgundy
                 )
+                .animation(.smooth, value: isPresented.wrappedValue)
             }
         }
-        .animation(.smooth(duration: Constraint.animationDurationShort))
     }
 
 
@@ -68,9 +68,9 @@ extension View {
                     secondaryButtonAction: .none,
                     alertColor: .customBurgundy
                 )
+                .animation(.smooth, value: isPresented.wrappedValue)
             }
         }
-        .animation(.smooth(duration: Constraint.animationDurationShort))
     }
     
     /// Show Photo Library Error Alert
@@ -91,9 +91,9 @@ extension View {
                     secondaryButtonAction: .none,
                     alertColor: .customBurgundy
                 )
+                .animation(.smooth, value: isPresented.wrappedValue)
             }
         }
-        .animation(.smooth(duration: Constraint.animationDurationShort))
     }
 
     /// Show Photo Library Error Alert
@@ -114,9 +114,9 @@ extension View {
                     secondaryButtonAction: .none,
                     alertColor: .customBurgundy
                 )
+                .animation(.smooth, value: isPresented.wrappedValue)
             }
         }
-        .animation(.smooth(duration: Constraint.animationDurationShort))
     }
 
     /// Show Photo Library Error Alert
@@ -125,6 +125,7 @@ extension View {
     ) -> some View {
         ZStack {
             self
+                .zIndex(0)
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
@@ -136,6 +137,121 @@ extension View {
                     secondaryButtonAction: .none,
                     alertColor: .customOliveGreen
                 )
+                .zIndex(1)
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+
+    /// Show Deleted Expense Alert
+    func showDeletedExpenseAlert(
+        isPresented: Binding<Bool>
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Deleted Expense",
+                    message: "The expense has been removed.",
+                    buttonText: "OK",
+                    buttonAction: { isPresented.wrappedValue = false },
+                    secondaryButtonText: .none,
+                    secondaryButtonAction: .none,
+                    alertColor: .customOliveGreen
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+    
+    /// Show Modified Expense Alert
+    func showModifiedExpenseAlert(
+        isPresented: Binding<Bool>
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Modified Expense",
+                    message: "Your changes have been saved successfully.",
+                    buttonText: "OK",
+                    buttonAction: { isPresented.wrappedValue = false },
+                    secondaryButtonText: .none,
+                    secondaryButtonAction: .none,
+                    alertColor: .customOliveGreen
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+
+    /// Show Modified Expense Alert
+    func showSavedDailyLimitAlert(
+        isPresented: Binding<Bool>
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Daily Limit Updated",
+                    message: "Your new spending limit is now active.",
+                    buttonText: "OK",
+                    buttonAction: { isPresented.wrappedValue = false },
+                    secondaryButtonText: .none,
+                    secondaryButtonAction: .none,
+                    alertColor: .customOliveGreen
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+    
+    /// Show Error Alert
+    func showErrorAlert(
+        isPresented: Binding<Bool>,
+        errorMessage: String,
+        onTap: @escaping (() -> Void)
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Error",
+                    message: errorMessage,
+                    buttonText: "OK",
+                    buttonAction: onTap,
+                    secondaryButtonText: .none,
+                    secondaryButtonAction: .none,
+                    alertColor: .customBurgundy
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+
+    /// Show App Rate Confirmation Alert
+    func showAppRateConfirmationAlert(
+        isPresented: Binding<Bool>,
+        onTap: @escaping (() -> Void)
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Rate FundBud",
+                    message: "Would you like to rate our app in AppStore?",
+                    buttonText: "OK",
+                    buttonAction: onTap,
+                    secondaryButtonText: "Cancel",
+                    secondaryButtonAction: { isPresented.wrappedValue = false },
+                    alertColor: .customOliveGreen
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
             }
         }
     }

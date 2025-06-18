@@ -50,7 +50,7 @@ struct TotalExpensesCardView: View {
             .opacity(cardOpacity)
             .offset(x: textOffset)
             
-            CustomTextView.currency(totalExpenses, font: .titleSmall, color: .white)
+            CustomTextView.currency(totalExpenses, font: .titleSmallBold, color: .white)
                 .scaleEffect(numberScale)
                 .opacity(cardOpacity)
                 .offset(x: numberOffset)

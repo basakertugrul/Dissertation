@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 
 // MARK: - Profile Actions Protocol
 protocol ProfileActionsDelegate: AnyObject {
@@ -12,67 +13,26 @@ protocol ProfileActionsDelegate: AnyObject {
     func signOut()
 }
 
-// MARK: - Expense Data Info
-struct ExpenseDataInfo {
-    let totalExpenses: Int
-    let totalAmount: Double
-    let oldestExpenseDate: Date?
-    let averageDailySpending: Double
-    
-    var formattedTotalAmount: String {
-        "£\(String(format: "%.2f", totalAmount))"
-    }
-    
-    var daysSinceFirstExpense: Int {
-        guard let oldestDate = oldestExpenseDate else { return 0 }
-        return Calendar.current.dateComponents([.day], from: oldestDate, to: Date()).day ?? 0
-    }
-    
-    var formattedAverageDaily: String {
-        "£\(String(format: "%.2f", averageDailySpending))"
-    }
-}
-
 // MARK: - Profile Screen
 struct ProfileScreen: View {
-    var username: String
-    var subtitle: String
-    @Binding var dailyBudget: Double
+    @EnvironmentObject var appState: AppStateManager
+    /// UI related
     @State var showingBudgetSheet = false
     @State var showingLogoutAlert = false
+    @State var showingAppRateAlert = false
+    @State var showingLegalInfoAlert = false
     
-
-    init(
-        username: String,
-        dailyBudget: Binding<Double>,
-        delegate: ProfileActionsDelegate
-    ) {
-        self.username = username
-        self._dailyBudget = dailyBudget
-        self.delegate = delegate
-        self.subtitle = "Hi " + (username.split(separator: " ").first ?? "") + "!"
-    }
-
     var title: AttributedString = {
         var string = AttributedString.init(stringLiteral: "PROFILE")
         string.foregroundColor = .customBurgundy
         string.font = TextFonts.titleSmallBold.font
         return string
     }()
-
-    // Sample expense data - replace with your actual data
-    @State private var expenseData = ExpenseDataInfo(
-        totalExpenses: 127,
-        totalAmount: 2456.78,
-        oldestExpenseDate: Calendar.current.date(byAdding: .day, value: -45, to: Date()),
-        averageDailySpending: 18.50
-    )
-    
-    weak var delegate: ProfileActionsDelegate?
     
     var body: some View {
         VStack(spacing: .zero) {
             CustomNavigationBarTitleView(title: title)
+
             ScrollView {
                 VStack(spacing: Constraint.largePadding) {
                     profileCard
@@ -87,18 +47,17 @@ struct ProfileScreen: View {
         .background(.customWhiteSand)
         .showDailyAllowanceSheet(
             isPresented: $showingBudgetSheet,
-            currentAmount: dailyBudget
+            currentAmount: appState.dailyBalance ?? .zero
         ) {
             withAnimation {
                 showingBudgetSheet = false
             }
-            dailyBudget = $0
-            delegate?.editBudget(currentAmount: $0)
+            appState.editBudget(currentAmount: $0)
         }
         .showLogOutConfirmationAlert(
             isPresented: $showingLogoutAlert,
             buttonAction: {
-                delegate?.signOut()
+                appState.signOut()
                 withAnimation(.smooth) {
                     showingLogoutAlert = false
                 }
@@ -107,17 +66,25 @@ struct ProfileScreen: View {
                 withAnimation(.smooth) {
                     showingLogoutAlert = false
                 }
-        })
+            })
+        .showAppRateConfirmationAlert(isPresented: $showingAppRateAlert) { rateApp() }
+        .showLegalInformationAlert(isPresented: $showingLegalInfoAlert)
+    }
+
+    func rateApp() {
+        if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+               AppStore.requestReview(in: scene)
+           }
     }
     
     // MARK: - Profile Card
     private var profileCard: some View {
-        let initials = username.components(separatedBy: " ")
+        let initials = appState.user?.fullName.components(separatedBy: " ")
             .compactMap { $0.first }
             .prefix(2)
             .map(String.init)
             .joined()
-
+        
         return HStack(spacing: Constraint.padding) {
             ZStack {
                 // Gradient background with glow effect
@@ -126,14 +93,20 @@ struct ProfileScreen: View {
                     .shadow(color: .black.opacity(Constraint.Opacity.low), radius: Constraint.shadowRadius)
                     .frame(width: Constraint.regularImageSize/3, height: Constraint.regularImageSize/3)
                 
-                CustomTextView(initials, font: .titleSmallBold)
+                CustomTextView(initials ?? "", font: .titleSmallBold)
             }
             
-            CustomTextView(subtitle, font: .titleSmall, color: .customBurgundy)
+            CustomTextView(
+                (
+                    "Hi " + (appState.user?.fullName.split(separator: " ").first ?? "") + "!"
+                ),
+                font: .titleSmall,
+                color: .customBurgundy
+            )
             Spacer()
         }
     }
-
+    
     // MARK: - Budget Card
     private var budgetCard: some View {
         Button {
@@ -154,7 +127,7 @@ struct ProfileScreen: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     
-                    CustomTextView.currency(dailyBudget, font: .titleLarge, color: .customOliveGreen)
+                    CustomTextView.currency(appState.dailyBalance ?? .zero, font: .titleLarge, color: .customOliveGreen)
                 }
                 Image(systemName: "pencil.circle.fill")
                     .foregroundStyle(.customOliveGreen)
@@ -189,10 +162,30 @@ struct ProfileScreen: View {
                 columns: Array(repeating: GridItem(.flexible(), spacing: Constraint.padding), count: 2),
                 spacing: Constraint.padding
             ) {
-                expenseStatCard("Total Spent", value: expenseData.formattedTotalAmount, icon: "banknote.fill", color: .customBurgundy)
-                expenseStatCard("Transactions", value: "\(expenseData.totalExpenses)", icon: "list.bullet.rectangle.fill", color: .customOliveGreen)
-                expenseStatCard("Daily Average", value: expenseData.formattedAverageDaily, icon: "calendar.badge.clock", color: .customGold)
-                expenseStatCard("Days Tracked", value: "\(expenseData.daysSinceFirstExpense)", icon: "clock.fill", color: .customRichBlack)
+                expenseStatCard(
+                    "Today's Budget",
+                    value: "\(appState.calculatedBalance)",
+                    icon: "list.bullet.rectangle.fill",
+                    color: .customOliveGreen
+                )
+                expenseStatCard(
+                    "Total Spent",
+                    value: "£\(appState.totalExpenses)",
+                    icon: "banknote.fill",
+                    color: .customBurgundy
+                )
+                expenseStatCard(
+                    "Daily Average",
+                    value: "£\(appState.formattedAverageDaily)",
+                    icon: "calendar.badge.clock",
+                    color: .customGold
+                )
+                expenseStatCard(
+                    "Days Tracked",
+                    value: "\(appState.daysSinceStart)",
+                    icon: "clock.fill",
+                    color: .customRichBlack
+                )
             }
         }
         .addLayeredBackground(.customGold.opacity(Constraint.Opacity.low), style: .card(isColorFilled: true))
@@ -222,24 +215,39 @@ struct ProfileScreen: View {
         .background(.white.opacity(Constraint.Opacity.medium))
         .cornerRadius(Constraint.regularCornerRadius)
     }
-    
+
     // MARK: - Settings Groups
     private var settingsGroups: some View {
         VStack(spacing: Constraint.largePadding) {
-            settingsGroup("App Settings", items: [
-                ("bell.badge.fill", "Notifications", "Budget alerts & reminders", .customBurgundy, { delegate?.manageNotifications() }),
-                ("square.and.arrow.up.fill", "Export Data", "Download expense history", .customOliveGreen, { delegate?.exportExpenseData() }),
-                ("lock.shield.fill", "Privacy & Security", "Manage your data protection", .customRichBlack, { delegate?.managePrivacySettings() })
-            ])
-
-            settingsGroup("Support & Info", items: [
-                ("envelope.badge.fill", "Send Feedback", "Help us improve the app", .customOliveGreen, { delegate?.sendFeedback() }),
-                ("star.circle.fill", "Rate BudgetMate", "Share your experience", .customGold, { delegate?.rateApp() }),
-                ("doc.text.fill", "Legal Information", "Terms, privacy & licenses", .customRichBlack, { delegate?.showLegalInfo() })
+            settingsGroup("Settings & Support", items: [
+                ("bell.badge.fill", "Notifications", "Budget alerts & reminders", .customBurgundy, {
+                    appState.manageNotifications()
+                }),
+                ("square.and.arrow.up.fill", "Export Data", "Download expense history", .customOliveGreen, {
+                    appState.exportExpenseData()
+                }),
+                ("lock.shield.fill", "Privacy & Security", "Manage your data protection", .customRichBlack, {
+                    appState.managePrivacySettings()
+                }),
+                ("envelope.badge.fill", "Send Feedback", "Help us improve the app", .customOliveGreen, {
+                    appState.sendFeedback()
+                }),
+                ("star.circle.fill", "Rate FundBud", "Share your experience", .customGold, {
+                    appState.rateApp()
+                    withAnimation(.smooth) {
+                        showingAppRateAlert = true
+                    }
+                }),
+                ("doc.text.fill", "Legal Information", "Terms, privacy & licenses", .customRichBlack, {
+                    appState.showLegalInfo()
+                    withAnimation(.smooth) {
+                        showingLegalInfoAlert = true
+                    }
+                })
             ])
         }
     }
-    
+
     // MARK: - Logout Button
     private var logoutButton: some View {
         Button { showingLogoutAlert = true } label: {
@@ -294,7 +302,7 @@ struct ProfileScreen: View {
                     RoundedRectangle(cornerRadius: Constraint.regularCornerRadius)
                         .fill(color)
                         .frame(width: Constraint.extremeIconSize, height: Constraint.extremeIconSize)
-//                        .shadow(color: color.opacity(Constraint.Opacity.low), radius: Constraint.tinyPadding)
+                    //                        .shadow(color: color.opacity(Constraint.Opacity.low), radius: Constraint.tinyPadding)
                     
                     Image(systemName: icon)
                         .foregroundColor(.white)
@@ -327,10 +335,8 @@ struct ProfileScreen: View {
 
 #Preview {
     NavigationView {
-        ProfileScreen(
-            username: "John Adam",
-            dailyBudget: .constant(20),
-            delegate: AppStateManager.shared
-        )
+        ProfileScreen()
+            .environmentObject(AppStateManager.shared)
     }
 }
+

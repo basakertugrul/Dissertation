@@ -73,25 +73,23 @@ struct DataController {
         return .success(())
     }
 
-    public func fetchTimeFrame() -> Result<TimeFrame, DataControllerError> {
+    public func fetchTimeFrame() -> TimeFrame {
         let savedTimeFrameString = UserDefaults.standard.string(forKey: UserDefaultsKeys.timeFrame)
         if let savedTimeFrameString = savedTimeFrameString,
            let timeFrame = TimeFrame(rawValue: savedTimeFrameString) {
-            return .success(timeFrame)
+            return timeFrame
         }
-        return .success(.weekly)
+        return .weekly
     }
 
     public func resetTimeFrame() -> Result<Void, DataControllerError> {
         UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.timeFrame)
-        print("🗑️ TimeFrame reset to default")
         return .success(())
     }
 
     // MARK: - TARGET SPENDING MONEY
     public func saveTargetSpending(to amount: Double) -> Result<Void, DataControllerError> {
         UserDefaults.standard.set(amount, forKey: UserDefaultsKeys.targetSpending)
-        print("✅ Target Spending saved: £\(amount)")
         NotificationCenter.default.post(
             name: Notification.Name("TargetSpendingMoneyUpdated"),
             object: nil
@@ -110,7 +108,6 @@ struct DataController {
 
     public func resetTargetSpending() -> Result<Void, DataControllerError> {
         UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.targetSpending)
-        print("🗑️ Target Spending reset to default")
         NotificationCenter.default.post(
             name: Notification.Name("TargetSpendingMoneyUpdated"),
             object: nil
@@ -184,7 +181,6 @@ struct DataController {
             request.predicate = NSPredicate(format: "id == %@", updatedExpense.id as CVarArg)
             let results = try expenseModelContext.fetch(request)
             guard let existingExpense = results.first else {
-                print("⚠️ No matching expense found to update")
                 return .failure(.expenseNotFound)
             }
             existingExpense.name = updatedExpense.name
@@ -193,7 +189,6 @@ struct DataController {
             existingExpense.date = updatedExpense.date
             existingExpense.createDate = updatedExpense.createDate
             try expenseModelContext.save()
-            print("✅ Expense updated")
             NotificationCenter.default.post(
                 name: Notification.Name("ExpenseRefresh"),
                 object: .none
@@ -212,7 +207,6 @@ struct DataController {
                 expenseModelContext.delete(expense)
             }
             try expenseModelContext.save()
-            print("🗑️ All expenses deleted")
             NotificationCenter.default.post(
                 name: Notification.Name("ExpenseRefresh"),
                 object: .none

@@ -40,6 +40,7 @@ struct BalanceEntranceView: View {
     var body: some View {
         ZStack {
             /// Dimmed background
+            Color.black.ignoresSafeArea()
             Rectangle()
                 .fill(.ultraThinMaterial.opacity(Constraint.Opacity.medium))
                 .ignoresSafeArea()

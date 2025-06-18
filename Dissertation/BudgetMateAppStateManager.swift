@@ -17,19 +17,17 @@ final class AppStateManager: ObservableObject {
     /// SignIn Variables
     private lazy var signInWithApple = SignInWithAppleCoordinator()
     @Published var user: User?
-    @Published var hasLoggedIn: Bool = false {
-        didSet {
-            print(hasLoggedIn)
-        }
-    }
+    @Published var hasLoggedIn: Bool = false
 
     /// UI variables
     @Published var isLoading: Bool = false
     @Published var isProfileScreenOpen: Bool = false
-    @State var hasAddedExpense: Bool = false
-    @State var hasUpdatedExpense: Bool = false
-    @State var hasDeletedExpense: Bool = false
-    @State var error: DataControllerError? = .none
+    @Published var hasAddedExpense: Bool = false
+    @Published var hasUpdatedExpense: Bool = false
+    @Published var hasDeletedExpense: Bool = false
+    @Published var hasSavedDailyLimit: Bool = false
+    @Published var error: DataControllerError? = .none
+    @Published var signInError: SignInError? = .none
     /// Days since the app start date was set
     var daysSinceStart: Int {
         let calendar = Calendar.current
@@ -48,7 +46,12 @@ final class AppStateManager: ObservableObject {
     var calculatedBalance: Double {
         totalBudgetAccumulated - totalExpenses
     }
-
+    /// Average daily spending since start date
+    var formattedAverageDaily: Double {
+        guard daysSinceStart > 0 else { return .zero }
+        let averageDaily = totalExpenses / Double(daysSinceStart)
+        return averageDaily
+    }
     
     // MARK: - Methods
     func loadInitialData() {
@@ -99,6 +102,14 @@ final class AppStateManager: ObservableObject {
             error = comingError
         }
     }
+    
+    func resetData() {
+        let _ = dataController.resetTimeFrame()
+        let _ = dataController.resetTargetSpending()
+        let _ = dataController.resetExpenses()
+        dailyBalance = .none
+        user = nil
+    }
 }
 
 extension AppStateManager {
@@ -112,11 +123,11 @@ extension AppStateManager {
     func authenticateUserOnLaunch() {
         guard let user = user, user.hasFaceIDEnabled else { return }
         enableLoadingView()
-        signInWithApple.authenticateWithFaceID { result in // TODO: Show an error if error occurs
+        signInWithApple.authenticateWithFaceID { result in
             self.disableLoadingView()
             switch result {
             case .success: self.logIn()
-            case .failure: break
+            case let .failure(error): self.signInError = error
             }
         }
     }
@@ -143,22 +154,22 @@ extension AppStateManager {
 extension AppStateManager: LoginActions {
     func handleFaceIDSignIn() {
         enableLoadingView()
-        signInWithApple.authenticateWithFaceID { result in // TODO: Show an error if error occurs
+        signInWithApple.authenticateWithFaceID { result in
             self.disableLoadingView()
             switch result {
             case .success: self.logIn()
-            case .failure: break
+            case let .failure(error): self.signInError = error
             }
         }
     }
 
     func handleAppleSignIn() {
         enableLoadingView()
-        signInWithApple.getAppleRequest { result in // TODO: Show an error if error occurs
+        signInWithApple.getAppleRequest { result in
             self.disableLoadingView()
             switch result {
             case .success: self.logIn()
-            case .failure: break
+            case let .failure(error): self.signInError = error
             }
         }
     }
@@ -172,8 +183,12 @@ extension AppStateManager: LoginActions {
 
 extension AppStateManager: ProfileActionsDelegate {
     func editBudget(currentAmount: Double) {
-        dataController.saveTargetSpending(to: currentAmount)
-        refreshDailyBalance()
+        switch dataController.saveTargetSpending(to: currentAmount) {
+        case .success:
+            refreshDailyBalance()
+        case let .failure(comingError):
+            error = comingError
+        }
     }
     
     func signOut() {

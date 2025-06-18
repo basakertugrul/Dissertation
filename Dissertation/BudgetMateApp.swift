@@ -14,14 +14,22 @@ struct BudgetMateApp: App {
                 if appState.hasLoggedIn {
                     if appState.dailyBalance == .none {
                         BalanceEntranceView() { dailyAmount in
-                            DataController.shared.saveTargetSpending(to: dailyAmount)
+                            switch DataController.shared.saveTargetSpending(to: dailyAmount) {
+                            case .success:
+                                appState.hasSavedDailyLimit = true
+                            case let .failure(comingError):
+                                appState.error = comingError
+                            }
                             
                         } onTouchedBackground: {}
+                            .showSavedDailyLimitAlert(
+                                isPresented: $appState.hasSavedDailyLimit
+                            )
                     } else {
                         MainAppView()
                     }
                 } else {
-                    SignInView(isLoading: $appState.isLoading)
+                    SignInView()
                 }
             }
             .loadingOverlay($appState.isLoading)
@@ -38,13 +46,14 @@ struct BudgetMateApp: App {
 // MARK: - App Setup & Event Handling
 private extension BudgetMateApp {
     func setupApp() {
+        appState.getUserInfo()
         appState.loadInitialData()
         setupNotificationObservers()
     }
 
     func handleScenePhaseChange(_ phase: ScenePhase) {
         if phase == .background || phase == .inactive {
-            dataController.save()
+            let _ = dataController.save() 
         }
     }
 
@@ -65,6 +74,18 @@ private extension BudgetMateApp {
             queue: .main
         ) { _ in
             DispatchQueue.main.async {
+                appState.refreshDailyBalance()
+            }
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name("LoggedIn"),
+            object: .none,
+            queue: .main
+        ) { _ in
+            DispatchQueue.main.async {
+                appState.getUserInfo()
+                appState.refreshExpenses()
                 appState.refreshDailyBalance()
             }
         }

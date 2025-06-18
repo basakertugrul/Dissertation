@@ -272,6 +272,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BudgetMate-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = FundBud;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for taking photos of receipts for tracking expenses";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo library is used to save and access receipt photos for your expense records.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -305,6 +307,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BudgetMate-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = FundBud;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for taking photos of receipts for tracking expenses";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo library is used to save and access receipt photos for your expense records.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

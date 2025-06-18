@@ -22,7 +22,7 @@ struct DailyAllowanceCardView: View {
                 )
 
                 HStack {
-                    CustomTextView.currency(dailyBalance, font: .titleSmall, color: .white)
+                    CustomTextView.currency(dailyBalance, font: .titleSmallBold, color: .white)
 
                     Spacer()
 

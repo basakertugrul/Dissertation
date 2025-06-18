@@ -2,17 +2,22 @@ import SwiftUI
 
 // MARK: - Sign In Button Component
 struct LoginButtonView: View {
+    @EnvironmentObject var appState: AppStateManager
     let title: String
     let icon: String
     var isApple = false
     var isGlass = false
     var isSelected = false
     let action: () -> Void
-    
     @State private var isPressed = false
-    
+
     var body: some View {
-        Button(action: action) {
+        Button {
+//            if appState.user == nil {
+//                appState.resetData()
+//            }
+            action()
+        } label: {
             HStack(spacing: Constraint.smallPadding) {
                 Image(systemName: icon)
                     .renderingMode(.template)

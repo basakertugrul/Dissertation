@@ -3,9 +3,9 @@ import CoreData
 
 // MARK: - Main App View
 struct MainAppView: View {
-    @EnvironmentObject private var appState: AppStateManager
+    @EnvironmentObject var appState: AppStateManager
     @Environment(\.managedObjectContext) private var expenseModelContext
-    
+
     @FetchRequest(
         entity: ExpenseModel.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \ExpenseModel.date, ascending: false)],
@@ -50,26 +50,45 @@ struct MainAppView: View {
             isPresented: $showingAllowanceSheet,
             currentAmount: appState.dailyBalance ?? .zero,
             onSave: { amount in
-                DataController.shared.saveTargetSpending(to: amount)
-                withAnimation(.smooth) {
-                    showingAllowanceSheet = false
+                switch DataController.shared.saveTargetSpending(to: amount) {
+                case .success():
+                    withAnimation(.smooth) {
+                        showingAllowanceSheet = false
+                    }
+                case .failure: break
                 }
             }
         )
         .sheet(isPresented: $appState.isProfileScreenOpen) {
-            ProfileScreen(
-                username: appState.user?.fullName ?? "",
-                dailyBudget: .init(get: {
-                    appState.dailyBalance ?? .zero
-                }, set: { amount in
-                    appState.dailyBalance = amount
-                }),
-                delegate: appState
-            )
+            ProfileScreen()
             .presentationDetents([.height(UIScreen.main.bounds.height)])
         }
-        .showAddedExpenseAlert(isPresented: $appState.hasAddedExpense)
-        .onReceive(expenseContextPublisher, perform: handleExpenseContextChange)
+        .showSavedDailyLimitAlert(
+            isPresented: $appState.hasSavedDailyLimit
+        )
+        .showModifiedExpenseAlert(
+            isPresented: $appState.hasUpdatedExpense
+        )
+        .showDeletedExpenseAlert(
+            isPresented: $appState.hasDeletedExpense
+        )
+        .showAddedExpenseAlert(
+            isPresented: $appState.hasAddedExpense
+        )
+        .onReceive(
+            expenseContextPublisher,
+            perform: handleExpenseContextChange
+        )
+        .showErrorAlert(
+            isPresented: .init(get: {
+                appState.error != nil || appState.signInError != nil
+            }, set: { _ in }),
+            errorMessage:  appState.error?.errorDescription
+            ?? appState.signInError?.errorDescription
+            ?? "") {
+                appState.error = nil
+                appState.signInError = nil
+            }
     }
 }
 

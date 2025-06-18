@@ -68,7 +68,7 @@ struct LoginScreenView: View {
                 
                 ZStack {
                     Circle()
-                        .fill(.ultraThinMaterial)
+                        .fill(.customWhiteSand)
                         .frame(
                             width: Constraint.largeImageSize/2,
                             height: Constraint.largeImageSize/2
@@ -105,7 +105,7 @@ struct LoginScreenView: View {
                 .offset(y: logoOffset)
             }
             VStack(spacing: Constraint.padding) {
-                CustomTextView("BudgetMate", font: .titleLargeBold, color: .white)
+                CustomTextView("FundBud", font: .titleLargeBold, color: .white)
                 CustomTextView("Know exactly what you can spend!", font: .titleSmall, color: .white.opacity(Constraint.Opacity.high))
             }
             .opacity(showContent ? 1 : 0)
@@ -363,19 +363,4 @@ struct LoginScreenView: View {
             }
         }
     }
-}
-
-#Preview {
-    LoginScreenView(
-        loginStyle: .newUser(.none),
-        actions: MockLoginActions(),
-        isLoading: .constant(false)
-    )
-}
-
-class MockLoginActions: LoginActions {
-    func handleAppleSignIn() { }
-    func handleFaceIDSignIn() { }
-    func handleTermsAndPrivacyTap() { }
-    func changeUser() { print("Switch user tapped") }
 }

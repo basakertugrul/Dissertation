@@ -2,7 +2,6 @@ import SwiftUI
 
 struct SignInView: View {
     @State private var hasDailyLimit: Bool = false
-    @Binding var isLoading: Bool
     @EnvironmentObject var appState: AppStateManager
     
     var body: some View {
@@ -10,16 +9,15 @@ struct SignInView: View {
             LoginScreenView(
                 loginStyle: .returningUser(user),
                 actions: appState,
-                isLoading: $isLoading
+                isLoading: $appState.isLoading
             )
         } else {
             LoginScreenView(
                 loginStyle: .newUser(.none),
                 actions: appState,
-                isLoading: $isLoading
+                isLoading: $appState.isLoading
             )
             .onAppear {
-                self.appState.getUserInfo()
                 DispatchQueue.main.async {
                     appState.authenticateUserOnLaunch()
                 }

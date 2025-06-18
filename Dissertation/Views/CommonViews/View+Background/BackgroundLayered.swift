@@ -84,13 +84,31 @@ enum BackgroundStyle {
                     borderColor(for: color),
                     lineWidth: 1.5
                 )
-        case .compact(isColorFilled: true), .card(isColorFilled: true), .banner:
+        case .compact(isColorFilled: true), .card(isColorFilled: true):
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(color)
                 .stroke(
                     borderColor(for: color),
                     lineWidth: 1.5
                 )
+        case .banner:
+            ZStack {
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(color)
+                    .stroke(
+                        borderColor(for: color),
+                        lineWidth: 1.5
+                    )
+                Image(uiImage: Bundle.main.icon ?? UIImage())
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundStyle(.separator.opacity(Constraint.Opacity.medium))
+                    .scaledToFit()
+                    .shadow(
+                        color: .customRichBlack.opacity(Constraint.Opacity.medium),
+                        radius: Constraint.shadowRadius
+                    )
+            }
         case .standard:
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(.ultraThinMaterial.opacity(Constraint.Opacity.medium))

@@ -37,7 +37,7 @@ struct CustomAlertView: View {
                     .multilineTextAlignment(.center)
                 }
                 .frame(width: Constraint.largeImageSize)
-                .padding(.vertical, Constraint.largePadding)
+                .padding(Constraint.largePadding)
                 .background(alertColor)
 
                 /// Buttons
@@ -54,7 +54,7 @@ struct CustomAlertView: View {
                                 color: Color.customRichBlack.opacity(Constraint.Opacity.medium)
                             )
                         }
-                        .frame(width: Constraint.largeImageSize/2 - 1, alignment: .center)
+                        .frame(width: Constraint.largeImageSize/2, alignment: .center)
 
                         Divider()
                             .background(Color.customRichBlack.opacity(Constraint.Opacity.low))

@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Use Face ID to quickly and securely sign in to BudgetMate</string>
+	<string>Use Face ID to quickly and securely sign in to FundBud</string>
 </dict>
 </plist>
