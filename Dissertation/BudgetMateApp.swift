@@ -32,13 +32,23 @@ struct BudgetMateApp: App {
                     SignInView()
                 }
             }
-            .loadingOverlay($appState.isLoading)
-            .environmentObject(appState)
-            .environment(\.managedObjectContext, dataController.expenseModelContext)
-            .onAppear(perform: setupApp)
-            .onChange(of: scenePhase, { _, newValue in
-                handleScenePhaseChange(newValue)
-            })
+            .showErrorAlert(
+                isPresented: .init(get: {
+                    appState.error != nil || appState.signInError != nil
+                }, set: { _ in }),
+                errorMessage:  appState.error?.errorDescription
+                ?? appState.signInError?.errorDescription
+                ?? "") {
+                    appState.error = nil
+                    appState.signInError = nil
+                }
+                .loadingOverlay($appState.isLoading)
+                .environmentObject(appState)
+                .environment(\.managedObjectContext, dataController.expenseModelContext)
+                .onAppear(perform: setupApp)
+                .onChange(of: scenePhase, { _, newValue in
+                    handleScenePhaseChange(newValue)
+                })
         }
     }
 }

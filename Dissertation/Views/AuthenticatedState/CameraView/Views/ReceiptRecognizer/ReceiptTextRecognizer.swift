@@ -3,7 +3,7 @@ import Vision
 import VisionKit
 
 // MARK: - Receipt Text Recognizer
-final class ReceiptTextRecognizer {
+class ReceiptTextRecognizer {
     
     // MARK: - Types
     typealias RecognitionResult = Result<ReceiptData, TextRecognitionError>
@@ -37,12 +37,12 @@ final class ReceiptTextRecognizer {
                 print("---")
                 switch result {
                 case let .success(data):
-                    print(data.merchantName ?? "")
-                    print(data.date ?? "")
-                    print(data.formattedAmount ?? "")
+                    print("Merchant: \(data.merchantName ?? "Unknown")")
+                    print("Date: \(data.formattedDate ?? "Unknown")")
+                    print("Amount: \(data.formattedAmount ?? "Unknown")")
 
                 case let .failure(error):
-                    print(error)
+                    print("Error: \(error)")
                 }
             }
         }
@@ -50,7 +50,6 @@ final class ReceiptTextRecognizer {
 }
 
 // MARK: - Private Methods
-
 private extension ReceiptTextRecognizer {
     func performTextRecognition(on cgImage: CGImage, completion: @escaping CompletionHandler) {
         let request = createTextRecognitionRequest(completion: completion)
@@ -102,15 +101,14 @@ private extension ReceiptTextRecognizer {
             .compactMap { $0.topCandidates(1).first?.string }
             .joined(separator: "\n")
     }
-
+    
     func createReceiptData(from text: String) -> ReceiptData {
         let extractor = ReceiptDataExtractor(text: text)
-
+    
         return ReceiptData(
             merchantName: extractor.merchantName,
             date: extractor.date,
-            totalAmount: extractor.amount,
-            rawText: text
+            totalAmount: extractor.amount
         )
     }
 }

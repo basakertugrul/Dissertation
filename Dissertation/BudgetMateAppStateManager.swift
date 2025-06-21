@@ -126,8 +126,10 @@ extension AppStateManager {
         signInWithApple.authenticateWithFaceID { result in
             self.disableLoadingView()
             switch result {
-            case .success: self.logIn()
-            case let .failure(error): self.signInError = error
+            case .success:
+                self.logIn()
+            case let .failure(error):
+                self.signInError = error
             }
         }
     }
@@ -138,15 +140,19 @@ extension AppStateManager {
         }
     }
 
-    private func disableLoadingView() {
-        withAnimation {
-            isLoading = false
+    func enableLoadingView() {
+        DispatchQueue.main.async {
+            withAnimation {
+                self.isLoading = true
+            }
         }
     }
 
-    private func enableLoadingView() {
-        withAnimation {
-            isLoading = true
+    func disableLoadingView() {
+        DispatchQueue.main.async {
+            withAnimation {
+                self.isLoading = false
+            }
         }
     }
 }
@@ -157,8 +163,10 @@ extension AppStateManager: LoginActions {
         signInWithApple.authenticateWithFaceID { result in
             self.disableLoadingView()
             switch result {
-            case .success: self.logIn()
-            case let .failure(error): self.signInError = error
+            case .success:
+                self.logIn()
+            case let .failure(error):
+                self.signInError = error
             }
         }
     }
@@ -168,8 +176,10 @@ extension AppStateManager: LoginActions {
         signInWithApple.getAppleRequest { result in
             self.disableLoadingView()
             switch result {
-            case .success: self.logIn()
-            case let .failure(error): self.signInError = error
+            case .success:
+                self.logIn()
+            case let .failure(error):
+                self.signInError = error
             }
         }
     }
@@ -201,22 +211,16 @@ extension AppStateManager: ProfileActionsDelegate {
     }
 
     func exportExpenseData() {
-        print("Export expense data")
-    }
+        enableLoadingView()
+        generateExpensePDF { [weak self] pdfData in
+            guard let self = self, let pdfData = pdfData else {
+                print("Failed to generate PDF")
+                return
+            }
 
-    func managePrivacySettings() {
-        print("Manage privacy settings")
-    }
-
-    func sendFeedback() {
-        print("Send feedback")
-    }
-
-    func rateApp() {
-        print("Rate app")
-    }
-
-    func showLegalInfo() {
-        print("Show legal info")
+            DispatchQueue.main.async {
+                self.sharePDF(pdfData: pdfData)
+            }
+        }
     }
 }

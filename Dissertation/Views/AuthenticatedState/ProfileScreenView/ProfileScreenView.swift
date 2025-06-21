@@ -6,22 +6,22 @@ protocol ProfileActionsDelegate: AnyObject {
     func editBudget(currentAmount: Double)
     func manageNotifications()
     func exportExpenseData()
-    func managePrivacySettings()
-    func sendFeedback()
-    func rateApp()
-    func showLegalInfo()
     func signOut()
 }
 
 // MARK: - Profile Screen
 struct ProfileScreen: View {
     @EnvironmentObject var appState: AppStateManager
+
     /// UI related
     @State var showingBudgetSheet = false
     @State var showingLogoutAlert = false
     @State var showingAppRateAlert = false
     @State var showingLegalInfoAlert = false
-    
+    @State var showingsendFeedbackAlert = false
+    @State var showingPrivacyPolicyAlert = false
+    @State var showingExportDataAlert = false
+
     var title: AttributedString = {
         var string = AttributedString.init(stringLiteral: "PROFILE")
         string.foregroundColor = .customBurgundy
@@ -31,7 +31,22 @@ struct ProfileScreen: View {
     
     var body: some View {
         VStack(spacing: .zero) {
-            CustomNavigationBarTitleView(title: title)
+            HStack(alignment: .center) {
+                CustomNavigationBarTitleView(title: title)
+                Spacer()
+                Button {
+                    withAnimation(.smooth) {
+                        appState.isProfileScreenOpen = false
+                    }
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .resizable()
+                        .foregroundColor(.customBurgundy.opacity(Constraint.Opacity.high))
+                        .frame(width: 32, height: 32)
+                }
+                .padding(.vertical, (Constraint.extremePadding + Constraint.largePadding)/2)
+            }
+            .padding(.horizontal, Constraint.padding)
 
             ScrollView {
                 VStack(spacing: Constraint.largePadding) {
@@ -69,12 +84,55 @@ struct ProfileScreen: View {
             })
         .showAppRateConfirmationAlert(isPresented: $showingAppRateAlert) { rateApp() }
         .showLegalInformationAlert(isPresented: $showingLegalInfoAlert)
+        .showSendFeedbackConfirmationAlert(isPresented: $showingsendFeedbackAlert, onTap: sendFeedback)
+        .showPrivacySecurityAlert(isPresented: $showingPrivacyPolicyAlert)
+        .showExportDataConfirmationAlert(isPresented: $showingExportDataAlert, onTap: exportData)
     }
 
-    func rateApp() {
+    private func rateApp() {
         if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
                AppStore.requestReview(in: scene)
            }
+    }
+    
+    private func exportData() {
+        if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+               AppStore.requestReview(in: scene)
+           }
+    }
+
+    private func sendFeedback() {
+        if UIApplication.shared.canOpenURL(URL(string: "mailto:")!) {
+            let email = "fundBud2025@gmail.com"
+            let subject = "FundBud Feedback - iOS App"
+            let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+            let iOSVersion = UIDevice.current.systemVersion
+            
+            let body = """
+        Hi FundBud team,
+        
+        I'd like to share feedback about the app:
+        
+        [Please write your feedback here]
+        
+        ---
+        App Version: \(appVersion)
+        iOS Version: \(iOSVersion)
+        """
+            
+            var components = URLComponents()
+            components.scheme = "mailto"
+            components.path = email
+            components.queryItems = [
+                URLQueryItem(name: "subject", value: subject),
+                URLQueryItem(name: "body", value: body)
+            ]
+            
+            if let url = components.url {
+                UIApplication.shared.open(url)
+            }
+            
+        }
     }
     
     // MARK: - Profile Card
@@ -87,7 +145,6 @@ struct ProfileScreen: View {
         
         return HStack(spacing: Constraint.padding) {
             ZStack {
-                // Gradient background with glow effect
                 Circle()
                     .fill(.customBurgundy)
                     .shadow(color: .black.opacity(Constraint.Opacity.low), radius: Constraint.shadowRadius)
@@ -227,19 +284,21 @@ struct ProfileScreen: View {
                     appState.exportExpenseData()
                 }),
                 ("lock.shield.fill", "Privacy & Security", "Manage your data protection", .customRichBlack, {
-                    appState.managePrivacySettings()
+                    withAnimation(.smooth) {
+                        showingPrivacyPolicyAlert = true
+                    }
                 }),
                 ("envelope.badge.fill", "Send Feedback", "Help us improve the app", .customOliveGreen, {
-                    appState.sendFeedback()
+                    withAnimation(.smooth) {
+                        showingsendFeedbackAlert = true
+                    }
                 }),
                 ("star.circle.fill", "Rate FundBud", "Share your experience", .customGold, {
-                    appState.rateApp()
                     withAnimation(.smooth) {
                         showingAppRateAlert = true
                     }
                 }),
                 ("doc.text.fill", "Legal Information", "Terms, privacy & licenses", .customRichBlack, {
-                    appState.showLegalInfo()
                     withAnimation(.smooth) {
                         showingLegalInfoAlert = true
                     }

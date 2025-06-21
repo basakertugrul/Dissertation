@@ -80,6 +80,7 @@ struct CustomAlertView: View {
                     .shadow(radius: Constraint.shadowRadius)
             )
             .clipShape(RoundedRectangle(cornerRadius: Constraint.cornerRadius))
+            .zIndex(10)
         }
     }
 }

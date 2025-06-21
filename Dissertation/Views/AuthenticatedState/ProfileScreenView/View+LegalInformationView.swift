@@ -70,7 +70,8 @@ struct LegalInformationOverlay: View {
                        CustomTextView(
                            getContent(for: selectedSection),
                            font: .labelLarge,
-                           color: .customRichBlack
+                           color: .customRichBlack,
+                           alignment: .leading
                        )
                        .padding(Constraint.padding)
                    }

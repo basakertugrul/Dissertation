@@ -7,15 +7,11 @@ struct SignInView: View {
     var body: some View {
         if let user = appState.user {
             LoginScreenView(
-                loginStyle: .returningUser(user),
-                actions: appState,
-                isLoading: $appState.isLoading
+                loginStyle: .returningUser(user)
             )
         } else {
             LoginScreenView(
-                loginStyle: .newUser(.none),
-                actions: appState,
-                isLoading: $appState.isLoading
+                loginStyle: .newUser(.none)
             )
             .onAppear {
                 DispatchQueue.main.async {

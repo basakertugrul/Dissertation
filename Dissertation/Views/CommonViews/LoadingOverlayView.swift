@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Loading Overlay Component
-/// A self-contained loading overlay that manages all its internal state
 struct LoadingOverlayView: View {
     @Binding var isPresented: Bool
 
@@ -24,7 +23,6 @@ struct LoadingOverlayView: View {
                 VStack(spacing: Constraint.padding) {
                     ZStack {
                         /// Background circle
-                        
                         Image(uiImage: Bundle.main.icon ?? UIImage())
                             .frame(width: 70, height: 70)
 
@@ -69,9 +67,17 @@ struct LoadingOverlayView: View {
                     }
                     
                     /// Loading text
-                    CustomTextView("Loading...", font: .bodyLargeBold, color: .white)
+                    CustomTextView("Loading...", font: .bodyLargeBold, color: .customRichBlack)
                 }
                 .padding(Constraint.largePadding)
+                .background(
+                    RoundedRectangle(cornerRadius: Constraint.cornerRadius)
+                        .fill(
+                            Color.customWhiteSand
+                                .opacity(Constraint.Opacity.high)
+                        )
+                        .shadow(color: .customRichBlack.opacity(Constraint.Opacity.medium), radius: Constraint.shadowRadius)
+                )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(
                     Color.customWhiteSand
@@ -88,6 +94,7 @@ struct LoadingOverlayView: View {
             .onDisappear {
                 stopAnimations()
             }
+            .zIndex(10)
         }
     }
 

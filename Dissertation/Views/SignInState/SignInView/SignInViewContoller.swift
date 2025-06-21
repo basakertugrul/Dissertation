@@ -261,7 +261,6 @@ extension SignInWithAppleCoordinator: ASAuthorizationControllerDelegate {
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        let signInError: SignInError
         if let authError = error as? ASAuthorizationError {
             switch authError.code {
             case .canceled:

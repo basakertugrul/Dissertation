@@ -16,11 +16,9 @@ protocol LoginActions {
 
 // MARK: - Minimal Modern Login Screen
 struct LoginScreenView: View {
+    @EnvironmentObject var appState: AppStateManager
     @State var loginStyle: LoginStyle
-    let actions: LoginActions
-
-    @Binding var isLoading: Bool
-
+    
     /// UI related variables
     @State private var showContent = false
     @State private var logoScale: CGFloat = 0.3
@@ -126,8 +124,8 @@ struct LoginScreenView: View {
                     isApple: true,
                     isSelected: false
                 ) {
-                    isLoading = true
-                    actions.handleAppleSignIn()
+                    appState.enableLoadingView()
+                    appState.handleAppleSignIn()
                 }
 
                 // Face ID login option if user exists
@@ -179,7 +177,7 @@ struct LoginScreenView: View {
                 switchUserButton
             }
             
-            SecureAndPrivateView(onTap: actions.handleTermsAndPrivacyTap)
+            SecureAndPrivateView(onTap: appState.handleTermsAndPrivacyTap)
         }
         .opacity(showFooter ? Constraint.Opacity.high : 0)
         .offset(y: showFooter ? 0 : 20)
@@ -209,7 +207,7 @@ struct LoginScreenView: View {
             
             // Face ID Button
             Button {
-                actions.handleFaceIDSignIn()
+                appState.handleFaceIDSignIn()
             } label: {
                 VStack(spacing: Constraint.smallPadding) {
                     Image(systemName: "faceid")
@@ -249,7 +247,7 @@ struct LoginScreenView: View {
                    loginStyle = .newUser(user)
                 }
             }
-            actions.changeUser()
+            appState.changeUser()
         } label: {
             HStack(spacing: Constraint.smallPadding) {
                 Image(systemName: "person.2.fill")
@@ -358,7 +356,7 @@ struct LoginScreenView: View {
                     .opacity(showContent ? 1 : 0)
                     .scaleEffect(showContent ? 1 : 0.5)
                     .onTapGesture {
-                        actions.handleFaceIDSignIn()
+                        appState.handleFaceIDSignIn()
                     }
             }
         }

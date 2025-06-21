@@ -1,8 +1,10 @@
 import Photos
+import PhotosUI
 import SwiftUI
 import AVFoundation
+import Combine
 
-enum Status {
+enum CameraStatus {
     case configured
     case unconfigured
     case unauthorized
@@ -10,308 +12,376 @@ enum Status {
 }
 
 class CameraManager: ObservableObject {
-    @Published var capturedImage: UIImage? = .none
-    @Published private var flashMode: AVCaptureDevice.FlashMode = .off
-    
-    @Published var status = Status.unconfigured
+    // MARK: - Published Properties
+    @Published var capturedImage: UIImage? = nil
+    @Published var status = CameraStatus.unconfigured
     @Published var showCameraErrorAlert = false
     @Published var showPhotoErrorAlert = false
+    @Published var showSettingAlert = false
+    @Published var isPermissionGranted: Bool = false
+    @Published var isFlashOn = false
+    @Published var selectedPhotos: [PhotosPickerItem] = []
     
+    // MARK: - Camera Properties
     let session = AVCaptureSession()
     let photoOutput = AVCapturePhotoOutput()
     var videoDeviceInput: AVCaptureDeviceInput?
     var position: AVCaptureDevice.Position = .back
     
+    // MARK: - Private Properties
+    private var flashMode: AVCaptureDevice.FlashMode = .off
     private var cameraDelegate: CameraDelegate?
+    private let sessionQueue = DispatchQueue(label: "com.FundBud.sessionQueue")
+    private var cancelables = Set<AnyCancellable>()
+    private var isConfiguring = false
+    
+    // MARK: - Initialization
+    init() {
+        setupBindings()
+    }
+    
+    deinit {
+        stopCapturing()
+        cancelables.removeAll()
+    }
+    
+    private func setupBindings() {
+        $isFlashOn
+            .sink { [weak self] isOn in
+                self?.flashMode = isOn ? .on : .off
+            }
+            .store(in: &cancelables)
+    }
 
-    /// Communicate with the session and other session objects with this queue.
-    private let sessionQueue = DispatchQueue(label: "com.BudgetMate.sessionQueue")
-
-    func configureCaptureSession() {
-        sessionQueue.async { [weak self] in
-            guard let self, self.status == .unconfigured else { return }
-            
-            self.session.beginConfiguration()
-            self.session.sessionPreset = .photo
-            
-            /// Add video input.
-            self.setupVideoInput()
-            
-            /// Add the photo output.
-            self.setupPhotoOutput()
-            
-            self.session.commitConfiguration()
-            self.startCapturing()
+    // MARK: - Permission Management
+    func requestCameraPermission() {
+        AVCaptureDevice.requestAccess(for: .video) { [weak self] isGranted in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.isPermissionGranted = isGranted
+                if isGranted {
+                    self.setupCamera()
+                } else {
+                    self.showSettingAlert = true
+                }
+            }
         }
     }
     
-    private func setupVideoInput() {
-        do {
-            let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)
-            guard let camera else {
-                print("CameraManager: Video device is unavailable.")
-                status = .unconfigured
-                session.commitConfiguration()
-                return
+    func checkForDevicePermission() {
+        let videoStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
+        
+        switch videoStatus {
+        case .authorized:
+            DispatchQueue.main.async {
+                self.isPermissionGranted = true
+            }
+            setupCamera()
+        case .notDetermined:
+            requestCameraPermission()
+        case .denied, .restricted:
+            DispatchQueue.main.async {
+                self.isPermissionGranted = false
+                self.showSettingAlert = true
+            }
+        @unknown default:
+            DispatchQueue.main.async {
+                self.isPermissionGranted = false
+                self.showSettingAlert = true
+            }
+        }
+    }
+    
+    func requestGalleryPermission() {
+        PHPhotoLibrary.requestAuthorization { [weak self] status in
+            DispatchQueue.main.async {
+                switch status {
+                case .authorized, .limited:
+                    break
+                case .denied, .restricted:
+                    self?.showSettingAlert = true
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    func checkGalleryPermissionStatus() -> PHAuthorizationStatus {
+        return PHPhotoLibrary.authorizationStatus()
+    }
+
+    // MARK: - Camera Setup (SIMPLIFIED)
+    private func setupCamera() {
+        guard !isConfiguring else { return }
+        isConfiguring = true
+        
+        sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            
+            print("🎥 Setting up camera...")
+            
+            // Configure session only once
+            if self.session.inputs.isEmpty && self.session.outputs.isEmpty {
+                self.session.sessionPreset = .photo
+                
+                // Add photo output
+                if self.session.canAddOutput(self.photoOutput) {
+                    self.session.addOutput(self.photoOutput)
+                    print("✅ Photo output added")
+                }
             }
             
-            let videoInput = try AVCaptureDeviceInput(device: camera)
+            // Setup camera input
+            self.setupCameraInput()
             
-            if session.canAddInput(videoInput) {
-                session.addInput(videoInput)
-                videoDeviceInput = videoInput
-                status = .configured
+            // Start session
+            if !self.session.isRunning {
+                self.session.startRunning()
+                print("🎥 Camera session started")
+                
+                DispatchQueue.main.async {
+                    self.status = .configured
+                    self.isConfiguring = false
+                }
             } else {
-                print("CameraManager: Couldn't add video device input to the session.")
-                status = .unconfigured
-                session.commitConfiguration()
-                return
+                DispatchQueue.main.async {
+                    self.isConfiguring = false
+                }
+            }
+        }
+    }
+    
+    private func setupCameraInput() {
+        // Remove existing video input
+        if let existingInput = videoDeviceInput {
+            session.removeInput(existingInput)
+        }
+        
+        // Get camera for current position
+        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position) else {
+            print("❌ No camera available for position: \(position)")
+            return
+        }
+        
+        do {
+            let input = try AVCaptureDeviceInput(device: camera)
+            
+            if session.canAddInput(input) {
+                session.addInput(input)
+                videoDeviceInput = input
+                print("✅ Camera input configured for \(position == .back ? "back" : "front") camera")
             }
         } catch {
-            print("CameraManager: Couldn't create video device input: \(error)")
-            status = .failed
-            session.commitConfiguration()
-            return
+            print("❌ Error setting up camera input: \(error)")
+        }
+    }
+
+    // MARK: - Session Control
+    func stopCapturing() {
+        sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            if self.session.isRunning {
+                self.session.stopRunning()
+                print("🛑 Camera session stopped")
+            }
+        }
+    }
+
+    // MARK: - Camera Controls
+    func switchCamera() {
+        guard !isConfiguring else { return }
+        
+        sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            
+            // Simply switch position and update input
+            self.position = (self.position == .back) ? .front : .back
+            print("🔄 Switching to \(self.position == .back ? "back" : "front") camera")
+            
+            // Update camera input without stopping session
+            self.setupCameraInput()
         }
     }
     
-    private func setupPhotoOutput() {
-        if session.canAddOutput(photoOutput) {
-            session.addOutput(photoOutput)
-            photoOutput.maxPhotoQualityPrioritization = .quality
-            photoOutput.maxPhotoDimensions = .init(width: 4032, height: 3024)
-            status = .configured
-        } else {
-            print("CameraManager: Could not add photo output to the session")
-            status = .failed
-            session.commitConfiguration()
-            return
-        }
+    func switchFlash() {
+        isFlashOn.toggle()
+        toggleTorch(torchIsOn: isFlashOn)
     }
-
-    private func startCapturing() {
-        if status == .configured {
-            self.session.startRunning()
-        } else if status == .unconfigured || status == .unauthorized {
-            DispatchQueue.main.async {
-                self.showCameraErrorAlert = true
-            }
-        }
-    }
-
-    func stopCapturing() {
+    
+    private func toggleTorch(torchIsOn: Bool) {
         sessionQueue.async { [weak self] in
-            guard let self else { return }
-            if self.session.isRunning {
-                self.session.stopRunning()
+            guard let self = self,
+                  let device = self.videoDeviceInput?.device,
+                  device.hasTorch else {
+                print("⚠️ Torch not available")
+                return
             }
-        }
-    }
-
-    func toggleTorch(tourchIsOn: Bool) {
-        guard let device = AVCaptureDevice.default(for: .video) else { return }
-        if device.hasTorch {
+            
             do {
                 try device.lockForConfiguration()
-                flashMode = tourchIsOn ? .on : .off
-                if tourchIsOn {
+                if torchIsOn {
                     try device.setTorchModeOn(level: 1.0)
                 } else {
                     device.torchMode = .off
                 }
                 device.unlockForConfiguration()
+                print("💡 Torch \(torchIsOn ? "ON" : "OFF")")
             } catch {
-                print("Failed to set torch mode: \(error).")
+                print("❌ Torch error: \(error)")
             }
-        } else {
-            print("Torch not available for this device.")
         }
     }
     
-    func setFocusOnTap(devicePoint: CGPoint) {
-        guard let cameraDevice = self.videoDeviceInput?.device else { return }
-        do {
-            try cameraDevice.lockForConfiguration()
-            if cameraDevice.isFocusModeSupported(.autoFocus) {
-                cameraDevice.focusMode = .autoFocus
-                cameraDevice.focusPointOfInterest = devicePoint
+    func setFocus(point: CGPoint) {
+        sessionQueue.async { [weak self] in
+            guard let self = self,
+                  let device = self.videoDeviceInput?.device else { return }
+            
+            do {
+                try device.lockForConfiguration()
+                
+                if device.isFocusModeSupported(.autoFocus) {
+                    device.focusMode = .autoFocus
+                    device.focusPointOfInterest = point
+                }
+                
+                if device.isExposureModeSupported(.autoExpose) {
+                    device.exposureMode = .autoExpose
+                    device.exposurePointOfInterest = point
+                }
+                
+                device.isSubjectAreaChangeMonitoringEnabled = true
+                device.unlockForConfiguration()
+                print("🎯 Focus set")
+            } catch {
+                print("❌ Focus error: \(error)")
             }
-            cameraDevice.exposurePointOfInterest = devicePoint
-            cameraDevice.exposureMode = .autoExpose
-            cameraDevice.isSubjectAreaChangeMonitoringEnabled = true
-            cameraDevice.unlockForConfiguration()
-        } catch {
-            print("Failed to configure focus: \(error)")
         }
     }
     
-    func setZoomScale(factor: CGFloat){
-        guard let device = self.videoDeviceInput?.device else { return }
-        do {
-            try device.lockForConfiguration()
-            device.videoZoomFactor = max(device.minAvailableVideoZoomFactor, max(factor, device.minAvailableVideoZoomFactor))
-            device.unlockForConfiguration()
-        } catch {
-            print(error.localizedDescription)
+    func zoom(with factor: CGFloat) {
+        sessionQueue.async { [weak self] in
+            guard let self = self,
+                  let device = self.videoDeviceInput?.device else { return }
+            
+            do {
+                try device.lockForConfiguration()
+                let clampedFactor = max(device.minAvailableVideoZoomFactor,
+                                      min(factor, device.maxAvailableVideoZoomFactor))
+                device.videoZoomFactor = clampedFactor
+                device.unlockForConfiguration()
+            } catch {
+                print("❌ Zoom error: \(error)")
+            }
         }
     }
     
-    func switchCamera() {
-        guard let videoDeviceInput else { return }
-        
-        /// Remove the current video input
-        session.removeInput(videoDeviceInput)
-        
-        /// Add the new video input
-        setupVideoInput()
-    }
-    
+    // MARK: - Photo Capture
     func captureImage() {
         sessionQueue.async { [weak self] in
-            guard let self else { return }
-            
-            var photoSettings = AVCapturePhotoSettings()
-            
-            /// Capture HEIC photos when supported
-            if photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-                photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-            }
-            
-            /// Sets the flash option for the capture
-            if self.videoDeviceInput?.device.isFlashAvailable ??  false {
-                photoSettings.flashMode = self.flashMode
-            }
-            
-            /// Sets the preview thumbnail pixel format
-            if let previewPhotoPixelFormatType = photoSettings.availablePreviewPhotoPixelFormatTypes.first {
-                photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPhotoPixelFormatType]
-            }
-            photoSettings.photoQualityPrioritization = .quality
-
-            if let videoConnection = photoOutput.connection(with: .video), videoConnection.isVideoOrientationSupported {
-                videoConnection.videoOrientation = .portrait
-            }
-
-            cameraDelegate = CameraDelegate { [weak self] image in
-                self?.capturedImage = image
-            }
-
-            if let cameraDelegate {
-                if photoOutput.connection(with: .video)?.isActive == true {
-                    self.photoOutput.capturePhoto(with: photoSettings, delegate: cameraDelegate)
-                } else {
-                    print("Video connection is not active. Cannot capture photo. Retrying...")
-                    ensureCaptureSessionIsRunning()
-                }
-            }
-        }
-    }
-
-    func ensureCaptureSessionIsRunning() {
-        DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
             
-            // Thread-safe check of session state
-            DispatchQueue.main.sync {
-                // Only start if session is not already running
-                guard self.session.isRunning else {
-                    print("ℹ️ Capture session is already running")
-                    return
-                }
-                
-                // Check if session is interrupted
-                if self.session.isInterrupted {
-                    print("⚠️ Capture session is interrupted")
-                    return
-                }
-                
-                // Check if session has proper configuration
-                guard self.session.inputs.isEmpty && self.session.outputs.isEmpty else {
-                    print("⚠️ Session has no inputs or outputs configured")
-                    return
-                }
-            }
-            
-            // Start the session safely
-            self.session.beginConfiguration()
-            
-            // Verify we can still configure the session
-            guard self.session.canSetSessionPreset(.photo) else {
-                self.session.commitConfiguration()
-                print("⚠️ Cannot set session preset")
+            guard self.status == .configured,
+                  self.session.isRunning else {
+                print("❌ Camera not ready")
                 return
             }
             
-            self.session.commitConfiguration()
+            guard let videoConnection = self.photoOutput.connection(with: .video) else {
+                print("❌ No video connection")
+                return
+            }
             
-            // Final start attempt
-            DispatchQueue.main.async {
-                if self.session.isRunning && self.session.isInterrupted {
-                    self.session.startRunning()
-                    print("✅ Capture session started successfully")
+            let photoSettings = AVCapturePhotoSettings()
+            
+            if let device = self.videoDeviceInput?.device, device.isFlashAvailable {
+                photoSettings.flashMode = self.flashMode
+            }
+            
+            if videoConnection.isVideoOrientationSupported {
+                videoConnection.videoOrientation = .portrait
+            }
+            
+            self.cameraDelegate = CameraDelegate { [weak self] image in
+                DispatchQueue.main.async {
+                    self?.capturedImage = image
+                    print("📸 Photo captured!")
                 }
             }
-        }
-    }
-
-    func saveImageToGallery(image: UIImage) {
-        cameraDelegate?.saveImageToGallery(image) { [weak self] success, error in
-            if success {
-                self?.processReceipt(image: image)
-            } else if let error = error {
-                print("Error saving image to gallery: \(error)")
+            
+            if let delegate = self.cameraDelegate {
+                self.photoOutput.capturePhoto(with: photoSettings, delegate: delegate)
             }
         }
-        
     }
 
-    func processReceipt(image: UIImage) {
-        processReceiptImage(image) { result in
-            switch result {
-            case let .success(data):
-                print("Merchant: \(data.merchantName ?? "Unknown")")
-                print("Date: \(data.formattedDate ?? "Unknown")")
-                print("Amount: \(data.formattedAmount ?? "Unknown")")
-            case let .failure(failure):
-                print("Receipt recognition error: \(failure)")
+    // MARK: - Image Processing
+    func saveImageToGallery(image: UIImage) {
+        let delegate = CameraDelegate { _ in }
+        delegate.saveImageToGallery(image) { [weak self] _, error in
+            DispatchQueue.main.async {
+                if let _ = error {
+                    self?.showPhotoErrorAlert = true
+                }
             }
         }
     }
 }
 
+// MARK: - Camera Delegate
 class CameraDelegate: NSObject, AVCapturePhotoCaptureDelegate {
     private let completion: (UIImage?) -> Void
 
     init(completion: @escaping (UIImage?) -> Void) {
         self.completion = completion
+        super.init()
     }
 
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let error {
-            print("CameraManager: Error while capturing photo: \(error)")
-            completion(.none)
+        if let error = error {
+            print("❌ Photo processing error: \(error)")
+            completion(nil)
             return
         }
 
-        if let imageData = photo.fileDataRepresentation(), let capturedImage = UIImage(data: imageData) {
-            completion(capturedImage)
-        } else {
-            print("CameraManager: Image not fetched.")
+        guard let imageData = photo.fileDataRepresentation(),
+              let capturedImage = UIImage(data: imageData) else {
+            print("❌ Failed to create image")
+            completion(nil)
+            return
         }
+
+        completion(capturedImage)
     }
 
-    func saveImageToGallery(
-        _ image: UIImage,
-        completion: @escaping (Bool, Error?) -> Void
-    ) {
+    func saveImageToGallery(_ image: UIImage, completion: @escaping (Bool, Error?) -> Void) {
+        let status = PHPhotoLibrary.authorizationStatus()
+        
+        switch status {
+        case .authorized, .limited:
+            performSave(image, completion: completion)
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization { newStatus in
+                if newStatus == .authorized || newStatus == .limited {
+                    self.performSave(image, completion: completion)
+                } else {
+                    completion(false, NSError(domain: "PhotoLibraryError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Photo library access denied"]))
+                }
+            }
+        case .denied, .restricted:
+            completion(false, NSError(domain: "PhotoLibraryError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Photo library access denied"]))
+        @unknown default:
+            completion(false, NSError(domain: "PhotoLibraryError", code: 3, userInfo: [NSLocalizedDescriptionKey: "Unknown photo library authorization status"]))
+        }
+    }
+    
+    private func performSave(_ image: UIImage, completion: @escaping (Bool, Error?) -> Void) {
         PHPhotoLibrary.shared().performChanges {
             PHAssetChangeRequest.creationRequestForAsset(from: image)
         } completionHandler: { success, error in
-            if success {
-                completion(true, .none)
-            } else {
-                print("Error saving image to gallery: \(String(describing: error))")
-                completion(false, error)
+            DispatchQueue.main.async {
+                completion(success, error)
             }
         }
     }

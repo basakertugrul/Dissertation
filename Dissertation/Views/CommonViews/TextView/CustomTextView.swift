@@ -7,19 +7,22 @@ struct CustomTextView: View {
     let color: Color
     let uppercase: Bool
     let isBold: Bool
+    let alignment: TextAlignment
 
     init(
         _ text: String,
         font: TextFonts,
         color: Color = .customWhiteSand,
         uppercase: Bool = false,
-        isBold: Bool = false
+        isBold: Bool = false,
+        alignment: TextAlignment = .center
     ) {
         self.text = text
         self.font = font
         self.color = color
         self.uppercase = uppercase
         self.isBold = isBold
+        self.alignment = alignment
     }
 
     var body: some View {
@@ -33,7 +36,7 @@ struct CustomTextView: View {
                 .bold()
                 .tracking(font.tracking)
                 .fixedSize(horizontal: false, vertical: true)
-                .multilineTextAlignment(.center)
+                .multilineTextAlignment(alignment)
                 .foregroundColor(color)
     }
 

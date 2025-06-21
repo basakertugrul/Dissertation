@@ -255,5 +255,51 @@ extension View {
             }
         }
     }
+
+    /// Show App Rate Confirmation Alert
+    func showSendFeedbackConfirmationAlert(
+        isPresented: Binding<Bool>,
+        onTap: @escaping (() -> Void)
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Send Feedback",
+                    message: "This will open your mail app to send feedback to our team.",
+                    buttonText: "OK",
+                    buttonAction: onTap,
+                    secondaryButtonText: "Cancel",
+                    secondaryButtonAction: { isPresented.wrappedValue = false },
+                    alertColor: .customOliveGreen
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+
+    /// Show App Rate Confirmation Alert
+    func showExportDataConfirmationAlert(
+        isPresented: Binding<Bool>,
+        onTap: @escaping (() -> Void)
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Export Data",
+                    message: "This will export all your expense data as a PDF file.",
+                    buttonText: "OK",
+                    buttonAction: onTap,
+                    secondaryButtonText: "Cancel",
+                    secondaryButtonAction: { isPresented.wrappedValue = false },
+                    alertColor: .customOliveGreen
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
 }
  /// For report: the request ones are for to be used later the release

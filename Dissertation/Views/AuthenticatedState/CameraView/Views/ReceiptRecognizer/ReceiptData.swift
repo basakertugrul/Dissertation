@@ -5,7 +5,6 @@ struct ReceiptData {
     var merchantName: String?
     var date: Date?
     var totalAmount: Double?
-    var rawText: String
 
     var formattedDate: String? {
         guard let date = date else { return .none }

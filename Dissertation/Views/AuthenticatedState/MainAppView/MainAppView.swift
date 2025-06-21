@@ -26,10 +26,17 @@ struct MainAppView: View {
     }
 
     var body: some View {
-        VStack(spacing: .zero) {
-            navigationSection
-            contentSection
-            tabBarSection
+        ZStack {
+            VStack(spacing: .zero) {
+                navigationSection
+                contentSection
+                tabBarSection
+            }
+
+            if appState.isProfileScreenOpen {
+                ProfileScreen()
+                    .transition(.opacity)
+            }
         }
         .ignoresSafeArea(.keyboard)
         .addCircledBackground(with: .customWhiteSand)
@@ -45,7 +52,9 @@ struct MainAppView: View {
         ) {
             ModifyExpenseView(expenseToModify: $expenseToEdit, startDay: appState.startDate)
         }
-        .sheet(isPresented: $willOpenCameraView) { cameraSheet }
+        .sheet(isPresented: $willOpenCameraView) {
+            cameraSheet
+        }
         .showDailyAllowanceSheet(
             isPresented: $showingAllowanceSheet,
             currentAmount: appState.dailyBalance ?? .zero,
@@ -59,10 +68,6 @@ struct MainAppView: View {
                 }
             }
         )
-        .sheet(isPresented: $appState.isProfileScreenOpen) {
-            ProfileScreen()
-            .presentationDetents([.height(UIScreen.main.bounds.height)])
-        }
         .showSavedDailyLimitAlert(
             isPresented: $appState.hasSavedDailyLimit
         )
@@ -79,16 +84,6 @@ struct MainAppView: View {
             expenseContextPublisher,
             perform: handleExpenseContextChange
         )
-        .showErrorAlert(
-            isPresented: .init(get: {
-                appState.error != nil || appState.signInError != nil
-            }, set: { _ in }),
-            errorMessage:  appState.error?.errorDescription
-            ?? appState.signInError?.errorDescription
-            ?? "") {
-                appState.error = nil
-                appState.signInError = nil
-            }
     }
 }
 
