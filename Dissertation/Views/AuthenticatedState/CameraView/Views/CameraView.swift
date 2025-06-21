@@ -108,7 +108,6 @@ struct CameraView: View {
             CameraPreview(session: cameraManager.session) { tapPoint in
                 handleFocusTap(at: tapPoint)
             }
-            .aspectRatio(4/3, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: Constraint.cornerRadius))
             .gesture(zoomGesture)
             
