@@ -313,7 +313,7 @@ struct LoginScreenView: View {
         VStack(spacing: Constraint.largePadding * 2) {
             /// Personalized greeting
             VStack(spacing: Constraint.smallPadding) {
-                let greeting = user.firstName.isEmpty ? "Hi!" : "Hi \(user.firstName)!"
+                let greeting = "Hi!"
                 CustomTextView(greeting, font: .titleLargeBold, color: .customRichBlack.opacity(Constraint.Opacity.high))
                 CustomTextView("Good to see you again", font: .bodySmall, color: .customRichBlack.opacity(Constraint.Opacity.medium))
             }

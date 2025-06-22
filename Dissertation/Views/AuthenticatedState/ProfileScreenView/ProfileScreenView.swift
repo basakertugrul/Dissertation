@@ -137,7 +137,7 @@ struct ProfileScreen: View {
     
     // MARK: - Profile Card
     private var profileCard: some View {
-        let initials = appState.user?.fullName.components(separatedBy: " ")
+        let initials = appState.user?.displayName?.components(separatedBy: " ")
             .compactMap { $0.first }
             .prefix(2)
             .map(String.init)
@@ -155,7 +155,7 @@ struct ProfileScreen: View {
             
             CustomTextView(
                 (
-                    "Hi " + (appState.user?.fullName.split(separator: " ").first ?? "") + "!"
+                    "Hi there!"
                 ),
                 font: .titleSmall,
                 color: .customBurgundy

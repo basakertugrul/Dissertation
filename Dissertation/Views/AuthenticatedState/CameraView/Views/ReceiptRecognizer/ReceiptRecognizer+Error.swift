@@ -6,17 +6,20 @@ enum TextRecognitionError: LocalizedError {
     case noResults
     case noTextFound
     case visionError(Error)
-    
-    var errorDescription: String {
+    case outOfDateRange
+
+    var description: String {
         switch self {
         case .invalidImage:
-            return "Invalid image provided"
+            return "Photo quality is too poor. Please try taking a clearer picture."
         case .noResults:
-            return "No text recognition results found"
+            return "We couldn't read this image. Try taking a new photo with better lighting."
         case .noTextFound:
-            return "No text found in image"
-        case let .visionError(error):
-            return "Vision framework error: \(error.localizedDescription)"
+            return "No text detected. Make sure your receipt is clearly visible and try again."
+        case .visionError:
+            return "Something went wrong while processing your receipt. Please try again."
+        case .outOfDateRange:
+            return "This receipt appears to be very old. Please check and try again."
         }
     }
 }

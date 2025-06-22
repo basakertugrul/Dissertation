@@ -13,12 +13,6 @@ struct SignInView: View {
             LoginScreenView(
                 loginStyle: .newUser(.none)
             )
-            .onAppear {
-                DispatchQueue.main.async {
-                    appState.authenticateUserOnLaunch()
-                }
-            }
-            .shadow(color: .customRichBlack.opacity(0.5), radius: 10, y: 8)
         }
     }
 }

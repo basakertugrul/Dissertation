@@ -11,6 +11,29 @@ struct CustomAlertView: View {
     let secondaryButtonText: String?
     let secondaryButtonAction: (() -> Void)?
     let alertColor: Color
+    let isMessageBold: Bool
+    
+    init(
+        isShowing: Binding<Bool>,
+        title: String,
+        message: String,
+        buttonText: String,
+        buttonAction: @escaping () -> Void,
+        secondaryButtonText: String?,
+        secondaryButtonAction: (() -> Void)?,
+        alertColor: Color,
+        isMessageBold: Bool = false
+    ) {
+        self._isShowing = isShowing
+        self.title = title
+        self.message = message
+        self.buttonText = buttonText
+        self.buttonAction = buttonAction
+        self.secondaryButtonText = secondaryButtonText
+        self.secondaryButtonAction = secondaryButtonAction
+        self.alertColor = alertColor
+        self.isMessageBold = isMessageBold
+    }
     
     var body: some View {
         /// Alert container
@@ -32,7 +55,7 @@ struct CustomAlertView: View {
                     
                     CustomTextView(
                         message,
-                        font: .labelLarge
+                        font: isMessageBold ? .labelLargeBold : .labelLarge
                     )
                     .multilineTextAlignment(.center)
                 }

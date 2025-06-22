@@ -119,8 +119,6 @@ class CameraManager: ObservableObject {
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
             
-            print("🎥 Setting up camera...")
-            
             // Configure session only once
             if self.session.inputs.isEmpty && self.session.outputs.isEmpty {
                 self.session.sessionPreset = .photo
@@ -128,7 +126,6 @@ class CameraManager: ObservableObject {
                 // Add photo output
                 if self.session.canAddOutput(self.photoOutput) {
                     self.session.addOutput(self.photoOutput)
-                    print("✅ Photo output added")
                 }
             }
             
@@ -138,7 +135,6 @@ class CameraManager: ObservableObject {
             // Start session
             if !self.session.isRunning {
                 self.session.startRunning()
-                print("🎥 Camera session started")
                 
                 DispatchQueue.main.async {
                     self.status = .configured
@@ -160,7 +156,6 @@ class CameraManager: ObservableObject {
         
         // Get camera for current position
         guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position) else {
-            print("❌ No camera available for position: \(position)")
             return
         }
         
@@ -170,11 +165,8 @@ class CameraManager: ObservableObject {
             if session.canAddInput(input) {
                 session.addInput(input)
                 videoDeviceInput = input
-                print("✅ Camera input configured for \(position == .back ? "back" : "front") camera")
             }
-        } catch {
-            print("❌ Error setting up camera input: \(error)")
-        }
+        } catch {}
     }
 
     // MARK: - Session Control
@@ -183,7 +175,6 @@ class CameraManager: ObservableObject {
             guard let self = self else { return }
             if self.session.isRunning {
                 self.session.stopRunning()
-                print("🛑 Camera session stopped")
             }
         }
     }
@@ -197,7 +188,6 @@ class CameraManager: ObservableObject {
             
             // Simply switch position and update input
             self.position = (self.position == .back) ? .front : .back
-            print("🔄 Switching to \(self.position == .back ? "back" : "front") camera")
             
             // Update camera input without stopping session
             self.setupCameraInput()
@@ -214,7 +204,6 @@ class CameraManager: ObservableObject {
             guard let self = self,
                   let device = self.videoDeviceInput?.device,
                   device.hasTorch else {
-                print("⚠️ Torch not available")
                 return
             }
             
@@ -226,10 +215,7 @@ class CameraManager: ObservableObject {
                     device.torchMode = .off
                 }
                 device.unlockForConfiguration()
-                print("💡 Torch \(torchIsOn ? "ON" : "OFF")")
-            } catch {
-                print("❌ Torch error: \(error)")
-            }
+            } catch {}
         }
     }
     
@@ -253,9 +239,7 @@ class CameraManager: ObservableObject {
                 
                 device.isSubjectAreaChangeMonitoringEnabled = true
                 device.unlockForConfiguration()
-                print("🎯 Focus set")
             } catch {
-                print("❌ Focus error: \(error)")
             }
         }
     }
@@ -271,9 +255,7 @@ class CameraManager: ObservableObject {
                                       min(factor, device.maxAvailableVideoZoomFactor))
                 device.videoZoomFactor = clampedFactor
                 device.unlockForConfiguration()
-            } catch {
-                print("❌ Zoom error: \(error)")
-            }
+            } catch {}
         }
     }
     
@@ -284,12 +266,10 @@ class CameraManager: ObservableObject {
             
             guard self.status == .configured,
                   self.session.isRunning else {
-                print("❌ Camera not ready")
                 return
             }
             
             guard let videoConnection = self.photoOutput.connection(with: .video) else {
-                print("❌ No video connection")
                 return
             }
             
@@ -306,7 +286,6 @@ class CameraManager: ObservableObject {
             self.cameraDelegate = CameraDelegate { [weak self] image in
                 DispatchQueue.main.async {
                     self?.capturedImage = image
-                    print("📸 Photo captured!")
                 }
             }
             
@@ -340,14 +319,12 @@ class CameraDelegate: NSObject, AVCapturePhotoCaptureDelegate {
 
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let error = error {
-            print("❌ Photo processing error: \(error)")
             completion(nil)
             return
         }
 
         guard let imageData = photo.fileDataRepresentation(),
               let capturedImage = UIImage(data: imageData) else {
-            print("❌ Failed to create image")
             completion(nil)
             return
         }

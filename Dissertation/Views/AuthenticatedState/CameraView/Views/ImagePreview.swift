@@ -3,6 +3,7 @@ import PhotosUI
 
 // MARK: - Image Preview
 struct ImagePreview: View {
+    @EnvironmentObject var appState: AppStateManager
     @ObservedObject var cameraManager: CameraManager
     let isFromGallery: Bool
     let onSave: (UIImage) -> Void
@@ -12,6 +13,8 @@ struct ImagePreview: View {
     @State private var isSaved = false
     @State private var currentImageHash: Int? = nil
     @State private var isLoading: Bool = false
+    @State private var errorMessage: String?
+    @State private var receiptData: ReceiptData?
     
     var body: some View {
         VStack {
@@ -74,30 +77,31 @@ struct ImagePreview: View {
                 Button(action: {
                     if let image = cameraManager.capturedImage {
                         withAnimation {
-                            print("isloading is true")
                             isLoading = true
                         }
                         
                         if !isSaved {
                             onSave(image)
-                            isSaved = true // Mark as saved
+                            isSaved = true
                         }
-                        let recognizer = ReceiptTextRecognizer()
+                        let recognizer = ReceiptTextRecognizer(startDate: appState.startDate)
                         DispatchQueue.global(qos: .background).async {
                             recognizer.recognizeReceiptData(from: image) { result in
                                 switch result {
                                 case let .success(data):
-                                    print("Receipt data: \(data)")
                                     DispatchQueue.main.async {
                                         withAnimation {
                                             isLoading = false
+                                            errorMessage = nil
+                                            receiptData = data
                                         }
                                     }
                                 case let .failure(error):
-                                    print("Error recognizing receipt: \(error)")
                                     DispatchQueue.main.async {
                                         withAnimation {
                                             isLoading = false
+                                            receiptData = nil
+                                            errorMessage = error.description
                                         }
                                     }
                                 }
@@ -147,6 +151,35 @@ struct ImagePreview: View {
         }
         .background(Color.black.ignoresSafeArea())
         .loadingOverlay($isLoading)
+        .showNoReceiptFoundErrorAlert(isPresented: .init(get: {
+            errorMessage != nil
+        }, set: { bool in
+            if !bool {
+                receiptData = nil
+                errorMessage = nil
+            }
+        }),
+            message: errorMessage ?? "",
+        ) {
+            DispatchQueue.main.async {
+                withAnimation {
+                    errorMessage = nil
+                    receiptData = nil
+                }
+            }
+        }
+        .showReceiptFoundAlert(
+            isPresented: .init(get: {
+                receiptData != nil
+            }, set: { bool in
+                if !bool {
+                    receiptData = nil
+                    errorMessage = nil
+                }
+            }),
+            receiptData: receiptData ?? ReceiptData(totalAmount: .zero),
+            onTap: saveTheReceipt
+        )
         .onAppear {
             // Set initial state based on gallery source
             isSaved = isFromGallery
@@ -158,6 +191,32 @@ struct ImagePreview: View {
             if newHash != currentImageHash {
                 currentImageHash = newHash
                 isSaved = isFromGallery
+            }
+        }
+    }
+    
+    func saveTheReceipt(of receipt: ReceiptData?) {
+        DispatchQueue.main.async {
+            withAnimation {
+                appState.willOpenCameraView = false
+            }
+        }
+
+        guard let receipt = receipt else { return }
+        let newExpense: ExpenseViewModel = .createWithPound(
+            name: receipt.merchantName ?? "",
+            date: receipt.date ?? .now,
+            amount: receipt.totalAmount ?? .zero,
+            createDate: .now
+        )
+        switch DataController.shared.saveExpense(of: newExpense) {
+        case .success:
+            withAnimation {
+                appState.hasAddedExpense = true
+            }
+        case let .failure(comingError):
+            withAnimation {
+                appState.error = comingError
             }
         }
     }

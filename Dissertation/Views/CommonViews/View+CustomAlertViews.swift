@@ -158,7 +158,7 @@ extension View {
                     buttonAction: { isPresented.wrappedValue = false },
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
-                    alertColor: .customOliveGreen
+                    alertColor: .customBurgundy
                 )
                 .animation(.smooth, value: isPresented.wrappedValue)
             }
@@ -296,6 +296,71 @@ extension View {
                     secondaryButtonText: "Cancel",
                     secondaryButtonAction: { isPresented.wrappedValue = false },
                     alertColor: .customOliveGreen
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+
+    /// Show App Rate Confirmation Alert
+    func showNoReceiptFoundErrorAlert(
+        isPresented: Binding<Bool>,
+        message: String,
+        onTap: @escaping (() -> Void)
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "No Receipt Detected",
+                    message: message,
+                    buttonText: "OK",
+                    buttonAction: {
+                        isPresented.wrappedValue = false
+                        onTap()
+                    },
+                    secondaryButtonText: .none,
+                    secondaryButtonAction: .none,
+                    alertColor: .customBurgundy
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+
+    /// Show App Rate Confirmation Alert
+    func showReceiptFoundAlert(
+        isPresented: Binding<Bool>,
+        receiptData: ReceiptData,
+        onTap: @escaping (ReceiptData?) -> Void
+    ) -> some View {
+        var formattedCurrentDate: String {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            return formatter.string(from: .now)
+        }
+        let name: String = receiptData.merchantName ?? ""
+        let amount: String = receiptData.formattedAmount ?? ""
+        let date: String = receiptData.formattedDate ?? formattedCurrentDate
+
+        return ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Receipt Detected!",
+                    // TODO: amount formatting
+                    message: "\(name)\n\(amount)\n\(date)",
+                    buttonText: "Add to Expenses",
+                    buttonAction: {
+                        isPresented.wrappedValue = false
+                        onTap(receiptData)
+                    },
+                    secondaryButtonText: "Cancel",
+                    secondaryButtonAction: { isPresented.wrappedValue = false },
+                    alertColor: .customOliveGreen,
+                    isMessageBold: true
                 )
                 .animation(.smooth, value: isPresented.wrappedValue)
             }

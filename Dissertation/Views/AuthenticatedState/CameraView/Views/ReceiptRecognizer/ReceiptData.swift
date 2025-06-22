@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Receipt Data Model
-struct ReceiptData {
+struct ReceiptData: Equatable {
     var merchantName: String?
     var date: Date?
     var totalAmount: Double?

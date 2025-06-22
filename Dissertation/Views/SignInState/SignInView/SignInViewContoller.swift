@@ -157,18 +157,18 @@ final class SignInWithAppleCoordinator: NSObject {
                 return
             }
             
-            var authState: String
+            var authState: AuthState
             switch credentialState {
             case .authorized:
-                authState = "authorized"
+                authState = .authorized
             case .revoked:
-                authState = "revoked"
+                authState = .revoked
             case .transferred:
-                authState = "transferred"
+                authState = .transferred
             case .notFound:
-                authState = "not found"
+                authState = .notFound
             @unknown default:
-                authState = "unknown"
+                authState = .notFound
             }
             
             // Ask for Face ID permission if it's a new signup
@@ -211,27 +211,16 @@ final class SignInWithAppleCoordinator: NSObject {
     private func saveUser(
         fullName: String?,
         email: String?,
-        authState: String,
+        authState: AuthState,
         hasFaceIDEnabled: Bool,
         completion: @escaping (Result<Void, SignInError>) -> Void
     ) {
-        let user = User(
-            fullName: fullName ?? "",
-            email: email ?? "",
-            authState: authState,
-            hasFaceIDEnabled: hasFaceIDEnabled
+        UserAuthService.shared.signIn(
+            email: email,
+            displayName: fullName
         )
-        do {
-            let userEncoded = try JSONEncoder().encode(user)
-            UserDefaults.standard.set(userEncoded, forKey: "user")
-            completion(.success(()))
-            NotificationCenter.default.post(
-                name: Notification.Name("LoggedIn"),
-                object: nil
-            )
-        } catch {
-            completion(.failure(.userDataSaveFailure))
-        }
+        completion(.success(()))
+        return
     }
 }
 

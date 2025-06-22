@@ -34,7 +34,7 @@ struct BudgetMateApp: App {
             }
             .showErrorAlert(
                 isPresented: .init(get: {
-                    appState.error != nil || appState.signInError != nil
+                    (appState.error != nil && appState.error != .userNotAuthenticated) || appState.signInError != nil
                 }, set: { _ in }),
                 errorMessage:  appState.error?.errorDescription
                 ?? appState.signInError?.errorDescription
@@ -56,9 +56,9 @@ struct BudgetMateApp: App {
 // MARK: - App Setup & Event Handling
 private extension BudgetMateApp {
     func setupApp() {
-        appState.getUserInfo()
         appState.loadInitialData()
         setupNotificationObservers()
+        appState.resetData()
     }
 
     func handleScenePhaseChange(_ phase: ScenePhase) {
@@ -94,7 +94,6 @@ private extension BudgetMateApp {
             queue: .main
         ) { _ in
             DispatchQueue.main.async {
-                appState.getUserInfo()
                 appState.refreshExpenses()
                 appState.refreshDailyBalance()
             }

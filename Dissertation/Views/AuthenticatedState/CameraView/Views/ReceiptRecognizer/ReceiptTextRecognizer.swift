@@ -3,21 +3,20 @@ import Vision
 import VisionKit
 
 // MARK: - Receipt Text Recognizer
-class ReceiptTextRecognizer {
-    
+final class ReceiptTextRecognizer {
+
     // MARK: - Types
     typealias RecognitionResult = Result<ReceiptData, TextRecognitionError>
     typealias CompletionHandler = (RecognitionResult) -> Void
-    
+
     // MARK: - Configuration
-    private let recognitionLevel: VNRequestTextRecognitionLevel
-    private let usesLanguageCorrection: Bool
-    
+    private let recognitionLevel: VNRequestTextRecognitionLevel = .accurate
+    private let usesLanguageCorrection: Bool = true
+    private let startDate: Date
+
     // MARK: - Initialization
-    init(recognitionLevel: VNRequestTextRecognitionLevel = .accurate,
-         usesLanguageCorrection: Bool = true) {
-        self.recognitionLevel = recognitionLevel
-        self.usesLanguageCorrection = usesLanguageCorrection
+    init(startDate: Date) {
+        self.startDate = startDate
     }
 
     func recognizeReceiptData(from image: UIImage, completion: @escaping CompletionHandler) {
@@ -25,27 +24,7 @@ class ReceiptTextRecognizer {
             completion(.failure(.invalidImage))
             return
         }
-
         performTextRecognition(on: cgImage, completion: completion)
-    }
-    
-    func recognizeReceiptData(from images: [UIImage]) {
-        guard !images.isEmpty else { return }
-
-        for image in images {
-            recognizeReceiptData(from: image) { result in
-                print("---")
-                switch result {
-                case let .success(data):
-                    print("Merchant: \(data.merchantName ?? "Unknown")")
-                    print("Date: \(data.formattedDate ?? "Unknown")")
-                    print("Amount: \(data.formattedAmount ?? "Unknown")")
-
-                case let .failure(error):
-                    print("Error: \(error)")
-                }
-            }
-        }
     }
 }
 
@@ -93,7 +72,23 @@ private extension ReceiptTextRecognizer {
         }
 
         let receiptData = createReceiptData(from: recognizedText)
-        completion(.success(receiptData))
+
+        if receiptData.totalAmount ?? .zero > 0 {
+            if isDateInRange(receiptData.date ?? .now, from: startDate, to: .now) {
+                completion(.success(receiptData))
+                return
+            } else {
+                completion(.failure(.outOfDateRange))
+                return
+            }
+        }
+
+        completion(.failure(.noResults))
+        return
+    }
+
+    func isDateInRange(_ date: Date, from startDate: Date, to endDate: Date) -> Bool {
+        return date >= startDate && date <= endDate
     }
 
     func extractText(from observations: [VNRecognizedTextObservation]) -> String {
@@ -104,7 +99,7 @@ private extension ReceiptTextRecognizer {
     
     func createReceiptData(from text: String) -> ReceiptData {
         let extractor = ReceiptDataExtractor(text: text)
-    
+        
         return ReceiptData(
             merchantName: extractor.merchantName,
             date: extractor.date,
@@ -116,21 +111,21 @@ private extension ReceiptTextRecognizer {
 // MARK: - Receipt Data Extractor
 struct ReceiptDataExtractor {
     let lines: [String]
-    
+
     init(text: String) {
         self.lines = text.components(separatedBy: .newlines)
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
     }
-    
+
     var merchantName: String? {
         extractMerchantName(from: lines)
     }
-    
+
     var date: Date? {
         extractDate(from: lines)
     }
-    
+
     var amount: Double? {
         extractAmount(from: lines)
     }

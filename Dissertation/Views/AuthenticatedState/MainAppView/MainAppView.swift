@@ -16,7 +16,6 @@ struct MainAppView: View {
     @State private var currentTab: CustomTabBarSection = .balance
     @State private var isShowingAddExpenseSheet: Bool = false
     @State private var expenseToEdit: ExpenseViewModel?
-    @State private var willOpenCameraView: Bool = false
     @State private var showingAllowanceSheet: Bool = false
 
     var backgroundColor: Color {
@@ -52,7 +51,7 @@ struct MainAppView: View {
         ) {
             ModifyExpenseView(expenseToModify: $expenseToEdit, startDay: appState.startDate)
         }
-        .sheet(isPresented: $willOpenCameraView) {
+        .sheet(isPresented: $appState.willOpenCameraView) {
             cameraSheet
         }
         .showDailyAllowanceSheet(
@@ -139,7 +138,7 @@ private extension MainAppView {
         CustomTabBar(
             selectedTab: $currentTab,
             showAddExpenseSheet: $isShowingAddExpenseSheet,
-            willOpenCameraView: $willOpenCameraView
+            willOpenCameraView: $appState.willOpenCameraView
         )
     }
 

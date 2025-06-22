@@ -248,9 +248,7 @@ struct CameraView: View {
                         cameraManager.selectedPhotos.removeAll()
                     }
                 }
-            } catch {
-                print("Error loading selected photo: \(error)")
-            }
+            } catch {}
         }
     }
     

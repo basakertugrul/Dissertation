@@ -5,7 +5,7 @@ extension AppStateManager {
     func generateExpensePDF(completion: @escaping (Data?) -> Void) {
         let pdfMetaData = [
             kCGPDFContextCreator: "FundBud",
-            kCGPDFContextAuthor: user?.fullName ?? "User",
+            kCGPDFContextAuthor: user?.displayName ?? "User",
             kCGPDFContextTitle: "Expense Report"
         ]
         
@@ -62,7 +62,7 @@ extension AppStateManager {
         
         let userInfo = """
        Generated: \(dateFormatter.string(from: Date()))
-       User: \(user?.fullName ?? "User")
+       User: \(user?.displayName ?? "User")
        Period: \(dateFormatter.string(from: startDate)) - \(dateFormatter.string(from: Date()))
        """
         
@@ -240,8 +240,6 @@ extension AppStateManager {
                 }
                 self.disableLoadingView()
             }
-        } catch {
-            print("Error sharing PDF: \(error)")
-        }
+        } catch {}
     }
 }
