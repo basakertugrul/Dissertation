@@ -1,5 +1,4 @@
 import SwiftUI
-import AuthenticationServices
 
 // MARK: - App State Manager
 final class AppStateManager: ObservableObject {
@@ -7,7 +6,6 @@ final class AppStateManager: ObservableObject {
     private init() {
         self.expenseViewModels = []
         self.startDate = .now
-        setupUserAuthObservation()
     }
 
     /// App Data Variables
@@ -16,9 +14,9 @@ final class AppStateManager: ObservableObject {
     @Published var startDate: Date
     private let dataController = DataController.shared
     
-    /// UserAuthService integration
-    private let userAuthService = UserAuthService.shared
+    /// SignIn Variables
     private lazy var signInWithApple = SignInWithAppleCoordinator()
+    @Published var hasLoggedIn: Bool = false
 
     /// UI variables
     @Published var willOpenCameraView: Bool = false
@@ -30,20 +28,6 @@ final class AppStateManager: ObservableObject {
     @Published var hasSavedDailyLimit: Bool = false
     @Published var error: DataControllerError? = .none
     @Published var signInError: SignInError? = .none
-    
-    // MARK: - User Properties (via UserAuthService)
-    var user: User? {
-        userAuthService.currentUser
-    }
-    
-    var hasLoggedIn: Bool {
-        userAuthService.isAuthenticated
-    }
-    
-    var isFirstTimeUser: Bool {
-        userAuthService.isFirstTimeUser
-    }
-    
     /// Days since the app start date was set
     var daysSinceStart: Int {
         let calendar = Calendar.current
@@ -67,37 +51,6 @@ final class AppStateManager: ObservableObject {
         guard daysSinceStart > 0 else { return .zero }
         let averageDaily = totalExpenses / Double(daysSinceStart)
         return averageDaily
-    }
-    
-    // MARK: - UserAuthService Integration
-    private func setupUserAuthObservation() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleFirstTimeSignIn),
-            name: Notification.Name("FirstTimeSignIn"),
-            object: nil
-        )
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleUserSignIn),
-            name: Notification.Name("LoggedIn"),
-            object: nil
-        )
-    }
-    
-    @objc private func handleFirstTimeSignIn() {
-        DispatchQueue.main.async {
-            /// Handle first-time user setup if needed
-            self.loadInitialData()
-        }
-    }
-    
-    @objc private func handleUserSignIn() {
-        DispatchQueue.main.async {
-            /// Refresh data when user signs in
-            self.loadInitialData()
-        }
     }
     
     // MARK: - Methods
@@ -155,7 +108,32 @@ final class AppStateManager: ObservableObject {
         let _ = dataController.resetTargetSpending()
         let _ = dataController.resetExpenses()
         dailyBalance = .none
-        userAuthService.signOut()
+        UserAuthService.shared.signOut()
+    }
+}
+
+extension AppStateManager {
+    func getUserInfo() {
+        UserAuthService.shared.loadCurrentUser()
+    }
+
+    func authenticateUserOnLaunch() {
+        guard UserAuthService.shared.currentUser != nil else { return }
+        enableLoadingView()
+        signInWithApple.authenticateWithFaceID { result in
+            self.disableLoadingView()
+            switch result {
+            case .success:
+                self.handleFaceIDSignIn()
+            case let .failure(error): self.signInError = error
+            }
+        }
+    }
+    
+    private func logIn() {
+        DispatchQueue.main.async() {
+            self.hasLoggedIn = true
+        }
     }
 
     func enableLoadingView() {
@@ -173,10 +151,6 @@ final class AppStateManager: ObservableObject {
             }
         }
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
 }
 
 extension AppStateManager: LoginActions {
@@ -186,8 +160,7 @@ extension AppStateManager: LoginActions {
             self.disableLoadingView()
             switch result {
             case .success:
-                /// UserAuthService will handle the sign-in state
-                break
+                self.logIn()
             case let .failure(error):
                 self.signInError = error
             }
@@ -199,31 +172,12 @@ extension AppStateManager: LoginActions {
         signInWithApple.getAppleRequest { result in
             self.disableLoadingView()
             switch result {
-            case let .success(authorization):
-                /// Extract user data from ASAuthorization
-                if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-                    let email = appleIDCredential.email
-                    let fullName = appleIDCredential.fullName
-                    let displayName = [fullName?.givenName, fullName?.familyName]
-                        .compactMap { $0 }
-                        .joined(separator: " ")
-                    
-                    /// Sign in through UserAuthService
-                    self.userAuthService.signIn(
-                        email: email,
-                        displayName: displayName.isEmpty ? nil : displayName
-                    )
-                }
+            case .success:
+                self.logIn()
             case let .failure(error):
                 self.signInError = error
             }
         }
-    }
-
-    func handleTermsAndPrivacyTap() {}
-
-    func changeUser() {
-        userAuthService.signOut()
     }
 }
 
@@ -238,11 +192,11 @@ extension AppStateManager: ProfileActionsDelegate {
     }
     
     func signOut() {
-        userAuthService.signOut()
+        self.hasLoggedIn = false
         self.isProfileScreenOpen = false
     }
 
-    func manageNotifications() {} /// TODO: ADD coming
+    func manageNotifications() {} // TODO: ADD coming
 
     func exportExpenseData() {
         enableLoadingView()

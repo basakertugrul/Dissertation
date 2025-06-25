@@ -10,114 +10,211 @@ enum LoginStyle {
 protocol LoginActions {
     func handleAppleSignIn()
     func handleFaceIDSignIn()
-    func handleTermsAndPrivacyTap()
-    func changeUser()
 }
 
-// MARK: - Minimal Modern Login Screen
+// MARK: - Enhanced Modern Login Screen
 struct LoginScreenView: View {
     @EnvironmentObject var appState: AppStateManager
     @State var loginStyle: LoginStyle
-    
-    /// UI related variables
+
+    /// Enhanced UI related variables
     @State private var showContent = false
     @State private var logoScale: CGFloat = 0.3
     @State private var logoOffset: CGFloat = -200
+    @State private var logoRotation: Double = 0
     @State private var showTitle = false
     @State private var showSubtitle = false
     @State private var cardOffset: CGFloat = 300
     @State private var showFooter = false
-    
+    @State private var pulseAnimation = false
+    @State private var shimmerOffset: CGFloat = -200
+    @State private var willShowTermsAndPrivacy: Bool = false
+
     var body: some View {
-        VStack(spacing: Constraint.padding) {
+        VStack(spacing: 0) {
+            /// Logo section
             logoSection
-            Spacer()
+
+            /// Main content area
             switch loginStyle {
             case .newUser:
                 newUserLoginCard
-            case .returningUser(let user):
+                    .padding(.vertical, Constraint.extremePadding)
+            case let .returningUser(user):
                 returningUserCard(for: user)
+                    .padding(.vertical, Constraint.extremePadding)
+                    .onAppear {
+                        DispatchQueue.main.async {
+                            appState.authenticateUserOnLaunch()
+                        }
+                    }
             }
-            Spacer()
+
+            /// Footer Section
             footerSection
         }
         .addAnimatedBackground()
-        .onAppear { animateEntrance() }
+        .onAppear {
+            animateEntrance()
+            startShimmerAnimation()
+        }
     }
 
-    // MARK: - View Components
+    // MARK: - Enhanced View Components
     private var logoSection: some View {
-        VStack(spacing: Constraint.padding) {
+        VStack(spacing: Constraint.largePadding) {
             ZStack {
+                /// Enhanced glow effect
                 Circle()
                     .fill(
                         RadialGradient(
-                            colors: [.white.opacity(0.3), .clear],
+                            colors: [
+                                .white.opacity(Constraint.Opacity.medium),
+                                .white.opacity(Constraint.Opacity.low),
+                                .clear
+                            ],
                             center: .center,
-                            startRadius: Constraint.smallPadding,
-                            endRadius: Constraint.largeImageSize
+                            startRadius: 5,
+                            endRadius: Constraint.extremeIconSize
                         )
                     )
                     .frame(
-                        width: Constraint.regularImageSize/2,
-                        height: Constraint.regularImageSize/2
+                        width: Constraint.regularImageSize * 0.8,
+                        height: Constraint.regularImageSize * 0.8
                     )
-                    .blur(radius: Constraint.shadowRadius)
-                
+                    .blur(radius: Constraint.shadowRadius * 1.5)
+                    .scaleEffect(pulseAnimation ? 1.1 : 1.0)
+                    .opacity(pulseAnimation ? 0.7 : 0.4)
+
+                /// Logo container
                 ZStack {
+                    /// Outer ring with gradient border
                     Circle()
-                        .fill(.customWhiteSand)
-                        .frame(
-                            width: Constraint.largeImageSize/2,
-                            height: Constraint.largeImageSize/2
-                        )
-                        .overlay(
-                            Circle().stroke(
-                                LinearGradient(
-                                    colors: [.white.opacity(0.3), .clear],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 1
-                            )
-                        )
-                    
-                    Image(uiImage: Bundle.main.icon ?? UIImage())
-                        .resizable()
-                        .frame(
-                            width: Constraint.regularImageSize/2,
-                            height: Constraint.regularImageSize/2
-                        )
-                        .foregroundStyle(
+                        .fill(
                             LinearGradient(
                                 colors: [
-                                    .white,
-                                    .white.opacity(0.8)
+                                    .customWhiteSand.opacity(Constraint.Opacity.high),
+                                    .customWhiteSand
                                 ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
                         )
+                        .frame(
+                            width: Constraint.largeImageSize / 2,
+                            height: Constraint.largeImageSize / 2
+                        )
+                        .overlay(
+                            Circle()
+                                .stroke(
+                                    LinearGradient(
+                                        colors: [
+                                            .white.opacity(Constraint.Opacity.hidden),
+                                            .white.opacity(Constraint.Opacity.medium),
+                                            .clear
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 2
+                                )
+                        )
+                        .shadow(
+                            color: .black.opacity(Constraint.Opacity.high),
+                            radius: 8,
+                            x: 0,
+                            y: 4
+                        )
+
+                    /// Logo
+                    Image(uiImage: Bundle.main.icon ?? UIImage())
+                        .resizable()
+                        .frame(
+                            width: Constraint.regularImageSize * 0.5,
+                            height: Constraint.regularImageSize * 0.5
+                        )
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [
+                                    .white,
+                                    .white.opacity(0.9),
+                                    .white.opacity(0.7)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .shadow(
+                            color: .black.opacity(0.2),
+                            radius: 2,
+                            x: 0,
+                            y: 1
+                        )
                 }
                 .scaleEffect(logoScale)
                 .offset(y: logoOffset)
+                .rotationEffect(.degrees(logoRotation))
             }
-            VStack(spacing: Constraint.padding) {
-                CustomTextView("FundBud", font: .titleLargeBold, color: .white)
-                CustomTextView("Know exactly what you can spend!", font: .titleSmall, color: .white.opacity(Constraint.Opacity.high))
+
+            /// Title section
+            VStack(spacing: Constraint.regularPadding) {
+                /// Main title
+                ZStack {
+                    CustomTextView("FundBud", font: .titleLargeBold, color: .white)
+                        .overlay(
+                            LinearGradient(
+                                colors: [
+                                    .clear,
+                                    .white.opacity(Constraint.Opacity.medium),
+                                    .clear
+                                ],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                            .offset(x: shimmerOffset)
+                            .mask(
+                                CustomTextView("FundBud", font: .titleLargeBold, color: .white)
+                            )
+                        )
+                }
+                .opacity(showTitle ? 1 : 0)
+                .scaleEffect(showTitle ? 1 : 0.8)
+                
+                /// Subtitle
+                CustomTextView(
+                    "Know exactly what you can spend!",
+                    font: .titleSmall,
+                    color: .white.opacity(Constraint.Opacity.high)
+                )
+                .opacity(showSubtitle ? 1 : .zero)
+                .offset(y: showSubtitle ? .zero : 10)
+                .multilineTextAlignment(.center)
             }
             .opacity(showContent ? 1 : 0)
         }
     }
-    
-    // MARK: - New User Login Card
-    private var newUserLoginCard: some View {
-        VStack(spacing: Constraint.padding) {
-            CustomTextView("Get Started", font: .bodyLargeBold, color: .customRichBlack)
-                .opacity(showContent ? 1 : 0)
-                .offset(y: showContent ? 0 : -20)
 
-            VStack(spacing: Constraint.padding) {
+    // MARK: - Enhanced New User Login Card
+    private var newUserLoginCard: some View {
+        VStack(spacing: Constraint.largePadding) {
+            // Header
+            VStack(spacing: Constraint.smallPadding) {
+                CustomTextView("Get Started", font: .bodyLargeBold, color: .customRichBlack)
+                    .opacity(showContent ? 1 : .zero)
+                    .offset(y: showContent ? .zero : -20)
+                
+                CustomTextView(
+                    "Choose your preferred sign-in method",
+                    font: .bodySmall,
+                    color: .customRichBlack.opacity(0.7)
+                )
+                .opacity(showContent ? 1 : .zero)
+                .offset(y: showContent ? .zero : -15)
+            }
+            .padding(.top, Constraint.padding)
+
+            VStack(spacing: Constraint.smallPadding) {
+                // Apple Sign In button
                 LoginButtonView(
                     title: "Continue with Apple",
                     icon: "applelogo",
@@ -127,238 +224,282 @@ struct LoginScreenView: View {
                     appState.enableLoadingView()
                     appState.handleAppleSignIn()
                 }
+                .padding(Constraint.padding)
 
                 // Face ID login option if user exists
                 if case let .newUser(user) = loginStyle, user != nil {
-                    faceIDLoginOption
+                    enhancedFaceIDLoginOption
                 }
             }
-            .opacity(showContent ? 1 : 0)
-            .offset(y: showContent ? 0 : 20)
+            .opacity(showContent ? 1 : .zero)
+            .offset(y: showContent ? .zero : 20)
         }
-        .padding(Constraint.largePadding)
-        .background(cardBackground)
+        .background(enhancedCardBackground)
         .offset(y: cardOffset)
-        .padding(.horizontal, Constraint.padding)
+        .padding(.horizontal, Constraint.largePadding)
     }
-    
-    /// Common card background
-    private var cardBackground: some View {
+
+    /// Enhanced card background with better depth
+    private var enhancedCardBackground: some View {
         RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-            .fill(.ultraThinMaterial)
+            .fill(.customWhiteSand.opacity(Constraint.Opacity.low))
             .overlay(
                 RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                .stroke(
-                    LinearGradient(
-                        colors: [
-                            .white.opacity(Constraint.Opacity.low),
-                            .white.opacity(Constraint.Opacity.tiny)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: Constraint.smallLineLenght
-                )
+                    .stroke(
+                        .gray,
+                        lineWidth: 1.5
+                    )
             )
             .shadow(
-                color: .black.opacity(Constraint.Opacity.tiny),
+                color: .black.opacity(Constraint.Opacity.low),
                 radius: Constraint.largeShadowRadius,
                 x: .zero,
-                y: Constraint.shadowRadius
+                y: 10
+            )
+            .shadow(
+                color: .black.opacity(Constraint.Opacity.low),
+                radius:  Constraint.largeShadowRadius,
+                x: .zero,
+                y: 2
             )
             .opacity(showContent ? 1 : 0)
-            .offset(y: showContent ? 0 : 20)
+            .offset(y: showContent ? 0 : 30)
+            .scaleEffect(showContent ? 1 : 0.95)
     }
 
     private var footerSection: some View {
-        VStack(spacing: Constraint.padding) {
-            // Switch User Button (only for returning users)
+        VStack(spacing: Constraint.largePadding) {
             if case .returningUser = loginStyle {
-                switchUserButton
+                enhancedSwitchUserButton
             }
-            
-            SecureAndPrivateView(onTap: appState.handleTermsAndPrivacyTap)
+
+            SecureAndPrivateView(onTap: {
+                DispatchQueue.main.async {
+                    withAnimation {
+                        willShowTermsAndPrivacy = true
+                    }
+                }
+            })
         }
-        .opacity(showFooter ? Constraint.Opacity.high : 0)
-        .offset(y: showFooter ? 0 : 20)
+        .opacity(showFooter ? 1 : 0)
+        .offset(y: showFooter ? 0 : 30)
         .padding(.bottom, Constraint.largePadding)
     }
     
-    // MARK: - Face ID Login Option
-    private var faceIDLoginOption: some View {
-        VStack(spacing: Constraint.regularPadding) {
-            // Divider
+    // MARK: - Enhanced Face ID Login Option
+    private var enhancedFaceIDLoginOption: some View {
+        VStack(spacing: .zero) {
+            // Enhanced divider
             HStack {
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(.customRichBlack.opacity(Constraint.Opacity.low))
-                
+                DividerView()
+
                 CustomTextView(
                     "or",
                     font: .labelMedium,
-                    color: .customRichBlack.opacity(Constraint.Opacity.medium)
+                    color: .customRichBlack.opacity(Constraint.Opacity.high)
                 )
-                .padding(.horizontal, Constraint.smallPadding)
-                
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(.customRichBlack.opacity(Constraint.Opacity.low))
+                .padding(.horizontal, Constraint.regularPadding)
+
+                DividerView()
             }
-            
-            // Face ID Button
+
+            // Enhanced Face ID Button
             Button {
                 appState.handleFaceIDSignIn()
             } label: {
-                VStack(spacing: Constraint.smallPadding) {
+                VStack(spacing: Constraint.regularPadding) {
                     Image(systemName: "faceid")
-                        .font(.system(size: 24))
+                        .font(.system(size: 28, weight: .medium))
                         .foregroundStyle(
                             LinearGradient(
-                                colors: [.customOliveGreen, .customBurgundy],
+                                colors: [
+                                    .customOliveGreen,
+                                    .customBurgundy.opacity(Constraint.Opacity.high)
+                                ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
                         )
-                    
+
                     CustomTextView(
                         "Sign in with Face ID",
                         font: .bodySmall,
-                        color: .customRichBlack.opacity(Constraint.Opacity.high)
+                        color: .customRichBlack.opacity(0.8)
                     )
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, Constraint.regularPadding)
-                .background(
-                    RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                        .fill(.customOliveGreen.opacity(Constraint.Opacity.tiny))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                                .stroke(.customOliveGreen.opacity(Constraint.Opacity.low), lineWidth: 1)
-                        )
-                )
+                .padding(.vertical, Constraint.padding)
             }
             .buttonStyle(.plain)
         }
     }
-    private var switchUserButton: some View {
+
+    private var enhancedSwitchUserButton: some View {
         Button {
-            withAnimation {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                 if case let .returningUser(user) = loginStyle {
                    loginStyle = .newUser(user)
                 }
             }
-            appState.changeUser()
         } label: {
-            HStack(spacing: Constraint.smallPadding) {
+            HStack(spacing: Constraint.regularPadding) {
                 Image(systemName: "person.2.fill")
-                    .font(.caption)
-                    .foregroundColor(.white.opacity(Constraint.Opacity.medium))
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white.opacity(0.8))
                 
                 CustomTextView(
                     "Switch User",
                     font: .labelMedium,
-                    color: .white.opacity(Constraint.Opacity.medium)
+                    color: .white.opacity(0.8)
                 )
             }
-            .padding(.horizontal, Constraint.regularPadding)
-            .padding(.vertical, Constraint.smallPadding)
+            .padding(.horizontal, Constraint.largePadding)
+            .padding(.vertical, Constraint.regularPadding)
             .background(
                 RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                    .fill(.ultraThinMaterial.opacity(Constraint.Opacity.low))
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                .white.opacity(0.15),
+                                .white.opacity(0.05)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .overlay(
                         RoundedRectangle(cornerRadius: Constraint.cornerRadius)
-                            .stroke(.white.opacity(Constraint.Opacity.low), lineWidth: 1)
+                            .stroke(
+                                LinearGradient(
+                                    colors: [
+                                        .white.opacity(0.3),
+                                        .white.opacity(0.1)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 1
+                            )
                     )
             )
         }
         .buttonStyle(.plain)
     }
 
-    // MARK: - Methods
+    // MARK: - Enhanced Methods
     private func animateEntrance() {
-        /// 1. Logo slides down and scales up
-        withAnimation(.smooth()) {
+        // 1. Logo animation with rotation
+        withAnimation(.spring(response: 0.8, dampingFraction: 0.7)) {
             logoScale = 1.0
             logoOffset = 0
+            logoRotation = 360
         }
         
-        /// 2. Title appears
-        withAnimation(.smooth(duration: 0.6)) {
-            showTitle = true
+        // 2. Pulse animation
+        withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
+            pulseAnimation = true
         }
         
-        /// 3. Subtitle appears
-        withAnimation(.smooth(duration: 0.6)) {
-            showSubtitle = true
+        // 3. Title appears with delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                showTitle = true
+            }
         }
         
-        /// 4. Welcome back card slides up
-        withAnimation(.smooth()) {
-            cardOffset = 0
-            showContent = true
+        // 4. Subtitle appears
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                showSubtitle = true
+            }
         }
         
-        // 5. Footer appears last
-        withAnimation(.smooth(duration: 0.6)) {
-            showFooter = true
+        // 5. Content card slides up
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            withAnimation(.spring(response: 0.8, dampingFraction: 0.8)) {
+                cardOffset = 0
+                showContent = true
+            }
+        }
+        
+        // 6. Footer appears last
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                showFooter = true
+            }
         }
     }
     
-    private func handleSignIn(_ type: String, action: @escaping () -> Void) {
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        action()
+    private func startShimmerAnimation() {
+        withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: false)) {
+            shimmerOffset = 200
+        }
     }
     
     private func returningUserCard(for user: User) -> some View {
-        VStack(spacing: Constraint.largePadding * 2) {
-            /// Personalized greeting
-            VStack(spacing: Constraint.smallPadding) {
-                let greeting = "Hi!"
-                CustomTextView(greeting, font: .titleLargeBold, color: .customRichBlack.opacity(Constraint.Opacity.high))
-                CustomTextView("Good to see you again", font: .bodySmall, color: .customRichBlack.opacity(Constraint.Opacity.medium))
-            }
-            .opacity(showContent ? 1 : 0)
-            .offset(y: showContent ? 0 : -20)
-
-            returningUserFaceIDPrompt(for: user)
+        VStack(spacing: Constraint.padding) {
+            /// Enhanced personalized greeting
+            CustomTextView("Welcome Back!", font: .titleLargeBold, color: .customRichBlack)
+                .opacity(showContent ? 1 : 0)
+                .offset(y: showContent ? 0 : -20)
+                .scaleEffect(showContent ? 1 : 0.9)
+            
+            enhancedReturningUserFaceIDPrompt(for: user)
                 .transition(.asymmetric(
                     insertion: .move(edge: .top).combined(with: .opacity),
                     removal: .move(edge: .bottom).combined(with: .opacity)
                 ))
-            
         }
-        .padding(Constraint.largePadding)
-        .background(cardBackground)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(enhancedCardBackground)
         .offset(y: cardOffset)
-        .padding(.horizontal, Constraint.padding)
+        .padding(.horizontal, Constraint.largePadding)
     }
 
-    // Separate Face ID prompt view
-    private func returningUserFaceIDPrompt(for user: User) -> some View {
-        VStack(spacing: Constraint.regularPadding) {
-            VStack(spacing: Constraint.regularPadding) {
-                CustomTextView("Would you like to use Face ID?", font: .bodyLarge, color: .customRichBlack)
-                    .opacity(showContent ? 1 : 0)
-                    .offset(y: showContent ? 0 : 10)
-                
-                Image(systemName: "faceid")
-                    .renderingMode(.template)
-                    .resizable()
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [.customRichBlack, .customRichBlack.opacity(0.7)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+    // Enhanced Face ID prompt view
+    private func enhancedReturningUserFaceIDPrompt(for user: User) -> some View {
+        VStack(spacing: Constraint.largePadding) {
+            Button {
+                appState.handleFaceIDSignIn()
+            } label: {
+                ZStack {
+                    // Enhanced glow effect
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [
+                                    .customRichBlack.opacity(0.2),
+                                    .clear
+                                ],
+                                center: .center,
+                                startRadius: 10,
+                                endRadius: 40
+                            )
                         )
-                    )
-                    .frame(width: Constraint.regularImageSize / 3,
-                           height: Constraint.regularImageSize / 3)
-                    .opacity(showContent ? 1 : 0)
-                    .scaleEffect(showContent ? 1 : 0.5)
-                    .onTapGesture {
-                        appState.handleFaceIDSignIn()
-                    }
+                        .frame(width: 80, height: 80)
+                        .blur(radius: 8)
+                        .scaleEffect(pulseAnimation ? 1.2 : 1.0)
+                    
+                    // Face ID icon
+                    Image(systemName: "faceid")
+                        .renderingMode(.template)
+                        .resizable()
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [
+                                    .customRichBlack,
+                                    .customRichBlack.opacity(0.8)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 40, height: 40)
+                        .scaleEffect(showContent ? 1 : 0.5)
+                }
             }
+            .buttonStyle(.plain)
+            .opacity(showContent ? 1 : 0)
         }
     }
 }

@@ -5,7 +5,7 @@ extension AppStateManager {
     func generateExpensePDF(completion: @escaping (Data?) -> Void) {
         let pdfMetaData = [
             kCGPDFContextCreator: "FundBud",
-            kCGPDFContextAuthor: user?.displayName ?? "User",
+            kCGPDFContextAuthor: UserAuthService.shared.currentUser?.displayName ?? "User",
             kCGPDFContextTitle: "Expense Report"
         ]
         
@@ -62,7 +62,7 @@ extension AppStateManager {
         
         let userInfo = """
        Generated: \(dateFormatter.string(from: Date()))
-       User: \(user?.displayName ?? "User")
+       User: \(UserAuthService.shared.currentUser?.displayName ?? "User")
        Period: \(dateFormatter.string(from: startDate)) - \(dateFormatter.string(from: Date()))
        """
         

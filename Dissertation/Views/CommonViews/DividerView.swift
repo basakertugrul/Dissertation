@@ -6,11 +6,18 @@ struct DividerView: View {
 
     var body: some View {
         Rectangle()
-            .fill(.customRichBlack.opacity(Constraint.Opacity.medium))
-            .frame(height: Constraint.smallSize)
-            .padding(
-                .vertical,
-                willAddSpacing ? Constraint.padding : .zero
+            .fill(
+                LinearGradient(
+                    colors: [
+                        .clear,
+                        .customRichBlack.opacity(Constraint.Opacity.high),
+                        .clear
+                    ],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
             )
+            .frame(height: Constraint.smallSize)
+            .padding(.vertical, willAddSpacing ? Constraint.padding : .zero )
     }
 }

@@ -56,9 +56,9 @@ struct BudgetMateApp: App {
 // MARK: - App Setup & Event Handling
 private extension BudgetMateApp {
     func setupApp() {
+        UserAuthService.shared.loadCurrentUser()
         appState.loadInitialData()
         setupNotificationObservers()
-        appState.resetData()
     }
 
     func handleScenePhaseChange(_ phase: ScenePhase) {
