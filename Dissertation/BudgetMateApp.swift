@@ -6,13 +6,16 @@ import CoreData
 struct BudgetMateApp: App {
     @Environment(\.scenePhase) var scenePhase
     @StateObject private var appState = AppStateManager.shared
+    @ObservedObject private var userAuthService = UserAuthService.shared
     let dataController = DataController.shared
 
     var body: some Scene {
         WindowGroup {
             ZStack {
-                if appState.hasLoggedIn {
-                    if appState.dailyBalance == .none {
+                if userAuthService.isFirstTimeUser {
+                    OnboardingView()
+                } else if appState.hasLoggedIn {
+                    if appState.dailyBalance == .none { 
                         BalanceEntranceView() { dailyAmount in
                             switch DataController.shared.saveTargetSpending(to: dailyAmount) {
                             case .success:

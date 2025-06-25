@@ -324,7 +324,7 @@ struct LoginScreenView: View {
                     CustomTextView(
                         "Sign in with Face ID",
                         font: .bodySmall,
-                        color: .customRichBlack.opacity(0.8)
+                        color: .customRichBlack.opacity(Constraint.Opacity.high)
                     )
                 }
                 .frame(maxWidth: .infinity)

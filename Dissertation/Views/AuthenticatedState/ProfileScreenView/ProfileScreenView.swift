@@ -137,23 +137,14 @@ struct ProfileScreen: View {
     
     // MARK: - Profile Card
     private var profileCard: some View {
-        HStack(spacing: Constraint.padding) {
-            ZStack {
-                Circle()
-                    .fill(.customBurgundy)
-                    .shadow(color: .black.opacity(Constraint.Opacity.low), radius: Constraint.shadowRadius)
-                    .frame(width: Constraint.regularImageSize/3, height: Constraint.regularImageSize/3)
-            }
-            
-            CustomTextView(
-                (
-                    "Hi there!"
-                ),
-                font: .titleSmall,
-                color: .customBurgundy
-            )
-            Spacer()
-        }
+        CustomTextView(
+            (
+                "Hi there!"
+            ),
+            font: .titleMediumBold,
+            color: .customBurgundy
+        )
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     // MARK: - Budget Card

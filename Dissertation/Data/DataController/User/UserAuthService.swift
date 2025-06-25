@@ -4,13 +4,13 @@ import Foundation
 class UserAuthService: ObservableObject {
     @Published var currentUser: User?
     @Published var isAuthenticated: Bool = false
-    @Published var isFirstTimeUser: Bool = false
-    
+    @Published var isFirstTimeUser: Bool = true
+
     private let userDefaultsKey = "current_user_data"
-    private let firstTimeKey = "is_first_time_user"
-    
+    private let firstTimeKey = "has_completed_onboarding"
+
     static let shared = UserAuthService()
-    
+
     private init() {
         checkFirstTimeUser()
         loadCurrentUser()
@@ -18,10 +18,11 @@ class UserAuthService: ObservableObject {
 
     // MARK: - First Time User Setup
     private func checkFirstTimeUser() {
-        isFirstTimeUser = !UserDefaults.standard.bool(forKey: firstTimeKey)
+        let hasCompletedOnboarding = UserDefaults.standard.bool(forKey: firstTimeKey)
+        isFirstTimeUser = !hasCompletedOnboarding
     }
 
-    private func completeFirstTimeSetup() {
+    func completeOnboarding() {
         UserDefaults.standard.set(true, forKey: firstTimeKey)
         isFirstTimeUser = false
     }
@@ -32,10 +33,6 @@ class UserAuthService: ObservableObject {
         currentUser = user
         isAuthenticated = true
         saveCurrentUser()
-
-        if isFirstTimeUser {
-            completeFirstTimeSetup()
-        }
 
         NotificationCenter.default.post(
             name: Notification.Name("LoggedIn"),
@@ -68,10 +65,10 @@ class UserAuthService: ObservableObject {
               let createdAtInterval = userData["createdAt"] as? TimeInterval else {
             return
         }
-
+        
         let email = (userData["email"] as? String)?.isEmpty == false ? userData["email"] as? String : nil
         let displayName = (userData["displayName"] as? String)?.isEmpty == false ? userData["displayName"] as? String : nil
-
+        
         currentUser = User(id: id, email: email, displayName: displayName, createdAt: Date(timeIntervalSince1970: createdAtInterval))
         isAuthenticated = true
     }

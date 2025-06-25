@@ -18,7 +18,7 @@ struct LoginButtonView: View {
             // Haptic feedback
             let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
             impactFeedback.impactOccurred()
-            
+
             action()
         } label: {
             HStack(spacing: Constraint.regularPadding) {
@@ -80,7 +80,8 @@ struct LoginButtonView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, Constraint.largePadding)
+            .frame(height: 44)
+            .padding(.vertical, Constraint.padding)
             .padding(.horizontal, Constraint.regularPadding)
             .background(enhancedBackgroundView)
             .scaleEffect(isPressed ? 0.97 : (isHovered ? 1.02 : 1.0))
@@ -96,7 +97,7 @@ struct LoginButtonView: View {
                     .fill(.white.opacity(isPressed ? 0.1 : 0))
             )
         }
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
             withAnimation(.easeInOut(duration: 0.1)) {
                 isPressed = pressing

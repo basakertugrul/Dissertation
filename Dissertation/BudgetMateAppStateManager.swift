@@ -124,7 +124,7 @@ extension AppStateManager {
             self.disableLoadingView()
             switch result {
             case .success:
-                self.handleFaceIDSignIn()
+                self.logIn()
             case let .failure(error): self.signInError = error
             }
         }
