@@ -74,7 +74,7 @@ struct OnboardingPageView: View {
             // Title
             CustomTextView(
                 page.title,
-                font: .titleLargeBold,
+                font: .titleSmallBold,
                 color: .white
             )
             .multilineTextAlignment(.center)

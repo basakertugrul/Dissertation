@@ -136,7 +136,7 @@ private struct MainAddButton: View {
         ZStack(alignment: .top) {
             /// Camera Option Button
             if showCameraOption {
-                CameraButton(action: onCameraTap)
+                CameraButtonn(action: onCameraTap)
                     .offset(y: -1.75 * Constraint.extremeSize)
                     .transition(
                         .asymmetric(
@@ -171,7 +171,7 @@ private struct MainAddButton: View {
 }
 
 // MARK: - Camera Button Component
-private struct CameraButton: View {
+private struct CameraButtonn: View {
     let action: () -> Void
 
     var body: some View {
