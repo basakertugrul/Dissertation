@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		17DBB7F12D69360800422DAC /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 17DBB7F02D69360800422DAC /* SplineRuntime */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		176604BC2DFA4B760007C4D1 /* BudgetMate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BudgetMate.entitlements; sourceTree = "<group>"; };
 		17B9DBB22DD56D5300F67C01 /* BudgetMate-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "BudgetMate-Info.plist"; sourceTree = "<group>"; };
@@ -29,7 +25,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17DBB7F12D69360800422DAC /* SplineRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,7 +69,6 @@
 			);
 			name = BudgetMate;
 			packageProductDependencies = (
-				17DBB7F02D69360800422DAC /* SplineRuntime */,
 			);
 			productName = BudgetMate;
 			productReference = 17DBB7D92D6915F100422DAC /* BudgetMate.app */;
@@ -105,7 +99,6 @@
 			mainGroup = 17DBB7D02D6915F100422DAC;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				17DBB7EF2D69360800422DAC /* XCRemoteSwiftPackageReference "spline-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 17DBB7DA2D6915F100422DAC /* Products */;
@@ -274,13 +267,14 @@
 				INFOPLIST_FILE = "BudgetMate-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FundBud;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for taking photos of receipts for tracking expenses";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Take photos of your receipts and expenses to track your spending";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Use Face ID to quickly and securely sign in to FundBud";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo library is used to save and access receipt photos for your expense records.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -309,13 +303,14 @@
 				INFOPLIST_FILE = "BudgetMate-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FundBud;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for taking photos of receipts for tracking expenses";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Take photos of your receipts and expenses to track your spending";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Use Face ID to quickly and securely sign in to FundBud";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo library is used to save and access receipt photos for your expense records.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -351,25 +346,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		17DBB7EF2D69360800422DAC /* XCRemoteSwiftPackageReference "spline-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/splinetool/spline-ios";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		17DBB7F02D69360800422DAC /* SplineRuntime */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 17DBB7EF2D69360800422DAC /* XCRemoteSwiftPackageReference "spline-ios" */;
-			productName = SplineRuntime;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 17DBB7D12D6915F100422DAC /* Project object */;
 }

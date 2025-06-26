@@ -14,6 +14,7 @@ struct CustomTabBar: View {
                 icon: "chart.bar.xaxis",
                 isSelected: selectedTab == .balance
             ) {
+                HapticManager.shared.trigger(.navigation)
                 withAnimation(.smooth(duration: 0.2)) {
                     selectedTab = .balance
                 }
@@ -26,11 +27,13 @@ struct CustomTabBar: View {
                 showCameraOption: $showCameraOption,
                 longPressInProgress: $longPressInProgress,
                 onAddTap: {
+                    HapticManager.shared.trigger(.add)
                     withAnimation(.smooth) {
                         showAddExpenseSheet = true
                     }
                 },
                 onCameraTap: {
+                    HapticManager.shared.trigger(.buttonTap)
                     withAnimation(.smooth()) {
                         willOpenCameraView = true
                         showCameraOption = false
@@ -38,6 +41,9 @@ struct CustomTabBar: View {
                     }
                 },
                 onLongPress: { isPressing in
+                    if isPressing {
+                        HapticManager.shared.trigger(.longPress)
+                    }
                     withAnimation(.smooth()) {
                         longPressInProgress = isPressing
                         if isPressing {
@@ -54,6 +60,7 @@ struct CustomTabBar: View {
                     }
                 },
                 onDragCamera: {
+                    HapticManager.shared.trigger(.swipe)
                     withAnimation(.smooth()) {
                         willOpenCameraView = true
                         showCameraOption = false
@@ -69,6 +76,7 @@ struct CustomTabBar: View {
                 icon: "list.bullet",
                 isSelected: selectedTab == .expenses
             ) {
+                HapticManager.shared.trigger(.navigation)
                 withAnimation(.smooth(duration: 0.2)) {
                     selectedTab = .expenses
                 }

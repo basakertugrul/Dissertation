@@ -13,15 +13,26 @@ extension View {
             if isPresented.wrappedValue {
                 BalanceEntranceView(
                     initialBalance: currentAmount,
-                    onSave: onSave,
+                    onSave: { amount in
+                        HapticManager.shared.trigger(.success)
+                        onSave(amount)
+                    },
                     onTouchedBackground: {
-                    withAnimation {
-                        isPresented.wrappedValue = false
+                        HapticManager.shared.trigger(.cancel)
+                        withAnimation {
+                            isPresented.wrappedValue = false
+                        }
                     }
-                })
+                )
                 .scaleEffect(isPresented.wrappedValue ? 1.0 : 0.7)
                 .opacity(isPresented.wrappedValue ? 1.0 : 0.0)
                 .animation(.smooth, value: isPresented.wrappedValue)
+                .onAppear {
+                    HapticManager.shared.trigger(.medium)
+                }
+                .onDisappear {
+                    HapticManager.shared.trigger(.light)
+                }
             }
         }
     }

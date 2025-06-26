@@ -54,5 +54,11 @@ struct BalanceScreenView: View {
             .padding(.horizontal, Constraint.padding)
         }
         .frame(width: UIScreen.main.bounds.width)
+        .gesture(
+            DragGesture()
+                .onChanged { _ in
+                    HapticManager.shared.trigger(.light)
+                }
+        )
     }
 }

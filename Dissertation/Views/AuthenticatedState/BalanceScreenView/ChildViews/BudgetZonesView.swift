@@ -30,20 +30,26 @@ struct BudgetZonesView: View {
                 .opacity(animatedOpacity)
         }
         .onAppear {
+            HapticManager.shared.trigger(.light)
             assignLineChartItems()
             animateAppearance()
         }
         .onChange(of: expenses) { _, _ in
+            HapticManager.shared.trigger(.light)
             assignLineChartItems()
             animateContentChange()
         }
         .onChange(of: timeFrame) { _, _ in
+            HapticManager.shared.trigger(.selection)
             assignLineChartItems()
             animateContentChange()
         }
-        .onChange(of: dailyBalance) { _, _ in
-            assignLineChartItems()
-            animateContentChange()
+        .onChange(of: dailyBalance) { oldValue, newValue in
+            if oldValue != newValue {
+                HapticManager.shared.trigger(.medium)
+                assignLineChartItems()
+                animateContentChange()
+            }
         }
     }
     
@@ -152,6 +158,7 @@ struct BudgetZonesView: View {
          HStack(spacing: Constraint.smallPadding) {
              ForEach(TimeFrame.allCases, id: \.self) { frame in
                  Button(action: {
+                     HapticManager.shared.trigger(.buttonTap)
                      withAnimation(.smooth()) {
                          if timeFrame != frame {
                              timeFrame = frame
@@ -175,6 +182,9 @@ struct BudgetZonesView: View {
                      .scaleEffect(timeFrame == frame ? 1.05 : 1.0)
                  }
                  .buttonStyle(PlainButtonStyle())
+                 .onLongPressGesture {
+                     HapticManager.shared.trigger(.longPress)
+                 }
              }
          }
          .frame(maxWidth: .infinity, alignment: .center)

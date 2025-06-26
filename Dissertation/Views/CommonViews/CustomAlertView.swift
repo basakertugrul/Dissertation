@@ -42,7 +42,12 @@ struct CustomAlertView: View {
             Color.customRichBlack
                 .opacity(Constraint.Opacity.medium)
                 .ignoresSafeArea()
-                .onTapGesture { if let secondaryButtonAction = secondaryButtonAction { secondaryButtonAction() } }
+                .onTapGesture {
+                    if let secondaryButtonAction = secondaryButtonAction {
+                        HapticManager.shared.trigger(.cancel)
+                        secondaryButtonAction()
+                    }
+                }
 
             VStack(spacing: .zero) {
                 /// Alert header
@@ -68,6 +73,7 @@ struct CustomAlertView: View {
                     if let secondaryText = secondaryButtonText, let secondaryAction = secondaryButtonAction {
                         /// Two buttons layout
                         Button(action: {
+                            HapticManager.shared.trigger(.cancel)
                             secondaryAction()
                             isShowing = false
                         }) {
@@ -83,6 +89,15 @@ struct CustomAlertView: View {
                             .background(Color.customRichBlack.opacity(Constraint.Opacity.low))
                     }
                     Button(action: {
+                        // Determine haptic based on button text or alert type
+                        if buttonText.lowercased().contains("delete") || buttonText.lowercased().contains("remove") {
+                            HapticManager.shared.trigger(.warning)
+                        } else if buttonText.lowercased().contains("ok") || buttonText.lowercased().contains("confirm") || buttonText.lowercased().contains("save") {
+                            HapticManager.shared.trigger(.success)
+                        } else {
+                            HapticManager.shared.trigger(.buttonTap)
+                        }
+                        
                         buttonAction()
                         isShowing = false
                     }) {
@@ -104,6 +119,10 @@ struct CustomAlertView: View {
             )
             .clipShape(RoundedRectangle(cornerRadius: Constraint.cornerRadius))
             .zIndex(10)
+        }
+        .onAppear {
+            // Trigger notification haptic when alert appears
+            HapticManager.shared.trigger(.notification)
         }
     }
 }

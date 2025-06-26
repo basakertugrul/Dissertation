@@ -31,13 +31,17 @@ struct LegalInformationOverlay: View {
            Rectangle()
                .fill(.ultraThinMaterial.opacity(Constraint.Opacity.medium))
                .ignoresSafeArea()
-               .onTapGesture {  isShowing = false }
+               .onTapGesture {
+                   HapticManager.shared.trigger(.cancel)
+                   isShowing = false
+               }
 
            VStack(spacing: .zero) {
                if let selectedSection = selectedSection {
                    // Document Header with Back Button
                    HStack(alignment: .lastTextBaseline) {
                        Button {
+                           HapticManager.shared.trigger(.navigation)
                            withAnimation {
                                self.selectedSection = nil
                            }
@@ -55,6 +59,7 @@ struct LegalInformationOverlay: View {
                        Spacer()
                        
                        Button {
+                           HapticManager.shared.trigger(.cancel)
                            isShowing = false
                        } label: {
                            Image(systemName: "xmark.circle.fill")
@@ -83,6 +88,7 @@ struct LegalInformationOverlay: View {
                        CustomNavigationBarTitleView(title: createTitle("Legal Information"))
                        Spacer()
                        Button {
+                           HapticManager.shared.trigger(.cancel)
                            isShowing = false
                        } label: {
                            Image(systemName: "xmark.circle.fill")
@@ -97,6 +103,7 @@ struct LegalInformationOverlay: View {
                    VStack(spacing: .zero) {
                        ForEach(LegalSection.allCases, id: \.self) { section in
                            Button {
+                               HapticManager.shared.trigger(.navigation)
                                withAnimation {
                                    selectedSection = section
                                }
@@ -130,16 +137,19 @@ struct LegalInformationOverlay: View {
             radius: Constraint.shadowRadius
            )
        }
+       .onAppear {
+           HapticManager.shared.trigger(.notification)
+       }
    }
    
    private func getContent(for section: LegalSection) -> String {
        switch section {
        case .terms:
-           return LegalTexts.termsOfService
+           return LegalSection.terms.rawValue
        case .privacy:
-           return LegalTexts.privacyPolicy
+           return LegalSection.privacy.rawValue
        case .about:
-           return LegalTexts.aboutApp
+           return LegalSection.about.rawValue
        }
    }
     
@@ -149,70 +159,4 @@ struct LegalInformationOverlay: View {
         title.font = TextFonts.titleSmallBold.font
         return title
     }
-}
-
-struct LegalTexts {
-   static let termsOfService = """
-   TERMS OF SERVICE
-   
-   Last updated: June 2025
-   
-   1. ACCEPTANCE OF TERMS
-   By downloading and using FundBud, you agree to these terms.
-   
-   2. DESCRIPTION OF SERVICE
-   FundBud is a personal expense tracking app that helps you monitor your daily spending.
-   
-   3. USER RESPONSIBILITIES
-   • Provide accurate expense information
-   • Use the app responsibly
-   • Keep your device secure
-   
-   4. DATA STORAGE
-   All your data is stored locally on your device. We don't access or share your financial information.
-   
-   5. LIMITATION OF LIABILITY
-   FundBud is provided "as is" without warranties.
-   """
-   
-   static let privacyPolicy = """
-   PRIVACY POLICY
-   
-   Last updated: June 2025
-   
-   YOUR PRIVACY MATTERS
-   We respect your privacy and are committed to protecting your personal information.
-   
-   INFORMATION WE COLLECT
-   • App usage data (stored locally)
-   • No personal financial data is transmitted
-   • No third-party tracking
-   
-   DATA STORAGE
-   • All expense data stays on your device
-   • We don't have access to your information
-   • Data is secured with Face ID/Touch ID
-   
-   CONTACT US
-   If you have questions about this privacy policy, contact us at fundBud2025@gmail.com
-   """
-   
-   static let aboutApp = """
-   ABOUT FUNDBUD
-   
-   Version: 1.0
-   
-   FundBud helps you track your daily expenses and stay within your budget.
-   
-   FEATURES
-   • Daily expense tracking
-   • Budget monitoring
-   • Spending insights
-   • Secure local storage
-   
-   DEVELOPMENT
-   Made with ❤️ to help you manage your finances better.
-   
-   © 2025 FundBud. All rights reserved.
-   """
 }

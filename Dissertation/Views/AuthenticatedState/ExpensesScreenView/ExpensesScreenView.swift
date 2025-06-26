@@ -51,6 +51,7 @@ struct ExpensesScreenView: View {
 
                             ForEach(Array(expensesForDate.enumerated()), id: \.element.id) { expenseIndex, expense in
                                 ExpenseItemView(expense: expense) {
+                                    HapticManager.shared.trigger(.edit)
                                     onExpenseEdit(expense)
                                 }
                                 .opacity(sectionOpacity)
@@ -71,6 +72,9 @@ struct ExpensesScreenView: View {
         }
         .onChange(of: expenses) { _, _ in
             animateContentUpdate()
+        }
+        .refreshable {
+            HapticManager.shared.trigger(.navigation)
         }
     }
     
@@ -99,6 +103,7 @@ struct ExpensesScreenView: View {
     
     private func animateContentUpdate() {
         // Subtle update animation when expenses change
+        HapticManager.shared.trigger(.selection)
         withAnimation(.smooth(duration: 0.3)) {
             sectionOpacity = 0.8
         }
@@ -122,6 +127,7 @@ struct ExpenseItemView: View {
 
     var body: some View {
         Button(action: {
+            HapticManager.shared.trigger(.buttonTap)
             animateButtonPress()
             onTap()
         }) {
@@ -143,6 +149,10 @@ struct ExpenseItemView: View {
         .opacity(itemOpacity)
         .onAppear {
             animateItemAppearance()
+        }
+        .onLongPressGesture {
+            HapticManager.shared.trigger(.longPress)
+            // Could add additional long press functionality here
         }
     }
     

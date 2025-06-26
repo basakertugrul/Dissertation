@@ -31,10 +31,11 @@ struct ProfileScreen: View {
     
     var body: some View {
         VStack(spacing: .zero) {
-            HStack(alignment: .center) {
+            HStack {
                 CustomNavigationBarTitleView(title: title)
                 Spacer()
                 Button {
+                    HapticManager.shared.trigger(.cancel)
                     withAnimation(.smooth) {
                         appState.isProfileScreenOpen = false
                     }
@@ -44,9 +45,8 @@ struct ProfileScreen: View {
                         .foregroundColor(.customBurgundy.opacity(Constraint.Opacity.high))
                         .frame(width: 32, height: 32)
                 }
-                .padding(.vertical, (Constraint.extremePadding + Constraint.largePadding)/2)
+                .padding(Constraint.padding)
             }
-            .padding(.horizontal, Constraint.padding)
 
             ScrollView {
                 VStack(spacing: Constraint.largePadding) {
@@ -90,18 +90,21 @@ struct ProfileScreen: View {
     }
 
     private func rateApp() {
+        HapticManager.shared.trigger(.success)
         if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
                AppStore.requestReview(in: scene)
            }
     }
     
     private func exportData() {
+        HapticManager.shared.trigger(.buttonTap)
         if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
                AppStore.requestReview(in: scene)
            }
     }
 
     private func sendFeedback() {
+        HapticManager.shared.trigger(.navigation)
         if UIApplication.shared.canOpenURL(URL(string: "mailto:")!) {
             let email = "fundBud2025@gmail.com"
             let subject = "FundBud Feedback - iOS App"
@@ -150,6 +153,7 @@ struct ProfileScreen: View {
     // MARK: - Budget Card
     private var budgetCard: some View {
         Button {
+            HapticManager.shared.trigger(.edit)
             showingBudgetSheet = true
         } label: {
             HStack(spacing: Constraint.largePadding) {
@@ -261,27 +265,33 @@ struct ProfileScreen: View {
         VStack(spacing: Constraint.largePadding) {
             settingsGroup("Settings & Support", items: [
                 ("bell.badge.fill", "Notifications", "Budget alerts & reminders", .customBurgundy, {
+                    HapticManager.shared.trigger(.navigation)
                     appState.manageNotifications()
                 }),
                 ("square.and.arrow.up.fill", "Export Data", "Download expense history", .customOliveGreen, {
+                    HapticManager.shared.trigger(.buttonTap)
                     appState.exportExpenseData()
                 }),
                 ("lock.shield.fill", "Privacy & Security", "Manage your data protection", .customRichBlack, {
+                    HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingPrivacyPolicyAlert = true
                     }
                 }),
                 ("envelope.badge.fill", "Send Feedback", "Help us improve the app", .customOliveGreen, {
+                    HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingsendFeedbackAlert = true
                     }
                 }),
                 ("star.circle.fill", "Rate FundBud", "Share your experience", .customGold, {
+                    HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingAppRateAlert = true
                     }
                 }),
                 ("doc.text.fill", "Legal Information", "Terms, privacy & licenses", .customRichBlack, {
+                    HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingLegalInfoAlert = true
                     }
@@ -292,7 +302,10 @@ struct ProfileScreen: View {
 
     // MARK: - Logout Button
     private var logoutButton: some View {
-        Button { showingLogoutAlert = true } label: {
+        Button {
+            HapticManager.shared.trigger(.warning)
+            showingLogoutAlert = true
+        } label: {
             HStack(spacing: Constraint.padding) {
                 Image(systemName: "power.circle.fill")
                     .foregroundColor(.customBurgundy)
@@ -374,11 +387,3 @@ struct ProfileScreen: View {
         .buttonStyle(.plain)
     }
 }
-
-#Preview {
-    NavigationView {
-        ProfileScreen()
-            .environmentObject(AppStateManager.shared)
-    }
-}
-

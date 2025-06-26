@@ -101,6 +101,7 @@ struct LoadingOverlayView: View {
     // MARK: - Animation Control
     private func startAnimations() {
         /// Content entrance animation
+        HapticManager.shared.trigger(.buttonTap)
         withAnimation(.smooth()) {
             contentScale = 1.0
             contentOpacity = 1.0

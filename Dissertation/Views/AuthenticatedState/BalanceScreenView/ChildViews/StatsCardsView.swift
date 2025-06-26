@@ -25,6 +25,13 @@ struct StatsCardsView: View {
             .scaleEffect(cardScale)
             .opacity(cardOpacity)
             .offset(x: -cardTranslation)
+            .onTapGesture {
+                HapticManager.shared.trigger(.buttonTap)
+                showingAllowanceSheet = true
+            }
+            .onLongPressGesture {
+                HapticManager.shared.trigger(.longPress)
+            }
             
             /// Days Tracked Card
             DaysTrackedCardView(
@@ -34,21 +41,42 @@ struct StatsCardsView: View {
             .scaleEffect(cardScale)
             .opacity(cardOpacity)
             .offset(x: cardTranslation)
+            .onTapGesture {
+                HapticManager.shared.trigger(.light)
+            }
+            .onLongPressGesture {
+                HapticManager.shared.trigger(.medium)
+            }
         }
         .frame(maxWidth: .infinity)
         .onAppear {
             animateCardsAppearance()
         }
-        .onChange(of: dailyBalance) { _, _ in
-            animateContentUpdate()
+        .onChange(of: dailyBalance) { oldValue, newValue in
+            if oldValue != newValue {
+                // Provide contextual haptic feedback based on balance change
+                if newValue > oldValue {
+                    HapticManager.shared.trigger(.success)
+                } else if newValue < oldValue {
+                    HapticManager.shared.trigger(.warning)
+                } else {
+                    HapticManager.shared.trigger(.light)
+                }
+                animateContentUpdate()
+            }
         }
-        .onChange(of: daysSinceEarliest) { _, _ in
-            animateContentUpdate()
+        .onChange(of: daysSinceEarliest) { oldValue, newValue in
+            if oldValue != newValue {
+                HapticManager.shared.trigger(.notification)
+                animateContentUpdate()
+            }
         }
     }
     
     private func animateCardsAppearance() {
-        // Staggered entrance animation
+        // Staggered entrance animation with haptic feedback
+        HapticManager.shared.trigger(.light)
+        
         withAnimation(.smooth(duration: 0.4).delay(0.2)) {
             showCards = true
             cardScale = 1.0

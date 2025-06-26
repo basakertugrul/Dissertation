@@ -60,10 +60,12 @@ struct MainAppView: View {
             onSave: { amount in
                 switch DataController.shared.saveTargetSpending(to: amount) {
                 case .success():
+                    HapticManager.shared.trigger(.success)
                     withAnimation(.smooth) {
                         showingAllowanceSheet = false
                     }
-                case .failure: break
+                case .failure:
+                    HapticManager.shared.trigger(.error)
                 }
             }
         )
@@ -126,6 +128,7 @@ private extension MainAppView {
             ExpensesScreenView(
                 expenses: $appState.expenseViewModels,
                 onExpenseEdit: { expense in
+                    HapticManager.shared.trigger(.edit)
                     DispatchQueue.main.async {
                         expenseToEdit = expense
                     }

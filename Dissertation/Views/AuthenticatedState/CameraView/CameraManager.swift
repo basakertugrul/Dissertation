@@ -60,8 +60,10 @@ class CameraManager: ObservableObject {
                 guard let self = self else { return }
                 self.isPermissionGranted = isGranted
                 if isGranted {
+                    HapticManager.shared.trigger(.success)
                     self.setupCamera()
                 } else {
+                    HapticManager.shared.trigger(.error)
                     self.showSettingAlert = true
                 }
             }
@@ -83,11 +85,13 @@ class CameraManager: ObservableObject {
             DispatchQueue.main.async {
                 self.isPermissionGranted = false
                 self.showSettingAlert = true
+                HapticManager.shared.trigger(.error)
             }
         @unknown default:
             DispatchQueue.main.async {
                 self.isPermissionGranted = false
                 self.showSettingAlert = true
+                HapticManager.shared.trigger(.error)
             }
         }
     }
@@ -97,8 +101,9 @@ class CameraManager: ObservableObject {
             DispatchQueue.main.async {
                 switch status {
                 case .authorized, .limited:
-                    break
+                    HapticManager.shared.trigger(.success)
                 case .denied, .restricted:
+                    HapticManager.shared.trigger(.error)
                     self?.showSettingAlert = true
                 default:
                     break
@@ -139,6 +144,7 @@ class CameraManager: ObservableObject {
                 DispatchQueue.main.async {
                     self.status = .configured
                     self.isConfiguring = false
+                    HapticManager.shared.trigger(.success)
                 }
             } else {
                 DispatchQueue.main.async {
@@ -166,7 +172,11 @@ class CameraManager: ObservableObject {
                 session.addInput(input)
                 videoDeviceInput = input
             }
-        } catch {}
+        } catch {
+            DispatchQueue.main.async {
+                HapticManager.shared.trigger(.error)
+            }
+        }
     }
 
     // MARK: - Session Control
@@ -183,6 +193,8 @@ class CameraManager: ObservableObject {
     func switchCamera() {
         guard !isConfiguring else { return }
         
+        HapticManager.shared.trigger(.selection)
+        
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
             
@@ -195,6 +207,7 @@ class CameraManager: ObservableObject {
     }
     
     func switchFlash() {
+        HapticManager.shared.trigger(.selection)
         isFlashOn.toggle()
         toggleTorch(torchIsOn: isFlashOn)
     }
@@ -215,11 +228,17 @@ class CameraManager: ObservableObject {
                     device.torchMode = .off
                 }
                 device.unlockForConfiguration()
-            } catch {}
+            } catch {
+                DispatchQueue.main.async {
+                    HapticManager.shared.trigger(.error)
+                }
+            }
         }
     }
     
     func setFocus(point: CGPoint) {
+        HapticManager.shared.trigger(.selection)
+        
         sessionQueue.async { [weak self] in
             guard let self = self,
                   let device = self.videoDeviceInput?.device else { return }
@@ -240,6 +259,9 @@ class CameraManager: ObservableObject {
                 device.isSubjectAreaChangeMonitoringEnabled = true
                 device.unlockForConfiguration()
             } catch {
+                DispatchQueue.main.async {
+                    HapticManager.shared.trigger(.error)
+                }
             }
         }
     }
@@ -255,21 +277,33 @@ class CameraManager: ObservableObject {
                                       min(factor, device.maxAvailableVideoZoomFactor))
                 device.videoZoomFactor = clampedFactor
                 device.unlockForConfiguration()
-            } catch {}
+            } catch {
+                DispatchQueue.main.async {
+                    HapticManager.shared.trigger(.error)
+                }
+            }
         }
     }
     
     // MARK: - Photo Capture
     func captureImage() {
+        HapticManager.shared.trigger(.buttonTap)
+        
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
             
             guard self.status == .configured,
                   self.session.isRunning else {
+                DispatchQueue.main.async {
+                    HapticManager.shared.trigger(.error)
+                }
                 return
             }
             
             guard let videoConnection = self.photoOutput.connection(with: .video) else {
+                DispatchQueue.main.async {
+                    HapticManager.shared.trigger(.error)
+                }
                 return
             }
             
@@ -285,6 +319,11 @@ class CameraManager: ObservableObject {
             
             self.cameraDelegate = CameraDelegate { [weak self] image in
                 DispatchQueue.main.async {
+                    if image != nil {
+                        HapticManager.shared.trigger(.success)
+                    } else {
+                        HapticManager.shared.trigger(.error)
+                    }
                     self?.capturedImage = image
                 }
             }
@@ -298,9 +337,12 @@ class CameraManager: ObservableObject {
     // MARK: - Image Processing
     func saveImageToGallery(image: UIImage) {
         let delegate = CameraDelegate { _ in }
-        delegate.saveImageToGallery(image) { [weak self] _, error in
+        delegate.saveImageToGallery(image) { [weak self] success, error in
             DispatchQueue.main.async {
-                if let _ = error {
+                if success {
+                    HapticManager.shared.trigger(.success)
+                } else {
+                    HapticManager.shared.trigger(.error)
                     self?.showPhotoErrorAlert = true
                 }
             }

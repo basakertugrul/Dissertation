@@ -30,13 +30,17 @@ struct PrivacySecurityOverlay: View {
             Rectangle()
                 .fill(.ultraThinMaterial.opacity(Constraint.Opacity.medium))
                 .ignoresSafeArea()
-                .onTapGesture { isShowing = false }
+                .onTapGesture {
+                    HapticManager.shared.trigger(.cancel)
+                    isShowing = false
+                }
 
             VStack(spacing: .zero) {
                 if let selectedSection = selectedSection {
                     // Document Header with Back Button
                     HStack(alignment: .lastTextBaseline) {
                         Button {
+                            HapticManager.shared.trigger(.navigation)
                             withAnimation {
                                 self.selectedSection = nil
                             }
@@ -54,6 +58,7 @@ struct PrivacySecurityOverlay: View {
                         Spacer()
                         
                         Button {
+                            HapticManager.shared.trigger(.cancel)
                             isShowing = false
                         } label: {
                             Image(systemName: "xmark.circle.fill")
@@ -77,6 +82,7 @@ struct PrivacySecurityOverlay: View {
                         CustomNavigationBarTitleView(title: createTitle("Privacy & Security"))
                         Spacer()
                         Button {
+                            HapticManager.shared.trigger(.cancel)
                             isShowing = false
                         } label: {
                             Image(systemName: "xmark.circle.fill")
@@ -91,6 +97,7 @@ struct PrivacySecurityOverlay: View {
                     VStack(spacing: .zero) {
                         ForEach(PrivacySection.allCases, id: \.self) { section in
                             Button {
+                                HapticManager.shared.trigger(.navigation)
                                 withAnimation {
                                     selectedSection = section
                                 }
@@ -130,6 +137,9 @@ struct PrivacySecurityOverlay: View {
                 color: .customRichBlack.opacity(Constraint.Opacity.medium),
                 radius: Constraint.shadowRadius
             )
+        }
+        .onAppear {
+            HapticManager.shared.trigger(.notification)
         }
     }
     

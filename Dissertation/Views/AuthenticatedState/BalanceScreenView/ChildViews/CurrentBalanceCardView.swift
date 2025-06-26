@@ -63,15 +63,38 @@ struct CurrentBalanceCardView: View {
         }
         .onChange(of: appStateManager.calculatedBalance) { oldValue, newValue in
             if oldValue != newValue {
+                // Provide contextual haptic feedback based on balance change
+                if newValue > oldValue {
+                    HapticManager.shared.trigger(.success)
+                } else if newValue < oldValue {
+                    HapticManager.shared.trigger(.warning)
+                } else {
+                    HapticManager.shared.trigger(.light)
+                }
+                
+                // Special haptic for crossing zero threshold
+                if (oldValue >= 0) != (newValue >= 0) {
+                    HapticManager.shared.trigger(.notification)
+                }
+                
                 animatedBalance = oldValue
                 animateBalanceChange(from: oldValue, to: newValue)
             }
+        }
+        .onTapGesture {
+            HapticManager.shared.trigger(.selection)
+        }
+        .onLongPressGesture {
+            HapticManager.shared.trigger(.longPress)
         }
     }
 
     private func animateCardAppearance() {
         // Set initial values
         currentBackgroundColor = backgroundColor
+        
+        // Initial appearance haptic
+        HapticManager.shared.trigger(.light)
 
         // Sequential entrance animation
         withAnimation(.smooth(duration: 0.4)) {
@@ -126,6 +149,7 @@ struct CurrentBalanceCardView: View {
         
         // Animate background color change if needed
         if colorNeedsChange {
+            HapticManager.shared.trigger(.heavy)
             withAnimation(.smooth(duration: 0.8, extraBounce: 0.1)) {
                 currentBackgroundColor = backgroundColor
             }

@@ -11,7 +11,8 @@ struct CustomNavigationBarView: View {
                 .animation(.easeInOut, value: selectedTab)
 
             Button {
-                withAnimation(.smooth) {
+                HapticManager.shared.trigger(.navigation)
+                withAnimation(.linear) {
                     isProfileScreenOpen = true
                 }
             } label: {
@@ -26,7 +27,7 @@ struct CustomNavigationBarView: View {
     }
 }
 
-/// Custom Navigation Bar Ttitle View
+/// Custom Navigation Bar Title View
 struct CustomNavigationBarTitleView: View {
     let title: AttributedString
 

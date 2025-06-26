@@ -70,9 +70,26 @@ struct BudgetLineChartView: View {
                 .scaleEffect(showChart ? 1.0 : 0.95)
                 .opacity(showChart ? 1.0 : 0.0)
         )
-        .onAppear { animateChart() }
-        .onChange(of: data) { animateChart() }
-        .onChange(of: totalBudgetAccumulated) { animateChart() }
+        .onAppear {
+            HapticManager.shared.trigger(.light)
+            animateChart()
+        }
+        .onChange(of: data) {
+            HapticManager.shared.trigger(.medium)
+            animateChart()
+        }
+        .onChange(of: totalBudgetAccumulated) { oldValue, newValue in
+            if oldValue != newValue {
+                HapticManager.shared.trigger(.selection)
+                animateChart()
+            }
+        }
+        .onTapGesture {
+            HapticManager.shared.trigger(.light)
+        }
+        .onLongPressGesture {
+            HapticManager.shared.trigger(.medium)
+        }
     }
     
     private var expensesBarStyle: AnyShapeStyle {
@@ -107,6 +124,13 @@ struct BudgetLineChartView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             withAnimation(.smooth()) {
                 animatedSpentValue = spentMoney
+            }
+            
+            // Haptic feedback based on spending status
+            if willBeOverLimit && !isOverLimit {
+                HapticManager.shared.trigger(.warning)
+            } else if !willBeOverLimit && isOverLimit {
+                HapticManager.shared.trigger(.success)
             }
             
             // Start color transition if needed

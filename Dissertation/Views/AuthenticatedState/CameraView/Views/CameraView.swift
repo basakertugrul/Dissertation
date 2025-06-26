@@ -77,7 +77,10 @@ struct CameraView: View {
     private var topControls: some View {
         HStack {
             // Close Button
-            Button(action: { dismiss() }) {
+            Button(action: {
+                HapticManager.shared.trigger(.cancel)
+                dismiss()
+            }) {
                 Image(systemName: "xmark")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.white)
@@ -154,6 +157,9 @@ struct CameraView: View {
             ) {
                 PhotoThumbnail()
                     .frame(width: 50, height: 50)
+                    .onTapGesture {
+                        HapticManager.shared.trigger(.buttonTap)
+                    }
             }
             
             Spacer()
@@ -195,20 +201,25 @@ struct CameraView: View {
                 currentZoomFactor *= delta
                 currentZoomFactor = max(1.0, min(currentZoomFactor, 10.0))
                 cameraManager.zoom(with: currentZoomFactor)
+                
+                // Haptic feedback for zoom changes
+                if abs(delta - 1.0) > 0.1 {
+                    HapticManager.shared.trigger(.light)
+                }
             }
     }
     
     // MARK: - Actions
     private func toggleFlash() {
         cameraManager.switchFlash()
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        HapticManager.shared.trigger(.buttonTap)
     }
     
     private func handleFocusTap(at point: CGPoint) {
         isFocused = true
         focusLocation = point
         cameraManager.setFocus(point: point)
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        HapticManager.shared.trigger(.selection)
     }
     
     private func animateFocus() {
@@ -227,12 +238,12 @@ struct CameraView: View {
     private func capturePhoto() {
         cameraManager.captureImage()
         isImageFromGallery = false
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        HapticManager.shared.trigger(.heavy)
     }
     
     private func switchCamera() {
         cameraManager.switchCamera()
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        HapticManager.shared.trigger(.medium)
     }
     
     private func handlePhotoSelection() {
@@ -246,25 +257,31 @@ struct CameraView: View {
                         cameraManager.capturedImage = uiImage
                         isImageFromGallery = true
                         cameraManager.selectedPhotos.removeAll()
+                        HapticManager.shared.trigger(.success)
                     }
                 }
-            } catch {}
+            } catch {
+                HapticManager.shared.trigger(.error)
+            }
         }
     }
     
     private func handleImageSave(_ image: UIImage) {
         cameraManager.saveImageToGallery(image: image)
+        HapticManager.shared.trigger(.success)
     }
     
     private func handleRetake() {
         cameraManager.capturedImage = nil
         isImageFromGallery = false
         showImagePreview = false
+        HapticManager.shared.trigger(.medium)
     }
 
     private func openSettings() {
         if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(settingsUrl)
+            HapticManager.shared.trigger(.navigation)
         }
     }
 }
@@ -329,6 +346,9 @@ struct PrimaryButtonStyle: ButtonStyle {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .onTapGesture {
+                HapticManager.shared.trigger(.buttonTap)
+            }
     }
 }
 
@@ -346,5 +366,8 @@ struct SecondaryButtonStyle: ButtonStyle {
             )
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .onTapGesture {
+                HapticManager.shared.trigger(.light)
+            }
     }
 }

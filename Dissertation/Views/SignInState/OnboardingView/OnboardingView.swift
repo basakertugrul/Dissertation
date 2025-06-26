@@ -1,11 +1,14 @@
 import SwiftUI
 
-// MARK: - Onboarding Container View
+// MARK: - Onboarding View
 struct OnboardingView: View {
+    @EnvironmentObject var appState: AppStateManager
+    @StateObject private var userAuthService = UserAuthService.shared
     @State private var currentPage = 0
     @State private var showContent = false
+    
     let onboardingPages = OnboardingPage.allPages
-
+    
     var body: some View {
         ZStack {
             // Background
@@ -19,7 +22,7 @@ struct OnboardingView: View {
                 endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
-
+            
             if showContent {
                 TabView(selection: $currentPage) {
                     ForEach(0..<onboardingPages.count, id: \.self) { index in
@@ -33,8 +36,9 @@ struct OnboardingView: View {
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(.easeInOut(duration: 0.5), value: currentPage)
                 
-                VStack(spacing: Constraint.padding) {
+                VStack {
                     Spacer()
+                    
                     // Custom Page Indicator
                     HStack(spacing: Constraint.smallPadding) {
                         ForEach(0..<onboardingPages.count, id: \.self) { index in
@@ -45,9 +49,11 @@ struct OnboardingView: View {
                                 .animation(.spring(response: 0.3), value: currentPage)
                         }
                     }
+                    .padding(.bottom, Constraint.largePadding)
                     
                     // Action Button
                     Button {
+                        HapticManager.shared.trigger(.buttonTap)
                         if currentPage < onboardingPages.count - 1 {
                             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                                 currentPage += 1
@@ -83,11 +89,14 @@ struct OnboardingView: View {
                         )
                     }
                     .padding(.horizontal, Constraint.largePadding)
+                    .padding(.bottom, Constraint.extremePadding)
                     
-                    // Skip Button
+                    // Skip Button (only show on first pages)
                     if currentPage < onboardingPages.count - 1 {
                         Button {
-                            completeOnboarding()
+                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                currentPage = onboardingPages.count - 1
+                            }
                         } label: {
                             CustomTextView(
                                 "Skip",
@@ -95,6 +104,7 @@ struct OnboardingView: View {
                                 color: .white.opacity(0.7)
                             )
                         }
+                        .padding(.bottom, Constraint.largePadding)
                     }
                 }
             }
@@ -107,14 +117,9 @@ struct OnboardingView: View {
     }
     
     private func completeOnboarding() {
-        if currentPage != onboardingPages.count - 1 {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                currentPage = onboardingPages.count - 1
-            }
-        }
         withAnimation(.spring(response: 0.8, dampingFraction: 0.8)) {
-               UserAuthService.shared.completeOnboarding()
-           }
+            UserAuthService.shared.completeOnboarding()
+        }
     }
 }
 
@@ -126,10 +131,10 @@ struct OnboardingPage {
     let systemImage: String
     let accentColor: Color
     let features: [String]
-
+    
     static let allPages: [OnboardingPage] = [
         OnboardingPage(
-            title: "Welcome to FundBud!",
+            title: "Welcome to FundBud",
             subtitle: "Smart Daily Budget Tracker",
             description: "Set your daily spending limit and track every expense in real-time.",
             systemImage: "dollarsign.circle.fill",
@@ -140,14 +145,14 @@ struct OnboardingPage {
             ]
         ),
         OnboardingPage(
-            title: "Your Data Stays Private",
+            title: "Your Data Stays Local",
             subtitle: "100% Privacy & Security",
-            description: "All your financial data is stored securely in your personal cloud. Never shared with third parties.",
+            description: "All your financial data is stored securely on your phone. Never shared or uploaded.",
             systemImage: "lock.shield.fill",
             accentColor: .customBurgundy,
             features: [
-                "Data stored in your private account",
-                "Protected with biometric authentication"
+                "All data stays on your phone",
+                "Protected with Face ID & Touch ID"
             ]
         ),
         OnboardingPage(

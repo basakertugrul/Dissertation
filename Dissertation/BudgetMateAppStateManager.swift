@@ -28,6 +28,7 @@ final class AppStateManager: ObservableObject {
     @Published var hasSavedDailyLimit: Bool = false
     @Published var error: DataControllerError? = .none
     @Published var signInError: SignInError? = .none
+    
     /// Days since the app start date was set
     var daysSinceStart: Int {
         let calendar = Calendar.current
@@ -66,6 +67,7 @@ final class AppStateManager: ObservableObject {
             dailyBalance = amount
         case let .failure(comingError):
             error = comingError
+            HapticManager.shared.trigger(.error)
         }
     }
 
@@ -75,6 +77,7 @@ final class AppStateManager: ObservableObject {
             expenseViewModels = expenses
         case let .failure(comingError):
             error = comingError
+            HapticManager.shared.trigger(.error)
         }
     }
     
@@ -90,6 +93,7 @@ final class AppStateManager: ObservableObject {
             }
         case let .failure(comingError):
             error = comingError
+            HapticManager.shared.trigger(.error)
         }
     }
 
@@ -97,9 +101,11 @@ final class AppStateManager: ObservableObject {
     func updateStartDate(_ newDate: Date) {
         startDate = newDate
         switch dataController.saveTargetSetDate(newDate) {
-        case .success: break
+        case .success:
+            HapticManager.shared.trigger(.success)
         case let .failure(comingError):
             error = comingError
+            HapticManager.shared.trigger(.error)
         }
     }
     
@@ -109,6 +115,7 @@ final class AppStateManager: ObservableObject {
         let _ = dataController.resetExpenses()
         dailyBalance = .none
         UserAuthService.shared.signOut()
+        HapticManager.shared.trigger(.warning)
     }
 }
 
@@ -125,7 +132,10 @@ extension AppStateManager {
             switch result {
             case .success:
                 self.logIn()
-            case let .failure(error): self.signInError = error
+                HapticManager.shared.trigger(.login)
+            case let .failure(error):
+                self.signInError = error
+                HapticManager.shared.trigger(.error)
             }
         }
     }
@@ -161,8 +171,10 @@ extension AppStateManager: LoginActions {
             switch result {
             case .success:
                 self.logIn()
+                HapticManager.shared.trigger(.login)
             case let .failure(error):
                 self.signInError = error
+                HapticManager.shared.trigger(.error)
             }
         }
     }
@@ -174,8 +186,10 @@ extension AppStateManager: LoginActions {
             switch result {
             case .success:
                 self.logIn()
+                HapticManager.shared.trigger(.login)
             case let .failure(error):
                 self.signInError = error
+                HapticManager.shared.trigger(.error)
             }
         }
     }
@@ -186,27 +200,35 @@ extension AppStateManager: ProfileActionsDelegate {
         switch dataController.saveTargetSpending(to: currentAmount) {
         case .success:
             refreshDailyBalance()
+            HapticManager.shared.trigger(.success)
         case let .failure(comingError):
             error = comingError
+            HapticManager.shared.trigger(.error)
         }
     }
     
     func signOut() {
         self.hasLoggedIn = false
         self.isProfileScreenOpen = false
+        HapticManager.shared.trigger(.logout)
     }
 
-    func manageNotifications() {} // TODO: ADD coming
+    func manageNotifications() {
+        HapticManager.shared.trigger(.navigation)
+    }
 
     func exportExpenseData() {
         enableLoadingView()
+        HapticManager.shared.trigger(.buttonTap)
         generateExpensePDF { [weak self] pdfData in
             guard let self = self, let pdfData = pdfData else {
+                HapticManager.shared.trigger(.error)
                 return
             }
 
             DispatchQueue.main.async {
                 self.sharePDF(pdfData: pdfData)
+                HapticManager.shared.trigger(.success)
             }
         }
     }

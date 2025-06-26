@@ -56,7 +56,7 @@ struct BalanceEntranceView: View {
                     )
                     
                     CustomTextView(
-                        hasSetBefore ? "How much do you want to spend per day?" : "Control daily spending with smart limits",
+                        hasSetBefore ? "How much do you want to spend per day?" : "Control your spending with smart daily limits",
                         font: .labelLarge,
                         color: .customWhiteSand
                     )
@@ -114,7 +114,10 @@ struct BalanceEntranceView: View {
                 /// Continue Button
                 Button(action: {
                     if isValidAmount {
+                        HapticManager.shared.trigger(.success)
                         onSave(parsedAmount)
+                    } else {
+                        HapticManager.shared.trigger(.error)
                     }
                 }) {
                     CustomTextView(
@@ -148,6 +151,7 @@ struct BalanceEntranceView: View {
         let isSelected = selectedPreset == amount
         
         Button(action: {
+            HapticManager.shared.trigger(.selection)
             withAnimation(.smooth(duration: 0.2)) {
                 selectedPreset = amount
                 balanceText = String(format: "%.0f", amount)

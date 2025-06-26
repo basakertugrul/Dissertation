@@ -15,10 +15,7 @@ struct LoginButtonView: View {
     
     var body: some View {
         Button {
-            // Haptic feedback
-            let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-            impactFeedback.impactOccurred()
-
+            HapticManager.shared.trigger(.buttonTap)
             action()
         } label: {
             HStack(spacing: Constraint.regularPadding) {

@@ -32,6 +32,7 @@ struct ImagePreview: View {
             HStack(spacing: 40) {
                 // Retake Button
                 Button(action: {
+                    HapticManager.shared.trigger(.cancel)
                     onRetake()
                 }) {
                     CustomTextView("Retake", font: .bodySmallBold)
@@ -75,6 +76,7 @@ struct ImagePreview: View {
                 
                 // Add Button
                 Button(action: {
+                    HapticManager.shared.trigger(.add)
                     if let image = cameraManager.capturedImage {
                         withAnimation {
                             isLoading = true
@@ -90,6 +92,7 @@ struct ImagePreview: View {
                                 switch result {
                                 case let .success(data):
                                     DispatchQueue.main.async {
+                                        HapticManager.shared.trigger(.success)
                                         withAnimation {
                                             isLoading = false
                                             errorMessage = nil
@@ -98,6 +101,7 @@ struct ImagePreview: View {
                                     }
                                 case let .failure(error):
                                     DispatchQueue.main.async {
+                                        HapticManager.shared.trigger(.error)
                                         withAnimation {
                                             isLoading = false
                                             receiptData = nil
@@ -196,6 +200,7 @@ struct ImagePreview: View {
     }
     
     func saveTheReceipt(of receipt: ReceiptData?) {
+        HapticManager.shared.trigger(.success)
         DispatchQueue.main.async {
             withAnimation {
                 appState.willOpenCameraView = false
@@ -211,10 +216,12 @@ struct ImagePreview: View {
         )
         switch DataController.shared.saveExpense(of: newExpense) {
         case .success:
+            HapticManager.shared.trigger(.add)
             withAnimation {
                 appState.hasAddedExpense = true
             }
         case let .failure(comingError):
+            HapticManager.shared.trigger(.error)
             withAnimation {
                 appState.error = comingError
             }

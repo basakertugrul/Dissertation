@@ -55,7 +55,10 @@ struct ModifyExpenseView: View {
                         
                         ActionButtonsView(
                             saveAction: saveExpense,
-                            deleteAction: { showDeleteConfirmation = true },
+                            deleteAction: {
+                                HapticManager.shared.trigger(.warning)
+                                showDeleteConfirmation = true
+                            },
                             saveButtonText: saveButtonText,
                             isEditMode: isEditMode,
                             isFormValid: isFormValid
@@ -103,7 +106,10 @@ struct ModifyExpenseView: View {
 
     private func saveExpense() {
         /// Validate form
-        guard isFormValid else { return }
+        guard isFormValid else {
+            HapticManager.shared.trigger(.error)
+            return
+        }
 
         if let existingExpense = expenseToModify {
             /// Update existing expense
@@ -115,10 +121,12 @@ struct ModifyExpenseView: View {
 
             switch DataController.shared.updateExpense(of: existingExpense) {
             case .success:
+                HapticManager.shared.trigger(.success)
                 withAnimation {
                     appStateManager.hasUpdatedExpense = true
                 }
             case let .failure(comingError):
+                HapticManager.shared.trigger(.error)
                 withAnimation {
                     appStateManager.error = comingError
                 }
@@ -133,10 +141,12 @@ struct ModifyExpenseView: View {
             )
             switch DataController.shared.saveExpense(of: newExpense) {
             case .success:
+                HapticManager.shared.trigger(.add)
                 withAnimation {
                     appStateManager.hasAddedExpense = true
                 }
             case let .failure(comingError):
+                HapticManager.shared.trigger(.error)
                 withAnimation {
                     appStateManager.error = comingError
                 }
@@ -150,10 +160,12 @@ struct ModifyExpenseView: View {
         if let expense = expenseToModify {
             switch DataController.shared.deleteExpense(of: expense) {
             case .success:
+                HapticManager.shared.trigger(.delete)
                 withAnimation {
                     appStateManager.hasDeletedExpense = true
                 }
             case let .failure(comingError):
+                HapticManager.shared.trigger(.error)
                 withAnimation {
                     appStateManager.error = comingError
                 }
@@ -272,6 +284,9 @@ struct ExpenseNameFieldView: View {
                 .foregroundColor(.white)
                 .frame(height: 32)
                 .addLayeredBackground(.customWhiteSand.opacity(Constraint.Opacity.medium))
+                .onChange(of: expenseName) { _, _ in
+                    HapticManager.shared.trigger(.selection)
+                }
         }
     }
 }
@@ -293,6 +308,9 @@ struct ExpenseAmountFieldView: View {
                     .keyboardType(.decimalPad)
                     .font(TextFonts.bodySmallBold.font)
                     .foregroundColor(.white)
+                    .onChange(of: expenseAmount) { _, _ in
+                        HapticManager.shared.trigger(.selection)
+                    }
             }
             .frame(height: 32)
             .addLayeredBackground(.customWhiteSand.opacity(Constraint.Opacity.medium))
@@ -322,6 +340,9 @@ struct DateSelectorView: View {
                     .labelsHidden()
                     .preferredColorScheme(.dark)
                     .tint(.customWhiteSand)
+                    .onChange(of: expenseDate) { _, _ in
+                        HapticManager.shared.trigger(.selection)
+                    }
 
                 Spacer()
 
@@ -347,7 +368,14 @@ struct ActionButtonsView: View {
     var body: some View {
         VStack(spacing: Constraint.padding) {
             /// Save/Update Button
-            Button(action: saveAction) {
+            Button(action: {
+                if isFormValid {
+                    HapticManager.shared.trigger(.buttonTap)
+                    saveAction()
+                } else {
+                    HapticManager.shared.trigger(.error)
+                }
+            }) {
                 CustomTextView(saveButtonText, font: .bodySmallBold, color: .customRichBlack.opacity(Constraint.Opacity.high))
                     .tracking(1)
                     .addLayeredBackground(

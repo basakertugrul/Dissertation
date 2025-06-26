@@ -305,6 +305,7 @@ struct LoginScreenView: View {
 
             // Enhanced Face ID Button
             Button {
+                HapticManager.shared.trigger(.buttonTap)
                 appState.handleFaceIDSignIn()
             } label: {
                 VStack(spacing: Constraint.regularPadding) {
@@ -336,6 +337,7 @@ struct LoginScreenView: View {
 
     private var enhancedSwitchUserButton: some View {
         Button {
+            HapticManager.shared.trigger(.navigation)
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                 if case let .returningUser(user) = loginStyle {
                    loginStyle = .newUser(user)
@@ -460,6 +462,7 @@ struct LoginScreenView: View {
     private func enhancedReturningUserFaceIDPrompt(for user: User) -> some View {
         VStack(spacing: Constraint.largePadding) {
             Button {
+                HapticManager.shared.trigger(.buttonTap)
                 appState.handleFaceIDSignIn()
             } label: {
                 ZStack {

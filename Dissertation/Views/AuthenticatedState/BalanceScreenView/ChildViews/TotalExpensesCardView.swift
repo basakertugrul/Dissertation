@@ -21,6 +21,7 @@ struct TotalExpensesCardView: View {
     var body: some View {
         HStack(spacing: Constraint.smallPadding) {
             Button {
+                HapticManager.shared.trigger(.buttonTap)
                 withAnimation(.smooth()) {
                     currentTab = .expenses
                 }
@@ -60,19 +61,36 @@ struct TotalExpensesCardView: View {
         .onAppear {
             animateCardAppearance()
         }
-        .onChange(of: totalExpenses) { _, _ in
-            animateNumberUpdate()
+        .onChange(of: totalExpenses) { oldValue, newValue in
+            if oldValue != newValue {
+                if newValue > oldValue {
+                    HapticManager.shared.trigger(.warning)
+                } else {
+                    HapticManager.shared.trigger(.success)
+                }
+                animateNumberUpdate()
+            }
         }
         .onChange(of: expenses) { _, _ in
+            HapticManager.shared.trigger(.light)
             animateContentUpdate()
         }
         .onChange(of: timeFrame) { _, _ in
+            HapticManager.shared.trigger(.selection)
             animateContentUpdate()
+        }
+        .onTapGesture {
+            HapticManager.shared.trigger(.medium)
+        }
+        .onLongPressGesture {
+            HapticManager.shared.trigger(.longPress)
         }
     }
     
     private func animateCardAppearance() {
-        // Sequential entrance animation
+        // Sequential entrance animation with haptic feedback
+        HapticManager.shared.trigger(.light)
+        
         withAnimation(.smooth(duration: 0.3).delay(0.3)) {
             showCard = true
             cardScale = 1.0
@@ -97,7 +115,7 @@ struct TotalExpensesCardView: View {
     }
     
     private func animateButtonPress() {
-        // Button press feedback
+        // Button press feedback with haptic
         withAnimation(.smooth(duration: 0.1)) {
             iconScale = 0.9
             iconRotation = 15
