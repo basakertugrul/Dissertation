@@ -9,7 +9,6 @@ struct CustomNavigationBarView: View {
         HStack(alignment: .center, spacing: .zero) {
             CustomNavigationBarTitleView(title: selectedTab.title)
                 .animation(.easeInOut, value: selectedTab)
-
             Button {
                 HapticManager.shared.trigger(.navigation)
                 withAnimation(.linear) {
@@ -21,7 +20,8 @@ struct CustomNavigationBarView: View {
                     .resizable()
                     .frame(width: Constraint.mediumIconSize, height: Constraint.mediumIconSize)
                     .foregroundColor(.customRichBlack)
-                    .padding(Constraint.padding)
+                    .padding([.top, .horizontal], Constraint.padding)
+                    .padding(.bottom, Constraint.largePadding)
             }
         }
     }
@@ -34,8 +34,7 @@ struct CustomNavigationBarTitleView: View {
     var body: some View {
         Text(title)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, Constraint.padding)
-            .padding(.top, Constraint.extremePadding)
+            .padding([.top, .horizontal], Constraint.padding)
             .padding(.bottom, Constraint.largePadding)
     }
 }

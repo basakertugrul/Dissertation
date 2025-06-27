@@ -58,6 +58,7 @@ struct LoginScreenView: View {
             animateEntrance()
             startShimmerAnimation()
         }
+        .showLegalInformationAlert(isPresented: $willShowTermsAndPrivacy)
     }
 
     // MARK: - Enhanced View Components

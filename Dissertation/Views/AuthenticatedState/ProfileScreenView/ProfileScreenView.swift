@@ -45,7 +45,8 @@ struct ProfileScreen: View {
                         .foregroundColor(.customBurgundy.opacity(Constraint.Opacity.high))
                         .frame(width: 32, height: 32)
                 }
-                .padding(Constraint.padding)
+                .padding([.top, .horizontal], Constraint.padding)
+                .padding(.bottom, Constraint.largePadding)
             }
 
             ScrollView {

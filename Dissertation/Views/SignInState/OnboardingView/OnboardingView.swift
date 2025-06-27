@@ -1,11 +1,10 @@
 import SwiftUI
 
-// MARK: - Onboarding View
+// MARK: - Fixed Onboarding View
 struct OnboardingView: View {
     @EnvironmentObject var appState: AppStateManager
     @StateObject private var userAuthService = UserAuthService.shared
     @State private var currentPage = 0
-    @State private var showContent = false
     
     let onboardingPages = OnboardingPage.allPages
     
@@ -23,7 +22,8 @@ struct OnboardingView: View {
             )
             .ignoresSafeArea()
             
-            if showContent {
+            VStack(spacing: 0) {
+                // Main Content
                 TabView(selection: $currentPage) {
                     ForEach(0..<onboardingPages.count, id: \.self) { index in
                         OnboardingPageView(
@@ -34,12 +34,10 @@ struct OnboardingView: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.easeInOut(duration: 0.5), value: currentPage)
                 
-                VStack {
-                    Spacer()
-                    
-                    // Custom Page Indicator
+                // Bottom Section
+                VStack(spacing: Constraint.padding) {
+                    // Page Dots
                     HStack(spacing: Constraint.smallPadding) {
                         ForEach(0..<onboardingPages.count, id: \.self) { index in
                             Circle()
@@ -49,9 +47,8 @@ struct OnboardingView: View {
                                 .animation(.spring(response: 0.3), value: currentPage)
                         }
                     }
-                    .padding(.bottom, Constraint.largePadding)
                     
-                    // Action Button
+                    // Continue Button
                     Button {
                         HapticManager.shared.trigger(.buttonTap)
                         if currentPage < onboardingPages.count - 1 {
@@ -65,7 +62,7 @@ struct OnboardingView: View {
                         HStack {
                             CustomTextView(
                                 currentPage == onboardingPages.count - 1 ? "Get Started" : "Continue",
-                                font: .labelLargeBold,
+                                font: .titleSmallBold,
                                 color: .customRichBlack
                             )
                             
@@ -76,22 +73,15 @@ struct OnboardingView: View {
                             }
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, Constraint.largePadding)
+                        .frame(height: 56)
                         .background(
                             RoundedRectangle(cornerRadius: Constraint.cornerRadius)
                                 .fill(.white)
-                                .shadow(
-                                    color: .black.opacity(0.2),
-                                    radius: 10,
-                                    x: 0,
-                                    y: 5
-                                )
+                                .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
                         )
                     }
-                    .padding(.horizontal, Constraint.largePadding)
-                    .padding(.bottom, Constraint.extremePadding)
                     
-                    // Skip Button (only show on first pages)
+                    // Skip Button
                     if currentPage < onboardingPages.count - 1 {
                         Button {
                             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
@@ -104,78 +94,16 @@ struct OnboardingView: View {
                                 color: .white.opacity(0.7)
                             )
                         }
-                        .padding(.bottom, Constraint.largePadding)
                     }
                 }
-            }
-        }
-        .onAppear {
-            withAnimation(.easeInOut(duration: 0.8)) {
-                showContent = true
+                .padding(.horizontal, Constraint.largePadding)
+                .padding(.bottom, Constraint.largePadding)
             }
         }
     }
     
     private func completeOnboarding() {
-        withAnimation(.spring(response: 0.8, dampingFraction: 0.8)) {
-            UserAuthService.shared.completeOnboarding()
-        }
+        HapticManager.shared.trigger(.success)
+        UserAuthService.shared.completeOnboarding()
     }
-}
-
-// MARK: - Onboarding Page Model
-struct OnboardingPage {
-    let title: String
-    let subtitle: String
-    let description: String
-    let systemImage: String
-    let accentColor: Color
-    let features: [String]
-    
-    static let allPages: [OnboardingPage] = [
-        OnboardingPage(
-            title: "Welcome to FundBud",
-            subtitle: "Smart Daily Budget Tracker",
-            description: "Set your daily spending limit and track every expense in real-time.",
-            systemImage: "dollarsign.circle.fill",
-            accentColor: .customOliveGreen,
-            features: [
-                "Set daily spending limits",
-                "Real-time expense tracking"
-            ]
-        ),
-        OnboardingPage(
-            title: "Your Data Stays Local",
-            subtitle: "100% Privacy & Security",
-            description: "All your financial data is stored securely on your phone. Never shared or uploaded.",
-            systemImage: "lock.shield.fill",
-            accentColor: .customBurgundy,
-            features: [
-                "All data stays on your phone",
-                "Protected with Face ID & Touch ID"
-            ]
-        ),
-        OnboardingPage(
-            title: "Daily Budget System",
-            subtitle: "Simple & Effective",
-            description: "Your daily limit resets every day. Add expenses and watch your remaining budget update instantly.",
-            systemImage: "calendar.circle.fill",
-            accentColor: .customGold,
-            features: [
-                "Daily limit resets automatically",
-                "Expenses subtract from your budget"
-            ]
-        ),
-        OnboardingPage(
-            title: "Start Budgeting Today",
-            subtitle: "Take Control of Your Spending",
-            description: "Ready to know exactly what you can spend every day? Let's get started!",
-            systemImage: "checkmark.circle.fill",
-            accentColor: .customOliveGreen,
-            features: [
-                "Set your first daily limit",
-                "Track expenses immediately"
-            ]
-        )
-    ]
 }

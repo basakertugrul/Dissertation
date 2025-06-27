@@ -51,7 +51,7 @@ struct BalanceScreenView: View {
                     currentTab: $currentTab
                 )
             }
-            .padding(.horizontal, Constraint.padding)
+            .padding(Constraint.padding)
         }
         .frame(width: UIScreen.main.bounds.width)
         .gesture(
