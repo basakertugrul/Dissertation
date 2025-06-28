@@ -53,6 +53,7 @@ struct ProfileScreen: View {
                 VStack(spacing: Constraint.largePadding) {
                     profileCard
                     budgetCard
+                    expenseChartCard // New chart card
                     expenseDataCard
                     settingsGroups
                     logoutButton
@@ -182,6 +183,12 @@ struct ProfileScreen: View {
         .addLayeredBackground(.customOliveGreen.opacity(Constraint.Opacity.low), style: .card(isColorFilled: true))
     }
     
+    // MARK: - New Expense Chart Card
+    private var expenseChartCard: some View {
+        ExpenseChartView()
+            .environmentObject(appState)
+    }
+    
     // MARK: - Expense Data Card
     private var expenseDataCard: some View {
         VStack(alignment: .leading, spacing: Constraint.largePadding) {
@@ -269,29 +276,29 @@ struct ProfileScreen: View {
                     HapticManager.shared.trigger(.navigation)
                     appState.manageNotifications()
                 }),
-                ("square.and.arrow.up.fill", "Export Data", "Download expense history", .customOliveGreen, {
+                ("square.and.arrow.up.fill", "Export Data", "Download expense history", .customRichBlack, {
                     HapticManager.shared.trigger(.buttonTap)
                     appState.exportExpenseData()
                 }),
-                ("lock.shield.fill", "Privacy & Security", "Manage your data protection", .customRichBlack, {
+                ("lock.shield.fill", "Privacy & Security", "Manage your data protection", .customOliveGreen, {
                     HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingPrivacyPolicyAlert = true
                     }
                 }),
-                ("envelope.badge.fill", "Send Feedback", "Help us improve the app", .customOliveGreen, {
+                ("envelope.badge.fill", "Send Feedback", "Help us improve the app", .customBurgundy, {
                     HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingsendFeedbackAlert = true
                     }
                 }),
-                ("star.circle.fill", "Rate FundBud", "Share your experience", .customGold, {
+                ("star.circle.fill", "Rate FundBud", "Share your experience", .customRichBlack, {
                     HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingAppRateAlert = true
                     }
                 }),
-                ("doc.text.fill", "Legal Information", "Terms, privacy & licenses", .customRichBlack, {
+                ("doc.text.fill", "Legal Information", "Terms, privacy & licenses", .customOliveGreen, {
                     HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingLegalInfoAlert = true
@@ -347,7 +354,7 @@ struct ProfileScreen: View {
                 }
             }
         }
-        .addLayeredBackground(.customWhiteSand, style: .card(isColorFilled: false))
+        .addLayeredBackground(.customOliveGreen.opacity(Constraint.Opacity.low), style: .card(isColorFilled: false))
     }
     
     @ViewBuilder
@@ -358,7 +365,6 @@ struct ProfileScreen: View {
                     RoundedRectangle(cornerRadius: Constraint.regularCornerRadius)
                         .fill(color)
                         .frame(width: Constraint.extremeIconSize, height: Constraint.extremeIconSize)
-                    //                        .shadow(color: color.opacity(Constraint.Opacity.low), radius: Constraint.tinyPadding)
                     
                     Image(systemName: icon)
                         .foregroundColor(.white)
