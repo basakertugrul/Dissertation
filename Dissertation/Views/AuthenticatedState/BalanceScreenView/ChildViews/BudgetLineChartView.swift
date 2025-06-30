@@ -119,7 +119,6 @@ struct BudgetLineChartView: View {
                 animatedSpentValue = spentMoney
             }
 
-            // Start color transition if needed
             animateColorTransition()
         }
     }
