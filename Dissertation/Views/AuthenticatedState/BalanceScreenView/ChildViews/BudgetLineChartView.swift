@@ -30,7 +30,7 @@ struct BudgetLineChartView: View {
                     x: .value("Type", "Expenses"),
                     y: .value("Amount", animatedSpentValue)
                 )
-                .foregroundStyle(expensesBarStyle)
+                .foregroundStyle(isOverLimit ? .customBurgundy : .customOliveGreen)
                 .opacity(showChart ? 1.0 : 0.0)
 
                 /// Daily Limit Mark
@@ -45,7 +45,7 @@ struct BudgetLineChartView: View {
                         )
                         .frame(width: 100)
                     }
-                
+
                 /// Expenses Mark
                 RuleMark(y: .value("Expenses", animatedSpentValue))
                     .foregroundStyle(.customRichBlack.opacity(Constraint.Opacity.low))
@@ -91,60 +91,43 @@ struct BudgetLineChartView: View {
             HapticManager.shared.trigger(.medium)
         }
     }
-    
-    private var expensesBarStyle: AnyShapeStyle {
-        let finalColor: Color = isOverLimit ? .customBurgundy : .customOliveGreen
-        return AnyShapeStyle(finalColor)
-    }
-    
+
     private func animateChart() {
         /// Reset animations
         showChart = false
         animatedLimitValue = 0
         animatedSpentValue = 0
         colorGradientProgress = 0.0
-        
+
         let spentMoney = data.count > 1 ? data[1].moneySpent : 0
-        let willBeOverLimit = spentMoney >= totalBudgetAccumulated
-        let colorNeedsChange = willBeOverLimit != isOverLimit
-        
+
         /// Progressive animation sequence
         withAnimation(.smooth(duration: 0.2)) {
             showChart = true
         }
-        
+
         /// Animate limit bar first
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             withAnimation(.smooth()) {
                 animatedLimitValue = totalBudgetAccumulated
             }
         }
-        
+
         /// Animate spent bar after limit bar
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             withAnimation(.smooth()) {
                 animatedSpentValue = spentMoney
             }
-            
-            // Haptic feedback based on spending status
-            if willBeOverLimit && !isOverLimit {
-                HapticManager.shared.trigger(.warning)
-            } else if !willBeOverLimit && isOverLimit {
-                HapticManager.shared.trigger(.success)
-            }
-            
+
             // Start color transition if needed
-            if colorNeedsChange {
-                animateColorTransition(to: willBeOverLimit)
-            }
+            animateColorTransition()
         }
     }
-    
-    private func animateColorTransition(to overLimit: Bool) {
-        // Phase 2: Hide gradient and set final color
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+
+    private func animateColorTransition() {
+        DispatchQueue.main.async() {
             withAnimation(.smooth(duration: 0.3)) {
-                isOverLimit = overLimit
+                isOverLimit = animatedLimitValue < animatedSpentValue
             }
         }
     }
