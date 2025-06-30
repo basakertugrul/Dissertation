@@ -33,7 +33,7 @@ struct ModifyExpenseView: View {
 
     /// Validation check
     private var isFormValid: Bool {
-        expenseAmount > 0
+        expenseAmount > 0 && dateRange.contains(expenseDate)
     }
 
     var body: some View {

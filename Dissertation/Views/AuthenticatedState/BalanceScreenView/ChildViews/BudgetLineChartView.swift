@@ -24,7 +24,7 @@ struct BudgetLineChartView: View {
                 )
                 .foregroundStyle(.customOliveGreen)
                 .opacity(showChart ? 1.0 : 0.0)
-                
+
                 /// Spent Money Bar with Dynamic Gradient/Color
                 BarMark(
                     x: .value("Type", "Expenses"),
@@ -32,7 +32,7 @@ struct BudgetLineChartView: View {
                 )
                 .foregroundStyle(expensesBarStyle)
                 .opacity(showChart ? 1.0 : 0.0)
-                
+
                 /// Daily Limit Mark
                 RuleMark(y: .value("Limit", animatedLimitValue))
                     .foregroundStyle(.customRichBlack.opacity(Constraint.Opacity.low))

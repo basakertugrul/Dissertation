@@ -48,7 +48,7 @@ struct ExpenseChartView: View {
             chartSegmentedControl
             chartView
                 .frame(maxHeight: Constraint.regularImageSize)
-                .padding(Constraint.regularPadding * 2)
+                .padding(Constraint.regularPadding)
                 .background(
                     RoundedRectangle(cornerRadius: Constraint.cornerRadius)
                         .fill(.white.shadow(.drop(radius: Constraint.shadowRadius)))
@@ -144,7 +144,6 @@ struct ExpenseChartView: View {
                         endPoint: .bottom
                     )
                 )
-                .cornerRadius(Constraint.cornerRadius)
             }
             
             let uniqueValues = Array(Set(animatedData.map(\.amount)))
@@ -155,22 +154,21 @@ struct ExpenseChartView: View {
                 RuleMark(y: .value("Amount", value))
                     .foregroundStyle(.customRichBlack.opacity(Constraint.Opacity.low))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: index == uniqueValues.count - 1 ? [] : [3]))
-                    .annotation(alignment: index % 2 == 0 ? .leading : .trailing) {
-                        CustomTextView.currency(
-                            value,
-                            font: .labelSmall,
-                            color: .customRichBlack.opacity(Constraint.Opacity.medium)
-                        )
-                        .frame(width: 80)
-                    }
             }
         }
         .padding(.horizontal, Constraint.padding)
-        .chartYAxis(.hidden)
+        .chartYAxis {
+            AxisMarks(values: .automatic) {
+                AxisValueLabel()
+                    .font(.caption2)
+                    .foregroundStyle(.customRichBlack)
+            }
+        }
+        .preferredColorScheme(.light)
         .chartXAxis {
             AxisMarks(values: .automatic) { _ in
                 AxisValueLabel()
-                    .font(.caption2)
+                    .font(selectedTimeFrame == .daily ? .caption2 : .system(size: 10))
                     .foregroundStyle(.customRichBlack.opacity(Constraint.Opacity.medium))
             }
         }
@@ -183,7 +181,6 @@ struct ExpenseChartView: View {
         animatedData = []
         
         let newData = chartData
-        let newMaxValue = newData.map(\.amount).max() ?? 0
         
         /// Progressive animation sequence
         withAnimation(.smooth(duration: 0.2)) {
@@ -232,18 +229,18 @@ struct ExpenseChartView: View {
     private func generateWeeklyData() -> [ExpenseChartData] {
         let calendar = Calendar.current
         let today = Date()
+        
         var data: [ExpenseChartData] = []
         
         for i in 0..<12 {
-            let weekStart = calendar.date(byAdding: .weekOfYear, value: -i, to: today) ?? today
-            let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart) ?? weekStart
-            
-            // Create clean week labels like "W1", "W2", etc.
-            let weekLabel = "W\(12-i)"
-            
-            // Get actual expenses for this week
+            let weekDate = calendar.date(byAdding: .weekOfYear, value: -i, to: today) ?? today
+            let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: weekDate)?.start ?? weekDate
+            let endOfWeek = calendar.dateInterval(of: .weekOfYear, for: weekDate)?.end ?? weekDate
+
+            let weekLabel = "W\(i+1)"
+
             let weekExpenses = appState.expenseViewModels.filter { expense in
-                expense.date >= weekStart && expense.date <= weekEnd
+                expense.date >= startOfWeek && expense.date < endOfWeek
             }
             
             let totalAmount = weekExpenses.reduce(0) { $0 + $1.amount }
@@ -251,40 +248,37 @@ struct ExpenseChartView: View {
             data.append(ExpenseChartData(
                 period: weekLabel,
                 amount: totalAmount,
-                date: weekStart
+                date: startOfWeek
             ))
         }
-        
-        return data.reversed()
+
+        return data
     }
     
     private func generateMonthlyData() -> [ExpenseChartData] {
         let calendar = Calendar.current
         let today = Date()
         var data: [ExpenseChartData] = []
-        
+
         for i in 0..<12 {
             let monthStart = calendar.date(byAdding: .month, value: -i, to: today) ?? today
             let monthRange = calendar.dateInterval(of: .month, for: monthStart)
-            
-            // Create clean month labels like "M1", "M2", etc.
-            let monthLabel = "M\(12-i)"
-            
+
+            let monthLabel = "M\(i+1)"
+
             // Get actual expenses for this month
             let monthExpenses = appState.expenseViewModels.filter { expense in
                 guard let range = monthRange else { return false }
                 return expense.date >= range.start && expense.date < range.end
             }
-            
+
             let totalAmount = monthExpenses.reduce(0) { $0 + $1.amount }
-            
             data.append(ExpenseChartData(
                 period: monthLabel,
                 amount: totalAmount,
                 date: monthStart
             ))
         }
-        
-        return data.reversed()
+        return data
     }
 }
