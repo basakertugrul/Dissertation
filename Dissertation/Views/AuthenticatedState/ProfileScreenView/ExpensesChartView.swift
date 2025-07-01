@@ -138,14 +138,21 @@ struct ExpenseChartView: View {
                     y: .value("Amount", data.amount)
                 )
                 .foregroundStyle(
-                    LinearGradient(
-                        colors: [.customBurgundy, .customBurgundy.opacity(0.6)],
+                    isCurrentPeriod(data.date)
+                    ? LinearGradient(
+                        colors: [Color.customBurgundy, Color.customBurgundy.opacity(Constraint.Opacity.high)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    : LinearGradient(
+                        colors: [Color.customBurgundy.opacity(Constraint.Opacity.high), Color.customBurgundy.opacity(Constraint.Opacity.medium)],
                         startPoint: .top,
                         endPoint: .bottom
                     )
                 )
+                .opacity(isCurrentPeriod(data.date) ? 1.0 : 0.7)
             }
-            
+
             let uniqueValues = Array(Set(animatedData.map(\.amount)))
                 .filter { $0 > 0 }
                 .sorted()
@@ -174,7 +181,21 @@ struct ExpenseChartView: View {
         }
         .preferredColorScheme(.light)
     }
+
+    private func isCurrentPeriod(_ date: Date) -> Bool {
+        let calendar = Calendar.current
+        let today = Date()
     
+        switch selectedTimeFrame {
+        case .daily:
+            return calendar.isDate(date, inSameDayAs: today)
+        case .weekly:
+            return calendar.isDate(date, equalTo: today, toGranularity: .weekOfYear)
+        case .monthly:
+            return calendar.isDate(date, equalTo: today, toGranularity: .month)
+        }
+    }
+
     private func animateChart() {
         /// Reset animations
         showChart = false
@@ -200,83 +221,67 @@ struct ExpenseChartView: View {
         let calendar = Calendar.current
         let today = Date()
         let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: today)?.start ?? today
-        
         var data: [ExpenseChartData] = []
-        
+
         for i in 0..<7 {
             let date = calendar.date(byAdding: .day, value: i, to: startOfWeek) ?? today
             let dayFormatter = DateFormatter()
             dayFormatter.dateFormat = "E"
             let dayName = dayFormatter.string(from: date)
-            
-            // Get actual expenses for this day
             let dayExpenses = appState.expenseViewModels.filter { expense in
                 calendar.isDate(expense.date, inSameDayAs: date)
             }
-            
             let totalAmount = dayExpenses.reduce(0) { $0 + $1.amount }
-            
             data.append(ExpenseChartData(
                 period: dayName,
                 amount: totalAmount,
                 date: date
             ))
         }
-        
         return data
     }
-    
+
     private func generateWeeklyData() -> [ExpenseChartData] {
         let calendar = Calendar.current
         let today = Date()
-        
         var data: [ExpenseChartData] = []
-        
+
         for i in 0..<12 {
-            let weekDate = calendar.date(byAdding: .weekOfYear, value: -i, to: today) ?? today
-            let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: weekDate)?.start ?? weekDate
-            let endOfWeek = calendar.dateInterval(of: .weekOfYear, for: weekDate)?.end ?? weekDate
-
-            let weekLabel = "W\(i+1)"
-
+            let date = calendar.date(byAdding: .weekOfYear, value: -i, to: today) ?? today
+            let weekFormatter = DateFormatter()
+            weekFormatter.dateFormat = "d"
+            let weekName = weekFormatter.string(from: date)
             let weekExpenses = appState.expenseViewModels.filter { expense in
-                expense.date >= startOfWeek && expense.date < endOfWeek
+                calendar.isDate(expense.date, equalTo: date, toGranularity: .weekOfYear)
             }
-            
             let totalAmount = weekExpenses.reduce(0) { $0 + $1.amount }
-            
             data.append(ExpenseChartData(
-                period: weekLabel,
+                period: weekName,
                 amount: totalAmount,
-                date: startOfWeek
+                date: date
             ))
         }
-
         return data
     }
-    
+
     private func generateMonthlyData() -> [ExpenseChartData] {
         let calendar = Calendar.current
         let today = Date()
         var data: [ExpenseChartData] = []
 
         for i in 0..<12 {
-            let monthStart = calendar.date(byAdding: .month, value: -i, to: today) ?? today
-            let monthRange = calendar.dateInterval(of: .month, for: monthStart)
-
-            let monthLabel = "M\(i+1)"
-
-            // Get actual expenses for this month
+            let date = calendar.date(byAdding: .month, value: -i, to: today) ?? today
+            let monthFormatter = DateFormatter()
+            monthFormatter.dateFormat = "MMM"
+            let monthName = monthFormatter.string(from: date)
             let monthExpenses = appState.expenseViewModels.filter { expense in
-                guard let range = monthRange else { return false }
-                return expense.date >= range.start && expense.date < range.end
+                calendar.isDate(expense.date, equalTo: date, toGranularity: .month)
             }
-
             let totalAmount = monthExpenses.reduce(0) { $0 + $1.amount }
             data.append(ExpenseChartData(
-                period: monthLabel,
+                period: monthName,
                 amount: totalAmount,
-                date: monthStart
+                date: date
             ))
         }
         return data

@@ -20,6 +20,7 @@ final class AppStateManager: ObservableObject {
 
     /// UI variables
     @Published var willOpenCameraView: Bool = false
+    @Published var willOpenVoiceRecording: Bool = false
     @Published var isLoading: Bool = false
     @Published var isProfileScreenOpen: Bool = false
     @Published var hasAddedExpense: Bool = false

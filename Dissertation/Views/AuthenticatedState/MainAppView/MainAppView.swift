@@ -141,7 +141,8 @@ private extension MainAppView {
         CustomTabBar(
             selectedTab: $currentTab,
             showAddExpenseSheet: $isShowingAddExpenseSheet,
-            willOpenCameraView: $appState.willOpenCameraView
+            willOpenCameraView: $appState.willOpenCameraView,
+            willOpenVoiceRecording: $appState.willOpenVoiceRecording
         )
     }
 

@@ -3,9 +3,10 @@ import SwiftUI
 struct CustomTabBar: View {
     @Binding var selectedTab: CustomTabBarSection
     @Binding var showAddExpenseSheet: Bool
-    @State private var showCameraOption: Bool = false
+    @State private var showVoiceOption: Bool = false
     @State private var longPressInProgress: Bool = false
     @Binding var willOpenCameraView: Bool
+    @Binding var willOpenVoiceRecording: Bool
 
     var body: some View {
         HStack(spacing: 0) {
@@ -24,7 +25,7 @@ struct CustomTabBar: View {
 
             /// Main Add Button
             MainAddButton(
-                showCameraOption: $showCameraOption,
+                showVoiceOption: $showVoiceOption,
                 longPressInProgress: $longPressInProgress,
                 onAddTap: {
                     HapticManager.shared.trigger(.add)
@@ -32,11 +33,11 @@ struct CustomTabBar: View {
                         showAddExpenseSheet = true
                     }
                 },
-                onCameraTap: {
+                onVoiceTap: {
                     HapticManager.shared.trigger(.buttonTap)
                     withAnimation(.smooth()) {
-                        willOpenCameraView = true
-                        showCameraOption = false
+                        willOpenVoiceRecording = true
+                        showVoiceOption = false
                         longPressInProgress = false
                     }
                 },
@@ -47,23 +48,23 @@ struct CustomTabBar: View {
                     withAnimation(.smooth()) {
                         longPressInProgress = isPressing
                         if isPressing {
-                            showCameraOption = true
+                            showVoiceOption = true
                         }
                     }
 
-                    if !isPressing && showCameraOption {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    if !isPressing && showVoiceOption {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                             withAnimation(.smooth()) {
-                                showCameraOption = false
+                                showVoiceOption = false
                             }
                         }
                     }
                 },
-                onDragCamera: {
+                onDragUp: {
                     HapticManager.shared.trigger(.swipe)
                     withAnimation(.smooth()) {
                         willOpenCameraView = true
-                        showCameraOption = false
+                        showVoiceOption = false
                         longPressInProgress = false
                     }
                 }
@@ -125,44 +126,49 @@ private struct TabButton: View {
 
 // MARK: - Main Add Button Component
 private struct MainAddButton: View {
-    @Binding var showCameraOption: Bool
+    @Binding var showVoiceOption: Bool
     @Binding var longPressInProgress: Bool
     let onAddTap: () -> Void
-    let onCameraTap: () -> Void
+    let onVoiceTap: () -> Void
     let onLongPress: (Bool) -> Void
-    let onDragCamera: () -> Void
+    let onDragUp: () -> Void
 
     var body: some View {
         ZStack(alignment: .top) {
-            /// Camera Option Button
-            if showCameraOption {
-                CameraButtonn(action: onCameraTap)
-                    .offset(y: -1.75 * Constraint.extremeSize)
-                    .transition(
-                        .asymmetric(
-                            insertion: .move(edge: .bottom).combined(with: .opacity).combined(with: .scale(scale: 0.8)),
-                            removal: .move(edge: .bottom).combined(with: .opacity).combined(with: .scale(scale: 0.8))
-                        )
+            /// Voice Recording Option Button
+            if showVoiceOption {
+                VStack(spacing: Constraint.smallPadding) {
+                    CameraButton(action: onDragUp)
+                        .offset(y: -2.5 * Constraint.extremeSize)
+                    
+                    VoiceButton(action: onVoiceTap)
+                        .offset(y: -1.5 * Constraint.extremeSize)
+                }
+                .transition(
+                    .asymmetric(
+                        insertion: .move(edge: .bottom).combined(with: .opacity).combined(with: .scale(scale: 0.8)),
+                        removal: .move(edge: .bottom).combined(with: .opacity).combined(with: .scale(scale: 0.8))
                     )
+                )
             }
             
             /// Main Add Button
             AddButton(
                 isPressed: longPressInProgress,
-                showCameraOption: showCameraOption,
+                showVoiceOption: showVoiceOption,
                 onAddTap: onAddTap
             )
             .offset(y: Constraint.mainButtonOffset)
             .onLongPressGesture(
-                minimumDuration: .leastNormalMagnitude,
+                minimumDuration: 0.3,
                 pressing: onLongPress,
                 perform: {}
             )
             .gesture(
                 DragGesture(minimumDistance: 2)
                     .onChanged { value in
-                        if showCameraOption && value.translation.height < -10 {
-                            onDragCamera()
+                        if showVoiceOption && value.translation.height < -10 {
+                            onDragUp()
                         }
                     }
             )
@@ -170,20 +176,48 @@ private struct MainAddButton: View {
     }
 }
 
-// MARK: - Camera Button Component
-private struct CameraButtonn: View {
+// MARK: - Voice Button Component
+private struct VoiceButton: View {
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Image(systemName: "camera")
+            HStack(spacing: Constraint.tinyPadding) {
+                Image(systemName: "mic.fill")
+                    .font(.system(size: Constraint.regularIconSize, weight: .medium))
+                    .foregroundStyle(.customWhiteSand)
+            }
+            .padding(.horizontal, Constraint.padding)
+            .padding(.vertical, Constraint.smallPadding)
+            .background(
+                Capsule()
+                    .fill(.customGold)
+                    .shadow(
+                        color: .customRichBlack.opacity(Constraint.Opacity.low),
+                        radius: Constraint.shadowRadius,
+                        x: 0,
+                        y: 2
+                    )
+            )
+        }
+        .buttonStyle(VoiceButtonStyle())
+    }
+}
+
+// MARK: - Camera Button Component
+private struct CameraButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "camera.fill")
                 .font(.system(size: Constraint.regularIconSize, weight: .medium))
                 .foregroundStyle(.customWhiteSand)
         }
         .buttonStyle(CircularButtonStyle(
-            backgroundColor: .customGold,
+            backgroundColor: .customGold.opacity(0.8),
             size: Constraint.extremeSize,
-            scale: 1.3
+            scale: 1.0
         ))
     }
 }
@@ -191,7 +225,7 @@ private struct CameraButtonn: View {
 // MARK: - Add Button Component
 private struct AddButton: View {
     let isPressed: Bool
-    let showCameraOption: Bool
+    let showVoiceOption: Bool
     let onAddTap: () -> Void
 
     var body: some View {
@@ -199,15 +233,24 @@ private struct AddButton: View {
             Image(systemName: "plus")
                 .font(.system(size: Constraint.regularIconSize, weight: .semibold))
                 .foregroundStyle(.customWhiteSand)
-                .rotationEffect(.degrees(showCameraOption ? 90 : 0))
+                .rotationEffect(.degrees(showVoiceOption ? 45 : 0))
         }
         .buttonStyle(CircularButtonStyle(
             backgroundColor: .customGold,
             size: Constraint.extremeSize,
-            scale: showCameraOption ? 1.25 : 1.0,
+            scale: showVoiceOption ? 1.1 : 1.0,
             opacity: Constraint.Opacity.visible
         ))
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: showCameraOption)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: showVoiceOption)
+    }
+}
+
+// MARK: - Voice Button Style
+private struct VoiceButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
