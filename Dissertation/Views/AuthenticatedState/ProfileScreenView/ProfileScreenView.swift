@@ -194,7 +194,7 @@ struct ProfileScreen: View {
         VStack(alignment: .leading, spacing: Constraint.largePadding) {
             HStack {
                 Image(systemName: "chart.bar.fill")
-                    .foregroundColor(.customGold)
+                    .foregroundColor(.customOliveGreen)
                     .font(.body)
                 
                 CustomTextView(
@@ -206,7 +206,7 @@ struct ProfileScreen: View {
                 Spacer()
                 
                 Image(systemName: "trophy.fill")
-                    .foregroundColor(.customGold)
+                    .foregroundColor(.customOliveGreen)
                     .font(.body)
             }
             
@@ -240,7 +240,7 @@ struct ProfileScreen: View {
                 )
             }
         }
-        .addLayeredBackground(.customGold.opacity(Constraint.Opacity.low), style: .card(isColorFilled: true))
+        .addLayeredBackground(.customOliveGreen.opacity(Constraint.Opacity.low), style: .card(isColorFilled: true))
     }
     
     @ViewBuilder
@@ -336,11 +336,23 @@ struct ProfileScreen: View {
     @ViewBuilder
     private func settingsGroup(_ title: String, items: [(String, String, String, Color, () -> Void)]) -> some View {
         VStack(alignment: .leading, spacing: Constraint.largePadding) {
-            CustomTextView(
-                title,
-                font: .titleSmallBold,
-                color: .customRichBlack
-            )
+            HStack {
+                Image(systemName: "gearshape.fill")
+                    .foregroundColor(.customGold)
+                    .font(.body)
+                
+                CustomTextView(
+                    title,
+                    font: .bodyLargeBold,
+                    color: .customRichBlack
+                )
+                
+                Spacer()
+                
+                Image(systemName: "questionmark.circle.fill")
+                    .foregroundColor(.customGold)
+                    .font(.body)
+            }
             
             VStack(spacing: Constraint.padding) {
                 ForEach(Array(items.enumerated()), id: \.offset) { _, item in
@@ -354,7 +366,7 @@ struct ProfileScreen: View {
                 }
             }
         }
-        .addLayeredBackground(.customOliveGreen.opacity(Constraint.Opacity.low), style: .card(isColorFilled: false))
+        .addLayeredBackground(.customGold.opacity(Constraint.Opacity.low), style: .card(isColorFilled: false))
     }
     
     @ViewBuilder
