@@ -172,8 +172,8 @@ struct ProfileScreen: View {
                         )
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    
-                    CustomTextView.currency(appState.dailyBalance ?? .zero, font: .titleLarge, color: .customOliveGreen)
+
+                    CustomTextView.currency(appState.dailyBalance ?? .zero, font: .titleMediumBold, color: .customOliveGreen)
                 }
                 Image(systemName: "pencil.circle.fill")
                     .foregroundStyle(.customOliveGreen)
