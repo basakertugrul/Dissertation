@@ -3,7 +3,9 @@ import SwiftUI
 struct CustomTabBar: View {
     @Binding var selectedTab: CustomTabBarSection
     @Binding var showAddExpenseSheet: Bool
-    @State private var showOptions: Bool = false
+    @State private var isExpanded: Bool = false
+    @State private var dragOffset: CGSize = .zero
+    @State private var shakeAnimation: Bool = false
     @Binding var willOpenCameraView: Bool
     @Binding var willOpenVoiceRecording: Bool
 
@@ -17,12 +19,15 @@ struct CustomTabBar: View {
                 HapticManager.shared.trigger(.navigation)
                 selectedTab = .balance
             }
+            .offset(y: -8) // Move up for curved effect
 
             Spacer()
 
-            /// Main Add Button
-            MainAddButton(
-                showOptions: $showOptions,
+            /// Dynamic Add Button System
+            DynamicAddButton(
+                isExpanded: $isExpanded,
+                dragOffset: $dragOffset,
+                shakeAnimation: $shakeAnimation,
                 onAddTap: {
                     HapticManager.shared.trigger(.add)
                     showAddExpenseSheet = true
@@ -30,14 +35,25 @@ struct CustomTabBar: View {
                 onCameraTap: {
                     HapticManager.shared.trigger(.buttonTap)
                     willOpenCameraView = true
-                    showOptions = false
+                    // Stop shake and collapse immediately
+                    shakeAnimation = false
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        isExpanded = false
+                        dragOffset = .zero
+                    }
                 },
                 onVoiceTap: {
                     HapticManager.shared.trigger(.buttonTap)
                     willOpenVoiceRecording = true
-                    showOptions = false
+                    // Stop shake and collapse immediately
+                    shakeAnimation = false
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        isExpanded = false
+                        dragOffset = .zero
+                    }
                 }
             )
+            .offset(y: -8) // Move up for curved effect
 
             Spacer()
 
@@ -49,6 +65,7 @@ struct CustomTabBar: View {
                 HapticManager.shared.trigger(.navigation)
                 selectedTab = .expenses
             }
+            .offset(y: -8) // Move up for curved effect
         }
         .padding(.horizontal, Constraint.largePadding)
         .padding(.bottom, Constraint.padding)
@@ -63,75 +80,145 @@ struct CustomTabBar: View {
 // MARK: - Extensions
 extension CustomTabBar {
     
-    // MARK: - Main Add Button
-    struct MainAddButton: View {
-        @Binding var showOptions: Bool
+    // MARK: - Dynamic Add Button System
+    struct DynamicAddButton: View {
+        @Binding var isExpanded: Bool
+        @Binding var dragOffset: CGSize
+        @Binding var shakeAnimation: Bool
         let onAddTap: () -> Void
         let onCameraTap: () -> Void
         let onVoiceTap: () -> Void
-
+        
+        @State private var buttonScale: CGFloat = 1.0
+        
         var body: some View {
             ZStack {
-                // Options
-                if showOptions {
-                    VStack(spacing: Constraint.regularPadding) {
-                        OptionButton(icon: "camera", action: onCameraTap)
-                        OptionButton(icon: "waveform", action: onVoiceTap)
+                // Three buttons side by side when expanded
+                if isExpanded {
+                    HStack(spacing: 30) {
+                        // Camera Button (Left)
+                        FloatingButton(
+                            icon: "camera.fill",
+                            color: .customBurgundy,
+                            action: onCameraTap
+                        )
+                        .offset(x: shakeAnimation ? -3 : 3)
+                        .transition(.scale.combined(with: .opacity))
+                        
+                        // Main Add Button (Center)
+                        MainFloatingButton(
+                            isExpanded: isExpanded,
+                            buttonScale: buttonScale,
+                            dragOffset: dragOffset,
+                            onTap: onAddTap
+                        )
+                        .offset(x: shakeAnimation ? 2 : -2)
+                        
+                        // Voice Button (Right)
+                        FloatingButton(
+                            icon: "waveform",
+                            color: .customOliveGreen,
+                            action: onVoiceTap
+                        )
+                        .offset(x: shakeAnimation ? 3 : -3)
+                        .transition(.scale.combined(with: .opacity))
                     }
-                    .offset(y: -3.5 * Constraint.extremeSize)
-                    .transition(.scale.combined(with: .opacity))
-                }
-                
-                // Main Button
-                Button {
-                    if showOptions {
-                        HapticManager.shared.trigger(.buttonTap)
-                        showOptions = false
-                    } else {
-                        HapticManager.shared.trigger(.add)
-                        onAddTap()
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: Constraint.regularIconSize, weight: .medium))
-                        .foregroundStyle(.customWhiteSand)
-                }
-                .buttonStyle(MainButtonStyle(isExpanded: showOptions))
-                .offset(y: Constraint.mainButtonOffset)
-                .onLongPressGesture(minimumDuration: 0.3) {
-                    HapticManager.shared.trigger(.longPress)
-                    showOptions = true
-                    
-                    // Auto-hide after 3 seconds
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                        withAnimation(.easeOut(duration: 0.25)) {
-                            showOptions = false
-                        }
-                    }
+                    .offset(y: Constraint.mainButtonOffset)
+                } else {
+                    // Only main button when collapsed
+                    MainFloatingButton(
+                        isExpanded: isExpanded,
+                        buttonScale: buttonScale,
+                        dragOffset: dragOffset,
+                        onTap: onAddTap
+                    )
+                    .offset(y: Constraint.mainButtonOffset)
                 }
             }
-            .animation(.easeOut(duration: 0.25), value: showOptions)
+            .onLongPressGesture(
+                minimumDuration: 0.2,
+                pressing: { isPressing in
+                    if isPressing {
+                        HapticManager.shared.trigger(.longPress)
+                        withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                            isExpanded = true
+                            buttonScale = 1.1
+                        }
+                        // Start shake animation
+                        withAnimation(.easeInOut(duration: 0.1).repeatForever(autoreverses: true)) {
+                            shakeAnimation = true
+                        }
+                    } else if isExpanded {
+                        // Stop shake animation
+                        shakeAnimation = false
+                        // Auto collapse after 3 seconds
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                isExpanded = false
+                                buttonScale = 1.0
+                                dragOffset = .zero
+                            }
+                        }
+                    }
+                },
+                perform: {}
+            )
+            .animation(.spring(response: 0.5, dampingFraction: 0.7), value: isExpanded)
         }
     }
     
-    // MARK: - Option Button
-    struct OptionButton: View {
+    // MARK: - Main Floating Button
+    struct MainFloatingButton: View {
+        let isExpanded: Bool
+        let buttonScale: CGFloat
+        let dragOffset: CGSize
+        let onTap: () -> Void
+        
+        var body: some View {
+            Button(action: onTap) {
+                Circle()
+                    .fill(.customGold)
+                    .frame(width: Constraint.extremeSize, height: Constraint.extremeSize)
+                    .shadow(
+                        color: .customGold.opacity(0.4),
+                        radius: isExpanded ? 8 : 5,
+                        x: 0,
+                        y: isExpanded ? 3 : 2
+                    )
+                    .overlay(
+                        Image(systemName: "plus")
+                            .font(.system(size: Constraint.regularIconSize, weight: .bold))
+                            .foregroundStyle(.customWhiteSand)
+                    )
+            }
+            .buttonStyle(ElasticButtonStyle())
+        }
+    }
+    
+    // MARK: - Floating Button
+    struct FloatingButton: View {
         let icon: String
+        let color: Color
         let action: () -> Void
         
         var body: some View {
             Button(action: action) {
-                Image(systemName: icon)
-                    .font(.system(size: Constraint.regularIconSize, weight: .medium))
-                    .foregroundStyle(.customWhiteSand)
+                Circle()
+                    .fill(color)
                     .frame(width: Constraint.extremeSize, height: Constraint.extremeSize)
-                    .background(
-                        Circle()
-                            .fill(.customGold)
-                            .shadow(radius: 2, y: 1)
+                    .shadow(
+                        color: color.opacity(0.4),
+                        radius: 5,
+                        x: 0,
+                        y: 2
+                    )
+                    .overlay(
+                        Image(systemName: icon)
+                            .font(.system(size: Constraint.regularIconSize, weight: .medium))
+                            .foregroundStyle(.customWhiteSand)
                     )
             }
-            .buttonStyle(SoftButtonStyle())
+            .buttonStyle(ElasticButtonStyle())
         }
     }
 
@@ -162,20 +249,11 @@ extension CustomTabBar {
 }
 
 // MARK: - Button Styles
-struct MainButtonStyle: ButtonStyle {
-    let isExpanded: Bool
-    
+struct ElasticButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(width: Constraint.extremeSize, height: Constraint.extremeSize)
-            .background(
-                Circle()
-                    .fill(.customGold)
-                    .shadow(radius: isExpanded ? 4 : 2, y: isExpanded ? 2 : 1)
-            )
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-            .scaleEffect(isExpanded ? 1.1 : 1.0)
-            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
