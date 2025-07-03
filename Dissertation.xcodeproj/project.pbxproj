@@ -269,7 +269,9 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Take photos of your receipts and expenses to track your spending";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Use Face ID to quickly and securely sign in to FundBud";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app uses the microphone to record voice commands for adding expenses.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo library is used to save and access receipt photos for your expense records.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Speech recognition helps convert your spoken budget commands into text for accurate expense tracking.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -305,7 +307,9 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Take photos of your receipts and expenses to track your spending";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Use Face ID to quickly and securely sign in to FundBud";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app uses the microphone to record voice commands for adding expenses.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo library is used to save and access receipt photos for your expense records.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Speech recognition helps convert your spoken budget commands into text for accurate expense tracking.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

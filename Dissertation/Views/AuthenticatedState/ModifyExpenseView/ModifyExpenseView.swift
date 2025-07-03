@@ -188,7 +188,7 @@ struct ModifyExpenseView: View {
 struct BackgroundView: View {
     var body: some View {
         /// Background color
-        Color.customGold.ignoresSafeArea()
+        Color.customRichBlack.ignoresSafeArea()
 
         /// Semi-transparent overlay circle
         Circle()
@@ -339,7 +339,7 @@ struct DateSelectorView: View {
                     .datePickerStyle(.compact)
                     .labelsHidden()
                     .preferredColorScheme(.dark)
-                    .tint(.customWhiteSand)
+                    .tint(.customRichBlack)
                     .onChange(of: expenseDate) { _, _ in
                         HapticManager.shared.trigger(.selection)
                     }

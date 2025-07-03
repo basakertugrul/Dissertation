@@ -119,6 +119,54 @@ extension View {
         }
     }
 
+    /// Show Voice Error Alert
+    func showVoiceErrorAlert(
+        isPresented: Binding<Bool>,
+        buttonAction: @escaping () -> Void = {},
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Permissions Required",
+                    message: "Microphone and speech recognition access needed to record and transcribe voice entries.",
+                    buttonText: "Go to settings",
+                    buttonAction: buttonAction,
+                    secondaryButtonText: .none,
+                    secondaryButtonAction: .none,
+                    alertColor: .customBurgundy
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+
+    /// Show Voice General Error Alert
+    func showVoiceGeneralErrorAlert(
+        isPresented: Binding<Bool>,
+        buttonAction: @escaping () -> Void = {},
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: "Recording Error",
+                    message: "Unable to complete voice recording. Please try again.",
+                    buttonText: "Try Again",
+                    buttonAction: buttonAction,
+                    secondaryButtonText: "Cancel",
+                    secondaryButtonAction: {
+                        isPresented.wrappedValue = false
+                    },
+                    alertColor: .customBurgundy
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
+
     /// Show Photo Library Error Alert
     func showAddedExpenseAlert(
         isPresented: Binding<Bool>

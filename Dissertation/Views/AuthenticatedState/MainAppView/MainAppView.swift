@@ -52,7 +52,10 @@ struct MainAppView: View {
             ModifyExpenseView(expenseToModify: $expenseToEdit, startDay: appState.startDate)
         }
         .sheet(isPresented: $appState.willOpenCameraView) {
-            cameraSheet
+            CameraView()
+        }
+        .sheet(isPresented: $appState.willOpenVoiceRecording) {
+            VoiceRecordingView()
         }
         .showDailyAllowanceSheet(
             isPresented: $showingAllowanceSheet,
@@ -144,11 +147,6 @@ private extension MainAppView {
             willOpenCameraView: $appState.willOpenCameraView,
             willOpenVoiceRecording: $appState.willOpenVoiceRecording
         )
-    }
-
-    var cameraSheet: some View {
-        CameraView()
-            .background(Color.black.ignoresSafeArea())
     }
 }
 

@@ -6,7 +6,7 @@ import AVFoundation
 struct CameraView: View {
     @StateObject private var cameraManager = CameraManager()
     @Environment(\.dismiss) private var dismiss
-
+    
     // UI State
     @State private var isFocused = false
     @State private var isScaled = false
@@ -18,7 +18,7 @@ struct CameraView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.black.ignoresSafeArea()
+                Color.customRichBlack.ignoresSafeArea()
                 cameraInterface
                 
                 // Image Preview Overlay
@@ -64,44 +64,44 @@ struct CameraView: View {
     // MARK: - Camera Interface
     private var cameraInterface: some View {
         VStack(spacing: .zero) {
+            headerSection
             topControls
             Spacer()
             cameraPreviewSection
             Spacer()
             bottomControls
         }
-        .padding(.vertical, 20)
+        .padding(.vertical, Constraint.padding)
     }
     
+    // MARK: - Header
+    private var headerSection: some View {
+        var attributedTitle: AttributedString {
+            var attributedString = AttributedString(("SCAN ENTRY"))
+            
+            if let helloRange = attributedString.range(of: "SCAN") {
+                attributedString[helloRange].foregroundColor = .customWhiteSand.opacity(Constraint.Opacity.high)
+                attributedString[helloRange].font = TextFonts.titleSmall.font
+            }
+            if let worldRange = attributedString.range(of: "ENTRY") { attributedString[worldRange].foregroundColor = .customWhiteSand
+                attributedString[worldRange].font = TextFonts.titleSmallBold.font
+            }
+            return attributedString
+        }
+        return CustomNavigationBarTitleView(title: attributedTitle)
+    }
+
     // MARK: - Top Controls
     private var topControls: some View {
-        HStack {
-            // Close Button
-            Button(action: {
-                HapticManager.shared.trigger(.cancel)
-                dismiss()
-            }) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(width: 44, height: 44)
-                    .background(Color.black.opacity(0.3))
-                    .clipShape(Circle())
-            }
-            
-            Spacer()
-            
-            // Flash Button
-            Button(action: toggleFlash) {
-                Image(systemName: cameraManager.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(cameraManager.isFlashOn ? .yellow : .white)
-                    .frame(width: 44, height: 44)
-                    .background(Color.black.opacity(0.3))
-                    .clipShape(Circle())
-            }
+        // Flash Button
+        Button(action: toggleFlash) {
+            Image(systemName: cameraManager.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(cameraManager.isFlashOn ? .yellow : .white)
+                .frame(width: 44, height: 44)
+                .background(Color.black.opacity(0.3))
+                .clipShape(Circle())
         }
-        .padding(.horizontal, 20)
     }
     
     // MARK: - Camera Preview Section
