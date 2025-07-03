@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Custom Navigation Bar View
 struct CustomNavigationBarView: View {
-    @Binding var selectedTab: CustomTabBarSection
+    @Binding var selectedTab: TabBarSection
     @Binding var isProfileScreenOpen: Bool
 
     var body: some View {

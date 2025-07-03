@@ -7,7 +7,7 @@ struct TotalExpensesCardView: View {
     @Binding var expenses: [ExpenseViewModel]
     @Binding var timeFrame: TimeFrame
     @Binding var backgroundColor: Color
-    @Binding var currentTab: CustomTabBarSection
+    @Binding var currentTab: TabBarSection
     
     @State private var showCard: Bool = false
     @State private var cardScale: CGFloat = 0.95

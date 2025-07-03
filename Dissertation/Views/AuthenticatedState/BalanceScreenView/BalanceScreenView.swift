@@ -10,7 +10,7 @@ struct BalanceScreenView: View {
     @State var timeFrame: TimeFrame
     @Binding var backgroundColor: Color
     @Binding var showingAllowanceSheet: Bool
-    @Binding var currentTab: CustomTabBarSection
+    @Binding var currentTab: TabBarSection
     @Binding var startDay: Date
     
     var daySinceEarliest: Int {

@@ -1,7 +1,7 @@
 import SwiftUI
 
 // MARK: - Custom Tab Section Options
-enum CustomTabBarSection: Int, CaseIterable {
+enum TabBarSection: Int, CaseIterable {
     case balance = 0
     case expenses = 1
 

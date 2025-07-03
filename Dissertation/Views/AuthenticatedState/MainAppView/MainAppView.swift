@@ -13,7 +13,7 @@ struct MainAppView: View {
     )
     private var expenses: FetchedResults<ExpenseModel>
     /// UI State
-    @State private var currentTab: CustomTabBarSection = .balance
+    @State private var currentTab: TabBarSection = .balance
     @State private var isShowingAddExpenseSheet: Bool = false
     @State private var expenseToEdit: ExpenseViewModel?
     @State private var showingAllowanceSheet: Bool = false
