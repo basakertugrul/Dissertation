@@ -106,43 +106,49 @@ struct CameraView: View {
     
     // MARK: - Camera Preview Section
     private var cameraPreviewSection: some View {
-        ZStack {
-            // Camera Preview
-            CameraPreview(session: cameraManager.session) { tapPoint in
-                handleFocusTap(at: tapPoint)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: Constraint.cornerRadius))
-            .gesture(zoomGesture)
-            
-            // Focus Indicator
-            if isFocused {
-                FocusView(position: $focusLocation)
-                    .scaleEffect(isScaled ? 0.8 : 1)
-                    .onAppear {
-                        animateFocus()
-                    }
-            }
-            
-            // Zoom Indicator
-            if currentZoomFactor > 1.1 {
-                VStack {
-                    Spacer()
-                    HStack {
+        GeometryReader { geometry in
+            ZStack {
+                // Camera Preview
+                CameraPreview(session: cameraManager.session) { tapPoint in
+                    let convertedPoint = CGPoint(
+                        x: tapPoint.x * geometry.size.width,
+                        y: tapPoint.y * geometry.size.height
+                    )
+                    handleFocusTap(at: convertedPoint)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: Constraint.cornerRadius))
+                .gesture(zoomGesture)
+
+                // Focus Indicator
+                if isFocused {
+                    FocusView(position: $focusLocation)
+                        .scaleEffect(isScaled ? 0.8 : 1)
+                        .onAppear {
+                            animateFocus()
+                        }
+                }
+
+                // Zoom Indicator
+                if currentZoomFactor > 1.1 {
+                    VStack {
                         Spacer()
-                        Text("\(currentZoomFactor, specifier: "%.1f")x")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.black.opacity(0.6))
-                            .clipShape(Capsule())
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 20)
+                        HStack {
+                            Spacer()
+                            Text("\(currentZoomFactor, specifier: "%.1f")x")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Capsule())
+                                .padding(.trailing, 20)
+                                .padding(.bottom, 20)
+                        }
                     }
                 }
             }
+            .padding(.horizontal, 20)
         }
-        .padding(.horizontal, 20)
     }
     
     // MARK: - Bottom Controls
@@ -157,9 +163,9 @@ struct CameraView: View {
             ) {
                 PhotoThumbnail()
                     .frame(width: 50, height: 50)
-                    .onTapGesture {
-                        HapticManager.shared.trigger(.buttonTap)
-                    }
+            }
+            .onTapGesture {
+                HapticManager.shared.trigger(.buttonTap)
             }
             
             Spacer()
@@ -330,7 +336,7 @@ struct FocusView: View {
         RoundedRectangle(cornerRadius: 8)
             .stroke(Color.yellow, lineWidth: 2)
             .frame(width: 80, height: 80)
-            .position(x: position.x, y: position.y)
+            .position(position)
     }
 }
 
