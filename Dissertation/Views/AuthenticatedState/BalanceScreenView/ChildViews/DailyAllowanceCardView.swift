@@ -21,7 +21,7 @@ struct DailyAllowanceCardView: View {
         }) {
             VStack(alignment: .leading, spacing: Constraint.regularPadding) {
                 CustomTextView(
-                    "Daily limit",
+                    NSLocalizedString("daily_limit", comment: ""),
                     font: .labelMedium,
                     color: .customWhiteSand.opacity(opacity),
                     uppercase: true
@@ -70,7 +70,7 @@ struct DailyAllowanceCardView: View {
                 }
             }
         }
-        .onChange(of: backgroundColor) { _, _ in
+        .onChange(of: backgroundColor) {
             HapticManager.shared.trigger(.selection)
             animateBackgroundChange()
         }

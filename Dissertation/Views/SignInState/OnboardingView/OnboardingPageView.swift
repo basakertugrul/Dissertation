@@ -132,47 +132,47 @@ struct OnboardingPage {
     
     static let allPages: [OnboardingPage] = [
         OnboardingPage(
-            title: "Welcome to FundBud",
-            subtitle: "Smart Daily Budget Tracker",
-            description: "Set your daily spending limit and track every expense in real-time.",
+            title: NSLocalizedString("onboarding_page1_title", comment: ""),
+            subtitle: NSLocalizedString("onboarding_page1_subtitle", comment: ""),
+            description: NSLocalizedString("onboarding_page1_description", comment: ""),
             systemImage: "dollarsign.circle.fill",
             accentColor: .customOliveGreen,
             features: [
-                "Set daily spending limits",
-                "Real-time expense tracking"
+                NSLocalizedString("onboarding_page1_feature1", comment: ""),
+                NSLocalizedString("onboarding_page1_feature2", comment: "")
             ]
         ),
         OnboardingPage(
-            title: "Your Data Stays Local",
-            subtitle: "100% Privacy & Security",
-            description: "All your financial data is stored securely on your phone. Never shared or uploaded.",
+            title: NSLocalizedString("onboarding_page2_title", comment: ""),
+            subtitle: NSLocalizedString("onboarding_page2_subtitle", comment: ""),
+            description: NSLocalizedString("onboarding_page2_description", comment: ""),
             systemImage: "lock.shield.fill",
             accentColor: .customBurgundy,
             features: [
-                "All data stays on your phone",
-                "Protected with Face ID & Touch ID"
+                NSLocalizedString("onboarding_page2_feature1", comment: ""),
+                NSLocalizedString("onboarding_page2_feature2", comment: "")
             ]
         ),
         OnboardingPage(
-            title: "Daily Budget System",
-            subtitle: "Simple & Effective",
-            description: "Your daily limit resets every day. Add expenses and watch your remaining budget update instantly.",
+            title: NSLocalizedString("onboarding_page3_title", comment: ""),
+            subtitle: NSLocalizedString("onboarding_page3_subtitle", comment: ""),
+            description: NSLocalizedString("onboarding_page3_description", comment: ""),
             systemImage: "calendar.circle.fill",
             accentColor: .customGold,
             features: [
-                "Daily limit resets automatically",
-                "Expenses subtract from your budget"
+                NSLocalizedString("onboarding_page3_feature1", comment: ""),
+                NSLocalizedString("onboarding_page3_feature2", comment: "")
             ]
         ),
         OnboardingPage(
-            title: "Start Budgeting Today",
-            subtitle: "Take Control of Your Spending",
-            description: "Ready to know exactly what you can spend every day? Let's get started!",
+            title: NSLocalizedString("onboarding_page4_title", comment: ""),
+            subtitle: NSLocalizedString("onboarding_page4_subtitle", comment: ""),
+            description: NSLocalizedString("onboarding_page4_description", comment: ""),
             systemImage: "checkmark.circle.fill",
             accentColor: .customOliveGreen,
             features: [
-                "Set your first daily limit",
-                "Track expenses immediately"
+                NSLocalizedString("onboarding_page4_feature1", comment: ""),
+                NSLocalizedString("onboarding_page4_feature2", comment: "")
             ]
         )
     ]

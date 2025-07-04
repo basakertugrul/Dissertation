@@ -35,7 +35,7 @@ struct ImagePreview: View {
                     HapticManager.shared.trigger(.cancel)
                     onRetake()
                 }) {
-                    CustomTextView("Retake", font: .bodySmallBold)
+                    CustomTextView(NSLocalizedString("retake", comment: ""), font: .bodySmallBold)
                         .foregroundColor(.white)
                 }
                 .frame(width: 120, height: 50)
@@ -113,7 +113,7 @@ struct ImagePreview: View {
                         }
                     }
                 }) {
-                    CustomTextView("Add", font: .bodySmallBold)
+                    CustomTextView(NSLocalizedString("add", comment: ""), font: .bodySmallBold)
                 }
                 .frame(width: 120, height: 50)
                 .background(

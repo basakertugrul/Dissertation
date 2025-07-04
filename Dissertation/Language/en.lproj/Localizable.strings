@@ -1,0 +1,393 @@
+// **MARK: - Balance Entrance View**
+"set_daily_budget" = "Set Daily Budget";
+"daily_budget_question" = "How much do you want to spend per day?";
+"daily_budget_description" = "Control your spending with smart daily limits";
+"currency_symbol" = "£";
+"amount_placeholder" = "0";
+"quick_select" = "Quick Select";
+"continue" = "Continue";
+"skip" = "Skip";
+
+// **MARK: - General UI**
+"loading" = "Loading...";
+"secure_private" = "Secure & Private";
+"terms" = "Terms";
+"privacy" = "Privacy";
+"ok" = "OK";
+"cancel" = "Cancel";
+"error" = "Error";
+
+// **MARK: - Voice Recording**
+"voice_entry" = "VOICE ENTRY";
+"voice" = "VOICE";
+"entry" = "ENTRY";
+
+// **MARK: - Total Expense Card View
+"total_expenses_title" = "Total Expenses";
+
+// **MARK: - Text Recognition Errors**
+"invalid_image_error" = "Photo quality is too poor. Please try taking a clearer picture.";
+"no_results_error" = "We couldn't read this image. Try taking a new photo with better lighting.";
+"no_text_found_error" = "No text detected. Make sure your receipt is clearly visible and try again.";
+"vision_error" = "Something went wrong while processing your receipt. Please try again.";
+"out_of_date_range_error" = "This receipt appears to be very old. Please check and try again.";
+
+// **MARK: - Budget Chart**
+"budget" = "Budget";
+
+// **MARK: - Current Balance Card**
+"available" = "Available";
+"overdrawn" = "Overdrawn";
+"crushing_it" = "Crushing it!";
+"oops_went_over" = "Oops, went over!";
+
+// **MARK: - Daily Allowance Card**
+"daily_limit" = "Daily limit";
+
+// **MARK: - Days Tracked Card**
+"days_tracked" = "Days Tracked";
+"since" = "since";
+"recording" = "Recording...";
+"tap_and_hold" = "Tap and hold";
+
+// **MARK: - Login Screen**
+"app_name" = "FundBud";
+"app_subtitle" = "Know exactly what you can spend!";
+"get_started" = "Get Started";
+"choose_signin_method" = "Choose your preferred sign-in method";
+"continue_with_apple" = "Continue with Apple";
+"or" = "or";
+"sign_in_with_faceid" = "Sign in with Face ID";
+"switch_user" = "Switch User";
+"welcome_back" = "Welcome Back!";
+
+// **MARK: - Sign In Errors**
+"signin_canceled" = "Sign in was canceled. Please try again.";
+"apple_signin_failed" = "Apple Sign In failed. Please check your connection and try again.";
+"faceid_auth_failed" = "Face ID authentication failed. Please try again.";
+"faceid_canceled" = "Face ID authentication was canceled.";
+"user_data_save_failure" = "Failed to save your account information. Please try signing in again.";
+"credential_state_check_failed" = "Unable to verify your Apple ID status. Please try again.";
+"biometry_not_enrolled" = "Face ID is not set up. Please set it up in Settings.";
+"biometry_lockout" = "Face ID is temporarily locked. Please try again later.";
+"unknown_error" = "An unexpected error occurred";
+
+// **MARK: - Face ID Authentication**
+"use_passcode" = "Use Passcode";
+"enable_faceid_reason" = "Enable Face ID to quickly sign in to FundBud";
+"use_password" = "Use Password";
+"signin_faceid_reason" = "Sign in to FundBud with Face ID";
+
+// **MARK: - Onboarding**
+"onboarding_page1_title" = "Welcome to FundBud";
+"onboarding_page1_subtitle" = "Smart Daily Budget Tracker";
+"onboarding_page1_description" = "Set your daily spending limit and track every expense in real-time.";
+"onboarding_page1_feature1" = "Set daily spending limits";
+"onboarding_page1_feature2" = "Real-time expense tracking";
+
+"onboarding_page2_title" = "Your Data Stays Local";
+"onboarding_page2_subtitle" = "100% Privacy & Security";
+"onboarding_page2_description" = "All your financial data is stored securely on your phone. Never shared or uploaded.";
+"onboarding_page2_feature1" = "All data stays on your phone";
+"onboarding_page2_feature2" = "Protected with Face ID & Touch ID";
+
+"onboarding_page3_title" = "Daily Budget System";
+"onboarding_page3_subtitle" = "Simple & Effective";
+"onboarding_page3_description" = "Your daily limit resets every day. Add expenses and watch your remaining budget update instantly.";
+"onboarding_page3_feature1" = "Daily limit resets automatically";
+"onboarding_page3_feature2" = "Expenses subtract from your budget";
+
+"onboarding_page4_title" = "Start Budgeting Today";
+"onboarding_page4_subtitle" = "Take Control of Your Spending";
+"onboarding_page4_description" = "Ready to know exactly what you can spend every day? Let's get started!";
+"onboarding_page4_feature1" = "Set your first daily limit";
+"onboarding_page4_feature2" = "Track expenses immediately";
+
+// **MARK: - Alerts**
+"delete_expense_title" = "Delete Expense";
+"delete_expense_message" = "Are you sure you want to delete this expense?";
+"delete" = "Delete";
+"sign_out_title" = "Sign Out";
+"sign_out_message" = "Are you sure you want to sign out of FundBud?";
+"sign_out" = "Sign Out";
+"camera_error_title" = "Camera Error";
+"permissions_required_message" = "Permissions are required.";
+"photo_library_error_title" = "Photo Library Error";
+"permissions_required_title" = "Permissions Required";
+"camera_photo_permissions_message" = "Camera and photo access needed to capture and store receipt photos.";
+"go_to_settings" = "Go to settings";
+"microphone_permissions_message" = "Microphone and speech recognition access needed to record and transcribe voice entries.";
+"recording_error_title" = "Recording Error";
+"recording_error_message" = "Unable to complete voice recording. Please try again.";
+"try_again" = "Try Again";
+"added_expense_title" = "Added Expense";
+"added_expense_message" = "Great! Keep monitoring your budget!";
+"deleted_expense_title" = "Deleted Expense";
+"deleted_expense_message" = "The expense has been removed.";
+"modified_expense_title" = "Modified Expense";
+"modified_expense_message" = "Your changes have been saved successfully.";
+"daily_limit_updated_title" = "Daily Limit Updated";
+"daily_limit_updated_message" = "Your new spending limit is now active.";
+"rate_fundbud_title" = "Rate FundBud";
+"rate_fundbud_message" = "Would you like to rate our app in AppStore?";
+"send_feedback_title" = "Send Feedback";
+"send_feedback_message" = "This will open your mail app to send feedback to our team.";
+"export_data_title" = "Export Data";
+"export_data_message" = "This will export all your expense data as a PDF file.";
+"no_receipt_detected_title" = "No Receipt Detected";
+"receipt_detected_title" = "Receipt Detected!";
+"add_to_expenses" = "Add to Expenses";
+
+// **MARK: - PDF Export**
+"expense_report" = "Expense Report";
+"fundbud_expense_report" = "FundBud Expense Report";
+"user" = "User";
+"generated" = "Generated:";
+"period" = "Period:";
+"total_expenses" = "Total Expenses:";
+"daily_budget" = "Daily Budget:";
+"days_tracked" = "Days Tracked:";
+"average_daily" = "Average Daily:";
+"current_balance" = "Current Balance:";
+"summary" = "Summary";
+"expense_details" = "Expense Details";
+"date" = "Date";
+"amount" = "Amount";
+"category" = "Category";
+"description" = "Description";
+
+// **MARK: - Charts**
+"daily" = "Daily";
+"weekly" = "Weekly";
+"monthly" = "Monthly";
+"this_week" = "This Week";
+"last_12_weeks" = "Last 12 Weeks";
+"last_12_months" = "Last 12 Months";
+"expense_trends" = "Expense Trends";
+
+// **MARK: - Profile Screen**
+"profile" = "PROFILE";
+"hi_there" = "Hi there!";
+"daily_budget" = "Daily Budget";
+"spending_overview" = "Spending Overview";
+"todays_budget" = "Today's Budget";
+"total_spent" = "Total Spent";
+"daily_average" = "Daily Average";
+"days_tracked" = "Days Tracked";
+"settings_support" = "Settings & Support";
+"notifications" = "Notifications";
+"budget_alerts_reminders" = "Budget alerts & reminders";
+"export_data" = "Export Data";
+"download_expense_history" = "Download expense history";
+"privacy_security" = "Privacy & Security";
+"manage_data_protection" = "Manage your data protection";
+"send_feedback" = "Send Feedback";
+"help_improve_app" = "Help us improve the app";
+"rate_fundbud" = "Rate FundBud";
+"share_experience" = "Share your experience";
+"legal_information" = "Legal Information";
+"terms_privacy_licenses" = "Terms, privacy & licenses";
+"sign_out" = "Sign Out";
+
+// **MARK: - Feedback Email**
+"feedback_subject" = "FundBud Feedback - iOS App";
+"feedback_body_greeting" = "Hi FundBud team,";
+"feedback_body_message" = "I'd like to share feedback about the app:";
+"feedback_body_placeholder" = "[Please write your feedback here]";
+"feedback_body_separator" = "---";
+"app_version_label" = "App Version:";
+"ios_version_label" = "iOS Version:";
+
+// **MARK: - Legal Information**
+"legal_information" = "Legal Information";
+"terms_of_service" = "Terms of Service";
+"privacy_policy" = "Privacy Policy";
+"about_fundbud" = "About FundBud";
+
+// **MARK: - Terms of Service**
+"terms_conditions_title" = "TERMS & CONDITIONS";
+"last_updated" = "Last updated:";
+"what_is_this_app" = "WHAT IS THIS APP?";
+"terms_app_description" = "This is a personal expense tracker that helps you manage your spending. By using this app, you agree to these terms.";
+"what_you_can_do" = "WHAT YOU CAN DO";
+"terms_can_do_1" = "• Track your expenses and income";
+"terms_can_do_2" = "• Set spending budgets";
+"terms_can_do_3" = "• Take photos of receipts";
+"terms_can_do_4" = "• Export your data anytime";
+"terms_can_do_5" = "• Use all features for personal use";
+"what_you_cannot_do" = "WHAT YOU CAN'T DO";
+"terms_cannot_do_1" = "• Share false information";
+"terms_cannot_do_2" = "• Use the app for illegal activities";
+"terms_cannot_do_3" = "• Try to break or hack the app";
+"terms_cannot_do_4" = "• Sell or redistribute the app";
+"your_data_terms" = "YOUR DATA";
+"terms_data_1" = "• Everything stays on your device";
+"terms_data_2" = "• We don't see or store your financial data";
+"terms_data_3" = "• Camera is only used for receipts";
+"terms_data_4" = "• You own and control all your information";
+"legal_side" = "LEGAL SIDE";
+"terms_legal_1" = "• App provided \"as is\" - we can't guarantee it's perfect";
+"terms_legal_2" = "• Not financial advice - make your own money decisions";
+"terms_legal_3" = "• We're not responsible if you lose money";
+"terms_legal_4" = "• These terms can change (we'll let you know)";
+"terms_questions" = "📧 QUESTIONS?";
+"contact_us" = "Contact us: fundBud2025@gmail.com";
+"terms_thanks" = "Thanks for using our app responsibly! 🙏";
+
+// **MARK: - Privacy Policy**
+"privacy_policy_title" = "PRIVACY POLICY";
+"privacy_protect_title" = "WE PROTECT YOUR PRIVACY";
+"privacy_protect_description" = "Your financial data is personal. Here's exactly how we handle it.";
+"what_we_collect" = "WHAT WE COLLECT";
+"on_device_only" = "On Your Device Only:";
+"privacy_collect_1" = "• Your expense amounts and notes";
+"privacy_collect_2" = "• Budget limits you set";
+"privacy_collect_3" = "• Receipt photos you take";
+"privacy_collect_4" = "• Categories you choose";
+"anonymous_usage_data" = "Anonymous Usage Data:";
+"privacy_anonymous_1" = "• How often features are used";
+"privacy_anonymous_2" = "• Crash reports (no personal data)";
+"privacy_anonymous_3" = "• App performance metrics";
+"where_data_lives" = "WHERE YOUR DATA LIVES";
+"privacy_data_1" = "• Everything stays on YOUR device";
+"privacy_data_2" = "• Nothing uploaded to our servers";
+"privacy_data_3" = "• No cloud storage of personal data";
+"privacy_data_4" = "• You delete it, it's gone forever";
+"camera_access" = "CAMERA ACCESS";
+"privacy_camera_1" = "• Only used when you scan receipts";
+"privacy_camera_2" = "• Photos saved to your device only";
+"privacy_camera_3" = "• You can delete photos anytime";
+"privacy_camera_4" = "• We never access your photo library";
+"what_we_dont_do" = "WHAT WE DON'T DO";
+"privacy_dont_1" = "• Sell your data (never!)";
+"privacy_dont_2" = "• Share with advertisers";
+"privacy_dont_3" = "• Read your financial information";
+"privacy_dont_4" = "• Track you across other apps";
+"kids_section" = "KIDS";
+"privacy_kids" = "This app isn't for children under 13.";
+"your_rights" = "YOUR RIGHTS";
+"privacy_rights_1" = "• See all your data (it's in the app!)";
+"privacy_rights_2" = "• Export everything anytime";
+"privacy_rights_3" = "• Delete all data by uninstalling";
+"privacy_rights_4" = "• Ask us questions about privacy";
+"privacy_questions" = "PRIVACY QUESTIONS?";
+"privacy_contact" = "Contact us: fundBud2025@gmail";
+"privacy_trust" = "Your trust means everything to us! 🔐";
+
+// **MARK: - About**
+"about_title" = "ABOUT FUNDBUD";
+"version_made_with" = "Made with ❤️";
+"our_mission" = "OUR MISSION";
+"mission_description" = "Make expense tracking so simple, you'll actually do it every day.";
+"what_makes_special" = "WHAT MAKES US SPECIAL";
+"privacy_first" = "Privacy First:";
+"about_privacy_1" = "• Everything stays on your device";
+"about_privacy_2" = "• No accounts or sign-ups needed";
+"about_privacy_3" = "• Your data belongs to you";
+"lightning_fast" = "Lightning Fast:";
+"about_fast_1" = "• Add expenses in seconds";
+"about_fast_2" = "• Quick amounts: £1, £2, £5, £10";
+"about_fast_3" = "• Home screen widget support";
+"about_fast_4" = "• Instant receipt scanning";
+"smart_simple" = "Smart & Simple:";
+"about_smart_1" = "• Beautiful, easy interface";
+"about_smart_2" = "• Helpful spending insights";
+"about_smart_3" = "• Budget tracking that works";
+"about_smart_4" = "• Works offline always";
+"built_with" = "BUILT WITH";
+"about_built_1" = "• Swift & SwiftUI";
+"about_built_2" = "• Advanced haptic feedback";
+"about_built_3" = "• iOS 16+ optimized";
+"about_built_4" = "• Accessibility focused";
+"for_everyone" = "FOR EVERYONE";
+"about_everyone_1" = "• VoiceOver support";
+"about_everyone_2" = "• Dynamic text sizing";
+"about_everyone_3" = "• High contrast modes";
+"about_everyone_4" = "• Simple, clear navigation";
+"coming_soon" = "COMING SOON";
+"about_coming_1" = "• Better Notifications";
+"about_coming_2" = "• Apple Watch app";
+"about_coming_3" = "• More currencies";
+"about_coming_4" = "• Advanced reports";
+"about_coming_5" = "• Even better widgets";
+"get_in_touch" = "💌 GET IN TOUCH";
+"get_in_touch_description" = "Love the app? Found a bug? Need help? Tell us!";
+"about_contact" = "fundBud2025@gmail";
+"thank_you_title" = "🏆 THANK YOU";
+"thank_you_message" = "To everyone who uses this app - you're helping us build something amazing while keeping your privacy intact.";
+"requirements_title" = "📱 REQUIREMENTS";
+"about_requirements_1" = "• iPhone with iOS 16+";
+"about_requirements_2" = "• Works on all screen sizes";
+"about_requirements_3" = "• iPad compatible";
+"about_requirements_4" = "• Dark & Light mode";
+"copyright_text" = "FundBud";
+"made_in_uk" = "Made in the UK 🇬🇧";
+"version_label" = "Version";
+
+// **MARK: - Privacy & Security**
+"privacy_security_title" = "Privacy & Security";
+"data_protection" = "Data Protection";
+"app_permissions" = "App Permissions";
+"data_protection_subtitle" = "How we protect your information";
+"app_permissions_subtitle" = "Control app access to device features";
+
+// **MARK: - Data Protection Content**
+"your_data_safe" = "Your Data is Safe";
+"data_protection_content" = "• All expense data is stored locally on your device\n• No financial information is transmitted to external servers\n• Data is encrypted using industry-standard AES-256 encryption\n• We don't sell or share your personal information\n• No third-party tracking or analytics";
+"data_retention_title" = "Data Retention";
+"data_retention_content" = "Your data remains on your device until you choose to delete the app. We don't automatically collect or backup your information.";
+
+// **MARK: - Security Settings**
+"biometric_authentication" = "Biometric Authentication";
+"enabled" = "Enabled";
+"security_features" = "Security Features:";
+"security_features_content" = "• Face ID / Touch ID protection\n• App automatically locks when backgrounded\n• Secure data encryption\n• No cloud storage of sensitive data\n• Regular security updates";
+
+// **MARK: - Permissions**
+"camera_access" = "Camera Access";
+"camera_description" = "For receipt scanning and expense photos";
+"photo_library" = "Photo Library";
+"photo_library_description" = "To save and access receipt images";
+"biometric_data" = "Biometric Data";
+"biometric_description" = "For secure app authentication";
+"optional" = "Optional";
+"recommended" = "Recommended";
+"permissions_settings_note" = "You can manage these permissions in your device Settings > FundBud";
+
+// **MARK: - Modify Expense**
+"modify_expense" = "MODIFY EXPENSE";
+"add_expense" = "ADD EXPENSE";
+"modify" = "MODIFY";
+"add_capital" = "ADD";
+"expense" = "EXPENSE";
+"update" = "UPDATE";
+"save" = "SAVE";
+"delete" = "DELETE";
+"name" = "NAME";
+"amount" = "AMOUNT";
+"date" = "DATE";
+
+// **MARK: - Tab Bar**
+"remaining" = "REMAINING";
+"budget" = "BUDGET";
+"expenses" = "EXPENSES";
+
+// **MARK: - Expense Groups**
+"today" = "TODAY";
+"yesterday" = "YESTERDAY";
+"this_week" = "THIS WEEK";
+"this_month" = "THIS MONTH";
+"earlier" = "EARLIER";
+
+// **MARK: - Camera Errors**
+"photo_library_access_denied" = "Photo library access denied";
+"unknown_photo_authorization" = "Unknown photo library authorization status";
+
+// **MARK: - Image Preview**
+"retake" = "Retake";
+"add" = "Add";
+
+// **MARK: - Camera View**
+"scan_entry" = "SCAN ENTRY";
+"scan" = "SCAN";
+"entry" = "ENTRY";

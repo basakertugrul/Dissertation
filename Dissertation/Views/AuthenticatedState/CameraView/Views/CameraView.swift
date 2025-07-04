@@ -77,13 +77,14 @@ struct CameraView: View {
     // MARK: - Header
     private var headerSection: some View {
         var attributedTitle: AttributedString {
-            var attributedString = AttributedString(("SCAN ENTRY"))
+            var attributedString = AttributedString(NSLocalizedString("scan_entry", comment: ""))
             
-            if let helloRange = attributedString.range(of: "SCAN") {
+            if let helloRange = attributedString.range(of: NSLocalizedString("scan", comment: "")) {
                 attributedString[helloRange].foregroundColor = .customWhiteSand.opacity(Constraint.Opacity.high)
                 attributedString[helloRange].font = TextFonts.titleSmall.font
             }
-            if let worldRange = attributedString.range(of: "ENTRY") { attributedString[worldRange].foregroundColor = .customWhiteSand
+            if let worldRange = attributedString.range(of: NSLocalizedString("entry", comment: "")) {
+                attributedString[worldRange].foregroundColor = .customWhiteSand
                 attributedString[worldRange].font = TextFonts.titleSmallBold.font
             }
             return attributedString

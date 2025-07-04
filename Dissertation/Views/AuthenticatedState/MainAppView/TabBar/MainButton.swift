@@ -124,6 +124,7 @@ struct IntegratedGestureButtonView: View {
     
     private func showButtons() {
         showAdditionalButtons = true
+        HapticManager.shared.trigger(.heavy)
 
         withAnimation(.smooth) {
             cameraButtonOffset = CGSize(width: -15, height: -(Constraint.extremeSize - Constraint.largePadding + 20))

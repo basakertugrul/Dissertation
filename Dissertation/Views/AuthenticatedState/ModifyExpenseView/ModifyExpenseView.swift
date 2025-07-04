@@ -28,7 +28,7 @@ struct ModifyExpenseView: View {
 
     /// Button text based on mode
     private var saveButtonText: String {
-        return isEditMode ? "UPDATE" : "SAVE"
+        return isEditMode ? NSLocalizedString("update", comment: "") : NSLocalizedString("save", comment: "")
     }
 
     /// Validation check
@@ -208,15 +208,15 @@ struct HeaderView: View {
         switch isEditMode {
         case true:
             var attributedString = AttributedString(
-                ("MODIFY EXPENSE")
+                NSLocalizedString("modify_expense", comment: "")
             )
             
-            if let helloRange = attributedString.range(of: "MODIFY") {
+            if let helloRange = attributedString.range(of: NSLocalizedString("modify", comment: "")) {
                 attributedString[helloRange].foregroundColor = .customWhiteSand.opacity(Constraint.Opacity.high)
                 attributedString[helloRange].font = TextFonts.titleSmall.font
             }
             
-            if let worldRange = attributedString.range(of: "EXPENSE") {
+            if let worldRange = attributedString.range(of: NSLocalizedString("expense", comment: "")) {
                 attributedString[worldRange].foregroundColor = .customWhiteSand
                 attributedString[worldRange].font = TextFonts.titleSmallBold.font
             }
@@ -224,18 +224,19 @@ struct HeaderView: View {
 
         case false:
             var attributedString = AttributedString(
-                ("ADD EXPENSE")
+                NSLocalizedString("add_expense", comment: "")
             )
-            if let helloRange = attributedString.range(of: "ADD") {
+            if let helloRange = attributedString.range(of: NSLocalizedString("add_capital", comment: "")) {
                 attributedString[helloRange].foregroundColor = .customWhiteSand.opacity(Constraint.Opacity.high)
                 attributedString[helloRange].font = TextFonts.titleSmall.font
             }
-
-            if let worldRange = attributedString.range(of: "EXPENSE") {
+            
+            if let worldRange = attributedString.range(of: NSLocalizedString("expense", comment: "")) {
                 attributedString[worldRange].foregroundColor = .customWhiteSand
                 attributedString[worldRange].font = TextFonts.titleSmallBold.font
             }
             return attributedString
+
         }
     }
 
@@ -274,7 +275,7 @@ struct ExpenseNameFieldView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Constraint.smallPadding) {
             CustomTextView(
-                "NAME",
+                NSLocalizedString("name", comment: ""),
                 font: .labelLarge,
                 color: .customWhiteSand
             )
@@ -298,7 +299,7 @@ struct ExpenseAmountFieldView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Constraint.smallPadding) {
             CustomTextView(
-                "AMOUNT",
+                NSLocalizedString("amount", comment: ""),
                 font: .labelLarge,
                 color: .customWhiteSand
             )
@@ -327,7 +328,7 @@ struct DateSelectorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Constraint.smallPadding) {
             CustomTextView(
-                "DATE",
+                NSLocalizedString("date", comment: ""),
                 font: .labelLarge,
                 color: .customWhiteSand
             )
@@ -387,7 +388,7 @@ struct ActionButtonsView: View {
             /// Delete button (only in edit mode)
             if isEditMode {
                 Button(action: deleteAction) {
-                    CustomTextView("DELETE", font: .bodySmallBold, color: .customWhiteSand)
+                    CustomTextView(NSLocalizedString("delete", comment: ""), font: .bodySmallBold, color: .customWhiteSand)
                         .tracking(1)
                         .addLayeredBackground(.customBurgundy)
                 }

@@ -12,11 +12,11 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Delete Expense",
-                    message: "Are you sure you want to delete this expense?",
-                    buttonText: "Delete",
+                    title: NSLocalizedString("delete_expense_title", comment: ""),
+                    message: NSLocalizedString("delete_expense_message", comment: ""),
+                    buttonText: NSLocalizedString("delete", comment: ""),
                     buttonAction: buttonAction,
-                    secondaryButtonText: "Cancel",
+                    secondaryButtonText: NSLocalizedString("cancel", comment: ""),
                     secondaryButtonAction: secondaryButtonAction,
                     alertColor: .customBurgundy
                 )
@@ -36,11 +36,11 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Sign Out",
-                    message: "Are you sure you want to sign out of FundBud?",
-                    buttonText: "Sign Out",
+                    title: NSLocalizedString("sign_out_title", comment: ""),
+                    message: NSLocalizedString("sign_out_message", comment: ""),
+                    buttonText: NSLocalizedString("sign_out", comment: ""),
                     buttonAction: buttonAction,
-                    secondaryButtonText: "Cancel",
+                    secondaryButtonText: NSLocalizedString("cancel", comment: ""),
                     secondaryButtonAction: secondaryButtonAction,
                     alertColor: .customBurgundy
                 )
@@ -60,9 +60,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Camera Error",
-                    message: "Permissions are required.",
-                    buttonText: "OK",
+                    title: NSLocalizedString("camera_error_title", comment: ""),
+                    message: NSLocalizedString("permissions_required_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: buttonAction,
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -83,9 +83,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Photo Library Error",
-                    message: "Permissions are required.",
-                    buttonText: "OK",
+                    title: NSLocalizedString("photo_library_error_title", comment: ""),
+                    message: NSLocalizedString("permissions_required_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: buttonAction,
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -106,9 +106,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Permissions Required",
-                    message: "Camera and photo access needed to capture and store receipt photos.",
-                    buttonText: "Go to settings",
+                    title: NSLocalizedString("permissions_required_title", comment: ""),
+                    message: NSLocalizedString("camera_photo_permissions_message", comment: ""),
+                    buttonText: NSLocalizedString("go_to_settings", comment: ""),
                     buttonAction: buttonAction,
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -129,9 +129,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Permissions Required",
-                    message: "Microphone and speech recognition access needed to record and transcribe voice entries.",
-                    buttonText: "Go to settings",
+                    title: NSLocalizedString("permissions_required_title", comment: ""),
+                    message: NSLocalizedString("microphone_permissions_message", comment: ""),
+                    buttonText: NSLocalizedString("go_to_settings", comment: ""),
                     buttonAction: buttonAction,
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -152,11 +152,11 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Recording Error",
-                    message: "Unable to complete voice recording. Please try again.",
-                    buttonText: "Try Again",
+                    title: NSLocalizedString("recording_error_title", comment: ""),
+                    message: NSLocalizedString("recording_error_message", comment: ""),
+                    buttonText: NSLocalizedString("try_again", comment: ""),
                     buttonAction: buttonAction,
-                    secondaryButtonText: "Cancel",
+                    secondaryButtonText: NSLocalizedString("cancel", comment: ""),
                     secondaryButtonAction: {
                         isPresented.wrappedValue = false
                     },
@@ -177,9 +177,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Added Expense",
-                    message: "Great! Keep monitoring your budget!",
-                    buttonText: "OK",
+                    title: NSLocalizedString("added_expense_title", comment: ""),
+                    message: NSLocalizedString("added_expense_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: { isPresented.wrappedValue = false },
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -200,9 +200,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Deleted Expense",
-                    message: "The expense has been removed.",
-                    buttonText: "OK",
+                    title: NSLocalizedString("deleted_expense_title", comment: ""),
+                    message: NSLocalizedString("deleted_expense_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: { isPresented.wrappedValue = false },
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -222,9 +222,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Modified Expense",
-                    message: "Your changes have been saved successfully.",
-                    buttonText: "OK",
+                    title: NSLocalizedString("modified_expense_title", comment: ""),
+                    message: NSLocalizedString("modified_expense_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: { isPresented.wrappedValue = false },
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -244,9 +244,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Daily Limit Updated",
-                    message: "Your new spending limit is now active.",
-                    buttonText: "OK",
+                    title: NSLocalizedString("daily_limit_updated_title", comment: ""),
+                    message: NSLocalizedString("daily_limit_updated_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: { isPresented.wrappedValue = false },
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -268,9 +268,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Error",
+                    title: NSLocalizedString("error", comment: ""),
                     message: errorMessage,
-                    buttonText: "OK",
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: onTap,
                     secondaryButtonText: .none,
                     secondaryButtonAction: .none,
@@ -291,11 +291,11 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Rate FundBud",
-                    message: "Would you like to rate our app in AppStore?",
-                    buttonText: "OK",
+                    title: NSLocalizedString("rate_fundbud_title", comment: ""),
+                    message: NSLocalizedString("rate_fundbud_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: onTap,
-                    secondaryButtonText: "Cancel",
+                    secondaryButtonText: NSLocalizedString("cancel", comment: ""),
                     secondaryButtonAction: { isPresented.wrappedValue = false },
                     alertColor: .customOliveGreen
                 )
@@ -314,11 +314,11 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Send Feedback",
-                    message: "This will open your mail app to send feedback to our team.",
-                    buttonText: "OK",
+                    title: NSLocalizedString("send_feedback_title", comment: ""),
+                    message: NSLocalizedString("send_feedback_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: onTap,
-                    secondaryButtonText: "Cancel",
+                    secondaryButtonText: NSLocalizedString("cancel", comment: ""),
                     secondaryButtonAction: { isPresented.wrappedValue = false },
                     alertColor: .customOliveGreen
                 )
@@ -337,11 +337,11 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Export Data",
-                    message: "This will export all your expense data as a PDF file.",
-                    buttonText: "OK",
+                    title: NSLocalizedString("export_data_title", comment: ""),
+                    message: NSLocalizedString("export_data_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: onTap,
-                    secondaryButtonText: "Cancel",
+                    secondaryButtonText: NSLocalizedString("cancel", comment: ""),
                     secondaryButtonAction: { isPresented.wrappedValue = false },
                     alertColor: .customOliveGreen
                 )
@@ -361,9 +361,9 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "No Receipt Detected",
+                    title: NSLocalizedString("no_receipt_detected_title", comment: ""),
                     message: message,
-                    buttonText: "OK",
+                    buttonText: NSLocalizedString("ok", comment: ""),
                     buttonAction: {
                         isPresented.wrappedValue = false
                         onTap()
@@ -397,15 +397,15 @@ extension View {
             if isPresented.wrappedValue {
                 CustomAlertView(
                     isShowing: isPresented,
-                    title: "Receipt Detected!",
+                    title: NSLocalizedString("receipt_detected_title", comment: ""),
                     // TODO: amount formatting
                     message: "\(name)\n\(amount)\n\(date)",
-                    buttonText: "Add to Expenses",
+                    buttonText: NSLocalizedString("add_to_expenses", comment: ""),
                     buttonAction: {
                         isPresented.wrappedValue = false
                         onTap(receiptData)
                     },
-                    secondaryButtonText: "Cancel",
+                    secondaryButtonText: NSLocalizedString("cancel", comment: ""),
                     secondaryButtonAction: { isPresented.wrappedValue = false },
                     alertColor: .customOliveGreen,
                     isMessageBold: true

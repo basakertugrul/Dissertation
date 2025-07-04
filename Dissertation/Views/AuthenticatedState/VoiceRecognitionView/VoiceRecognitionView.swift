@@ -65,13 +65,14 @@ struct VoiceRecordingView: View {
     // MARK: - Header
     private var headerSection: some View {
         var attributedTitle: AttributedString {
-            var attributedString = AttributedString(("VOICE ENTRY"))
+            var attributedString = AttributedString(NSLocalizedString("voice_entry", comment: ""))
             
-            if let helloRange = attributedString.range(of: "VOICE") {
+            if let helloRange = attributedString.range(of: NSLocalizedString("voice", comment: "")) {
                 attributedString[helloRange].foregroundColor = .customWhiteSand.opacity(Constraint.Opacity.high)
                 attributedString[helloRange].font = TextFonts.titleSmall.font
             }
-            if let worldRange = attributedString.range(of: "ENTRY") { attributedString[worldRange].foregroundColor = .customWhiteSand
+            if let worldRange = attributedString.range(of: NSLocalizedString("entry", comment: "")) {
+                attributedString[worldRange].foregroundColor = .customWhiteSand
                 attributedString[worldRange].font = TextFonts.titleSmallBold.font
             }
             return attributedString
@@ -105,7 +106,7 @@ struct VoiceRecordingView: View {
     // MARK: - Status
     private var statusSection: some View {
         VStack(spacing: Constraint.padding) {
-            CustomTextView(isRecording ? "Recording..." : "Tap and hold", font: .bodyLarge)
+            CustomTextView(isRecording ? NSLocalizedString("recording", comment: "") : NSLocalizedString("tap_and_hold", comment: ""), font: .bodyLarge)
                 .animation(.smooth, value: isRecording)
 
             CustomTextView(message ?? "", font: .titleSmall)

@@ -11,15 +11,23 @@ struct ExpenseChartData: Identifiable {
 }
 
 enum ChartTimeFrame: String, CaseIterable {
-    case daily = "Daily"
-    case weekly = "Weekly"
-    case monthly = "Monthly"
+    case daily = "daily"
+    case weekly = "weekly"
+    case monthly = "monthly"
+    
+    var displayName: String {
+        switch self {
+        case .daily: return NSLocalizedString("daily", comment: "")
+        case .weekly: return NSLocalizedString("weekly", comment: "")
+        case .monthly: return NSLocalizedString("monthly", comment: "")
+        }
+    }
     
     var subtitle: String {
         switch self {
-        case .daily: return "This Week"
-        case .weekly: return "Last 12 Weeks"
-        case .monthly: return "Last 12 Months"
+        case .daily: return NSLocalizedString("this_week", comment: "")
+        case .weekly: return NSLocalizedString("last_12_weeks", comment: "")
+        case .monthly: return NSLocalizedString("last_12_months", comment: "")
         }
     }
 }
@@ -85,7 +93,7 @@ struct ExpenseChartView: View {
             
             VStack(alignment: .leading, spacing: Constraint.tinyPadding) {
                 CustomTextView(
-                    "Expense Trends",
+                    NSLocalizedString("expense_trends", comment: ""),
                     font: .bodyLargeBold,
                     color: .customRichBlack
                 )
@@ -115,7 +123,7 @@ struct ExpenseChartView: View {
                     }
                 } label: {
                     CustomTextView(
-                        timeFrame.rawValue,
+                        timeFrame.displayName,
                         font: .labelMedium,
                         color: selectedTimeFrame == timeFrame ? .white : .customRichBlack
                     )

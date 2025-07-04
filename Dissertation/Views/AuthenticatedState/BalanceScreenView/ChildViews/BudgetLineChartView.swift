@@ -12,7 +12,7 @@ struct BudgetLineChartView: View {
 
     var body: some View {
         VStack(spacing: Constraint.smallPadding) {
-            CustomTextView("Budget", font: .bodyLargeBold, color: .customRichBlack)
+            CustomTextView(NSLocalizedString("budget", comment: ""), font: .bodyLargeBold, color: .customRichBlack)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, Constraint.padding)
 

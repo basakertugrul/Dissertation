@@ -1,7 +1,7 @@
 import SwiftUI
-
 // MARK: - Days Tracked Card View
 struct DaysTrackedCardView: View {
+    var date: Date
     var daysSinceEarliest: Int
     var opacity: CGFloat
     
@@ -10,10 +10,16 @@ struct DaysTrackedCardView: View {
     @State private var numberScale: CGFloat = 1.0
     @State private var showPulse: Bool = false
     
+    var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM yyyy"
+        return formatter.string(from: date).lowercased()
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: Constraint.regularPadding) {
             CustomTextView(
-                "Days Tracked",
+                NSLocalizedString("days_tracked", comment: ""),
                 font: .labelMedium,
                 color: .customWhiteSand.opacity(opacity),
                 uppercase: true
@@ -36,7 +42,7 @@ struct DaysTrackedCardView: View {
                 )
                 
                 CustomTextView(
-                    "since May 2",
+                    "\(NSLocalizedString("since", comment: "")) \(formattedDate)",
                     font: .labelSmall,
                     color: .customWhiteSand.opacity(opacity)
                 )

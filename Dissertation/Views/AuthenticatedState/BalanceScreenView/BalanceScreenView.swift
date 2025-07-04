@@ -3,6 +3,7 @@ import SwiftData
 
 // MARK: - Balance Screen View
 struct BalanceScreenView: View {
+    @EnvironmentObject var appState: AppStateManager
     @Binding var expenses: [ExpenseViewModel]
     @Binding var dailyBalance: Double
     @Binding var totalExpenses: Double
@@ -35,6 +36,7 @@ struct BalanceScreenView: View {
                 /// Stats Cards
                 StatsCardsView(
                     dailyBalance: dailyBalance,
+                    date: appState.startDate,
                     daysSinceEarliest: daySinceEarliest,
                     opacity: Constraint.Opacity.high,
                     showingAllowanceSheet: $showingAllowanceSheet,

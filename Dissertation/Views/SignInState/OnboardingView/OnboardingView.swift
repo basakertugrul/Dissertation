@@ -61,7 +61,7 @@ struct OnboardingView: View {
                     } label: {
                         HStack {
                             CustomTextView(
-                                currentPage == onboardingPages.count - 1 ? "Get Started" : "Continue",
+                                currentPage == onboardingPages.count - 1 ? NSLocalizedString("get_started", comment: "") : NSLocalizedString("continue", comment: ""),
                                 font: .titleSmallBold,
                                 color: .customRichBlack
                             )
@@ -89,7 +89,7 @@ struct OnboardingView: View {
                             }
                         } label: {
                             CustomTextView(
-                                "Skip",
+                                NSLocalizedString("skip", comment: ""),
                                 font: .labelMedium,
                                 color: .white.opacity(0.7)
                             )

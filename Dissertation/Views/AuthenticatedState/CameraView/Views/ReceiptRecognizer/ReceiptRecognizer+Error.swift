@@ -11,15 +11,15 @@ enum TextRecognitionError: LocalizedError {
     var description: String {
         switch self {
         case .invalidImage:
-            return "Photo quality is too poor. Please try taking a clearer picture."
+            return NSLocalizedString("invalid_image_error", comment: "")
         case .noResults:
-            return "We couldn't read this image. Try taking a new photo with better lighting."
+            return NSLocalizedString("no_results_error", comment: "")
         case .noTextFound:
-            return "No text detected. Make sure your receipt is clearly visible and try again."
+            return NSLocalizedString("no_text_found_error", comment: "")
         case .visionError:
-            return "Something went wrong while processing your receipt. Please try again."
+            return NSLocalizedString("vision_error", comment: "")
         case .outOfDateRange:
-            return "This receipt appears to be very old. Please check and try again."
+            return NSLocalizedString("out_of_date_range_error", comment: "")
         }
     }
 }

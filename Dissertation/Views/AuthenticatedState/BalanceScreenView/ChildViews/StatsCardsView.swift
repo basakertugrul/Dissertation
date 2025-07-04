@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - Animated Stats Cards View
 struct StatsCardsView: View {
     var dailyBalance: Double
+    var date: Date
     var daysSinceEarliest: Int
     var opacity: CGFloat
     @Binding var showingAllowanceSheet: Bool
@@ -35,6 +36,7 @@ struct StatsCardsView: View {
             
             /// Days Tracked Card
             DaysTrackedCardView(
+                date: date,
                 daysSinceEarliest: daysSinceEarliest,
                 opacity: opacity
             )

@@ -20,8 +20,15 @@ struct PrivacySecurityOverlay: View {
     @State private var selectedSection: PrivacySection? = nil
     
     enum PrivacySection: String, CaseIterable {
-        case dataProtection = "Data Protection"
-        case permissions = "App Permissions"
+        case dataProtection = "dataProtection"
+        case permissions = "permissions"
+        
+        var displayName: String {
+            switch self {
+            case .dataProtection: return NSLocalizedString("data_protection", comment: "")
+            case .permissions: return NSLocalizedString("app_permissions", comment: "")
+            }
+        }
     }
     
     var body: some View {
@@ -53,7 +60,7 @@ struct PrivacySecurityOverlay: View {
                         
                         Spacer()
                         
-                        CustomNavigationBarTitleView(title: createTitle(selectedSection.rawValue))
+                        CustomNavigationBarTitleView(title: createTitle(selectedSection.displayName))
                         
                         Spacer()
                         
@@ -79,7 +86,7 @@ struct PrivacySecurityOverlay: View {
                 } else {
                     // Main Header
                     HStack(alignment: .lastTextBaseline) {
-                        CustomNavigationBarTitleView(title: createTitle("Privacy & Security"))
+                        CustomNavigationBarTitleView(title: createTitle(NSLocalizedString("privacy_security_title", comment: "")))
                         Spacer()
                         Button {
                             HapticManager.shared.trigger(.cancel)
@@ -105,7 +112,7 @@ struct PrivacySecurityOverlay: View {
                                 HStack(alignment: .bottom) {
                                     VStack(alignment: .leading, spacing: 4) {
                                         CustomTextView(
-                                            section.rawValue,
+                                            section.displayName,
                                             font: .bodySmall,
                                             color: .customRichBlack
                                         )
@@ -157,32 +164,26 @@ struct PrivacySecurityOverlay: View {
     private var dataProtectionView: some View {
         VStack(alignment: .leading, spacing: Constraint.padding) {
             CustomTextView(
-                "Your Data is Safe",
+                NSLocalizedString("your_data_safe", comment: ""),
                 font: .bodyLargeBold,
                 color: .customOliveGreen
             )
             
             CustomTextView(
-                """
-                • All expense data is stored locally on your device
-                • No financial information is transmitted to external servers
-                • Data is encrypted using industry-standard AES-256 encryption
-                • We don't sell or share your personal information
-                • No third-party tracking or analytics
-                """,
+                NSLocalizedString("data_protection_content", comment: ""),
                 font: .labelLarge,
                 color: .customRichBlack,
                 alignment: .leading
             )
             
             CustomTextView(
-                "Data Retention",
+                NSLocalizedString("data_retention_title", comment: ""),
                 font: .bodyLargeBold,
                 color: .customOliveGreen
             )
             
             CustomTextView(
-                "Your data remains on your device until you choose to delete the app. We don't automatically collect or backup your information.",
+                NSLocalizedString("data_retention_content", comment: ""),
                 font: .labelLarge,
                 color: .customRichBlack,
                 alignment: .leading
@@ -196,13 +197,13 @@ struct PrivacySecurityOverlay: View {
                 Image(systemName: "faceid")
                     .foregroundColor(.customOliveGreen)
                 CustomTextView(
-                    "Biometric Authentication",
+                    NSLocalizedString("biometric_authentication", comment: ""),
                     font: .bodyLargeBold,
                     color: .customRichBlack
                 )
                 Spacer()
                 CustomTextView(
-                    "Enabled",
+                    NSLocalizedString("enabled", comment: ""),
                     font: .labelMedium,
                     color: .customOliveGreen
                 )
@@ -212,19 +213,13 @@ struct PrivacySecurityOverlay: View {
             .cornerRadius(Constraint.regularCornerRadius)
             
             CustomTextView(
-                "Security Features:",
+                NSLocalizedString("security_features", comment: ""),
                 font: .bodyLargeBold,
                 color: .customOliveGreen
             )
             
             CustomTextView(
-                """
-                • Face ID / Touch ID protection
-                • App automatically locks when backgrounded
-                • Secure data encryption
-                • No cloud storage of sensitive data
-                • Regular security updates
-                """,
+                NSLocalizedString("security_features_content", comment: ""),
                 font: .labelLarge,
                 color: .customRichBlack,
                 alignment: .leading
@@ -235,7 +230,7 @@ struct PrivacySecurityOverlay: View {
     private var permissionsView: some View {
         VStack(alignment: .leading, spacing: Constraint.padding) {
             CustomTextView(
-                "App Permissions",
+                NSLocalizedString("app_permissions", comment: ""),
                 font: .bodyLargeBold,
                 color: .customOliveGreen
             )
@@ -243,28 +238,28 @@ struct PrivacySecurityOverlay: View {
             VStack(spacing: Constraint.smallPadding) {
                 permissionRow(
                     icon: "camera.fill",
-                    title: "Camera Access",
-                    description: "For receipt scanning and expense photos",
-                    status: "Optional"
+                    title: NSLocalizedString("camera_access", comment: ""),
+                    description: NSLocalizedString("camera_description", comment: ""),
+                    status: NSLocalizedString("optional", comment: "")
                 )
                 
                 permissionRow(
                     icon: "photo.fill",
-                    title: "Photo Library",
-                    description: "To save and access receipt images",
-                    status: "Optional"
+                    title: NSLocalizedString("photo_library", comment: ""),
+                    description: NSLocalizedString("photo_library_description", comment: ""),
+                    status: NSLocalizedString("optional", comment: "")
                 )
                 
                 permissionRow(
                     icon: "faceid",
-                    title: "Biometric Data",
-                    description: "For secure app authentication",
-                    status: "Recommended"
+                    title: NSLocalizedString("biometric_data", comment: ""),
+                    description: NSLocalizedString("biometric_description", comment: ""),
+                    status: NSLocalizedString("recommended", comment: "")
                 )
             }
             
             CustomTextView(
-                "You can manage these permissions in your device Settings > FundBud",
+                NSLocalizedString("permissions_settings_note", comment: ""),
                 font: .labelMedium,
                 color: .customRichBlack.opacity(Constraint.Opacity.medium)
             )
@@ -287,7 +282,7 @@ struct PrivacySecurityOverlay: View {
             CustomTextView(
                 status,
                 font: .labelMedium,
-                color: status == "Recommended" ? .customOliveGreen : .customRichBlack.opacity(Constraint.Opacity.medium)
+                color: status == NSLocalizedString("recommended", comment: "") ? .customOliveGreen : .customRichBlack.opacity(Constraint.Opacity.medium)
             )
         }
         .padding()
@@ -298,9 +293,9 @@ struct PrivacySecurityOverlay: View {
     private func getSubtitle(for section: PrivacySection) -> String {
         switch section {
         case .dataProtection:
-            return "How we protect your information"
+            return NSLocalizedString("data_protection_subtitle", comment: "")
         case .permissions:
-            return "Control app access to device features"
+            return NSLocalizedString("app_permissions_subtitle", comment: "")
         }
     }
     

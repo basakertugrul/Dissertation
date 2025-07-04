@@ -17,8 +17,8 @@ enum TabBarSection: Int, CaseIterable {
     var title: AttributedString {
         switch self {
         case .balance:
-            let firstString: String = "Remaining".uppercased()
-            let secondString: String = "Budget".uppercased()
+            let firstString: String = NSLocalizedString("remaining", comment: "")
+            let secondString: String = NSLocalizedString("budget", comment: "")
 
             var attributedString = AttributedString( ("\(firstString) \(secondString)") )
 
@@ -34,7 +34,7 @@ enum TabBarSection: Int, CaseIterable {
             return attributedString
 
         case .expenses:
-            let string: String = "Expenses".uppercased()
+            let string: String = NSLocalizedString("expenses", comment: "")
 
             var attributedString = AttributedString( string )
             attributedString.foregroundColor = .customRichBlack

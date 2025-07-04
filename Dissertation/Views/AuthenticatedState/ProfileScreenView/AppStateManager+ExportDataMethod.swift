@@ -4,9 +4,9 @@ import PDFKit
 extension AppStateManager {
     func generateExpensePDF(completion: @escaping (Data?) -> Void) {
         let pdfMetaData = [
-            kCGPDFContextCreator: "FundBud",
-            kCGPDFContextAuthor: UserAuthService.shared.currentUser?.displayName ?? "User",
-            kCGPDFContextTitle: "Expense Report"
+            kCGPDFContextCreator: NSLocalizedString("app_name", comment: ""),
+            kCGPDFContextAuthor: UserAuthService.shared.currentUser?.displayName ?? NSLocalizedString("user", comment: ""),
+            kCGPDFContextTitle: NSLocalizedString("expense_report", comment: "")
         ]
         
         let format = UIGraphicsPDFRendererFormat()
@@ -42,7 +42,7 @@ extension AppStateManager {
     }
     
     private func drawTitle(in pageRect: CGRect, yPosition: CGFloat) -> CGFloat {
-        let titleText = "FundBud Expense Report"
+        let titleText = NSLocalizedString("fundbud_expense_report", comment: "")
         let titleFont = UIFont.boldSystemFont(ofSize: 24)
         let titleAttributes: [NSAttributedString.Key: Any] = [
             .font: titleFont,
@@ -61,9 +61,9 @@ extension AppStateManager {
         dateFormatter.timeStyle = .short
         
         let userInfo = """
-       Generated: \(dateFormatter.string(from: Date()))
-       User: \(UserAuthService.shared.currentUser?.displayName ?? "User")
-       Period: \(dateFormatter.string(from: startDate)) - \(dateFormatter.string(from: Date()))
+       \(NSLocalizedString("generated", comment: "")) \(dateFormatter.string(from: Date()))
+       \(NSLocalizedString("user", comment: "")): \(UserAuthService.shared.currentUser?.displayName ?? NSLocalizedString("user", comment: ""))
+       \(NSLocalizedString("period", comment: "")) \(dateFormatter.string(from: startDate)) - \(dateFormatter.string(from: Date()))
        """
         
         let font = UIFont.systemFont(ofSize: 12)
@@ -83,17 +83,17 @@ extension AppStateManager {
         let valueFont = UIFont.systemFont(ofSize: 16)
         
         let summaryData: [(String, String)] = [
-            ("Total Expenses:", "£\(String(format: "%.2f", totalExpenses))"),
-            ("Daily Budget:", "£\(String(format: "%.2f", dailyBalance ?? 0))"),
-            ("Days Tracked:", "\(daysSinceStart)"),
-            ("Average Daily:", "\(formattedAverageDaily)"),
-            ("Current Balance:", "£\(String(format: "%.2f", calculatedBalance))")
+            (NSLocalizedString("total_expenses", comment: ""), "£\(String(format: "%.2f", totalExpenses))"),
+            (NSLocalizedString("daily_budget", comment: ""), "£\(String(format: "%.2f", dailyBalance ?? 0))"),
+            (NSLocalizedString("days_tracked", comment: ""), "\(daysSinceStart)"),
+            (NSLocalizedString("average_daily", comment: ""), "\(formattedAverageDaily)"),
+            (NSLocalizedString("current_balance", comment: ""), "£\(String(format: "%.2f", calculatedBalance))")
         ]
         
         var currentY = yPosition
         
         // Summary title
-        let summaryTitle = "Summary"
+        let summaryTitle = NSLocalizedString("summary", comment: "")
         let titleAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 18),
             .foregroundColor: UIColor.black
@@ -125,7 +125,7 @@ extension AppStateManager {
         let headerHeight: CGFloat = 25
         
         // Table title
-        let tableTitle = "Expense Details"
+        let tableTitle = NSLocalizedString("expense_details", comment: "")
         let titleAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 18),
             .foregroundColor: UIColor.black
@@ -135,7 +135,12 @@ extension AppStateManager {
         currentY += 35
         
         // Table headers
-        let headers = ["Date", "Amount", "Category", "Description"]
+        let headers = [
+            NSLocalizedString("date", comment: ""),
+            NSLocalizedString("amount", comment: ""),
+            NSLocalizedString("category", comment: ""),
+            NSLocalizedString("description", comment: "")
+        ]
         let columnWidths: [CGFloat] = [contentWidth * 0.2, contentWidth * 0.2, contentWidth * 0.25, contentWidth * 0.35]
         
         let headerFont = UIFont.boldSystemFont(ofSize: 12)
@@ -203,7 +208,7 @@ extension AppStateManager {
     }
     
     func sharePDF(pdfData: Data) {
-        let fileName = "FundBud_Expenses_\(Date().timeIntervalSince1970).pdf"
+        let fileName = "\(NSLocalizedString("app_name", comment: ""))_\(NSLocalizedString("expense_report", comment: ""))_\(Date().timeIntervalSince1970).pdf"
         let path = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
         
         do {
@@ -222,7 +227,7 @@ extension AppStateManager {
                     guard let presentingController = topController else { return }
                     
                     let activityController = UIActivityViewController(activityItems: [path], applicationActivities: nil)
-                    activityController.setValue("FundBud Expense Report", forKey: "subject")
+                    activityController.setValue(NSLocalizedString("fundbud_expense_report", comment: ""), forKey: "subject")
                     
                     // For iPad support
                     if let popover = activityController.popoverPresentationController {

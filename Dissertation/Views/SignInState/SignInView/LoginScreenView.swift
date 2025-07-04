@@ -161,7 +161,7 @@ struct LoginScreenView: View {
             VStack(spacing: Constraint.regularPadding) {
                 /// Main title
                 ZStack {
-                    CustomTextView("FundBud", font: .titleLargeBold, color: .white)
+                    CustomTextView(NSLocalizedString("app_name", comment: ""), font: .titleLargeBold, color: .white)
                         .overlay(
                             LinearGradient(
                                 colors: [
@@ -174,7 +174,7 @@ struct LoginScreenView: View {
                             )
                             .offset(x: shimmerOffset)
                             .mask(
-                                CustomTextView("FundBud", font: .titleLargeBold, color: .white)
+                                CustomTextView(NSLocalizedString("app_name", comment: ""), font: .titleLargeBold, color: .white)
                             )
                         )
                 }
@@ -183,7 +183,7 @@ struct LoginScreenView: View {
                 
                 /// Subtitle
                 CustomTextView(
-                    "Know exactly what you can spend!",
+                    NSLocalizedString("app_subtitle", comment: ""),
                     font: .titleSmall,
                     color: .white.opacity(Constraint.Opacity.high)
                 )
@@ -200,12 +200,12 @@ struct LoginScreenView: View {
         VStack(spacing: Constraint.largePadding) {
             // Header
             VStack(spacing: Constraint.smallPadding) {
-                CustomTextView("Get Started", font: .bodyLargeBold, color: .customRichBlack)
+                CustomTextView(NSLocalizedString("get_started", comment: ""), font: .bodyLargeBold, color: .customRichBlack)
                     .opacity(showContent ? 1 : .zero)
                     .offset(y: showContent ? .zero : -20)
                 
                 CustomTextView(
-                    "Choose your preferred sign-in method",
+                    NSLocalizedString("choose_signin_method", comment: ""),
                     font: .bodySmall,
                     color: .customRichBlack.opacity(0.7)
                 )
@@ -217,7 +217,7 @@ struct LoginScreenView: View {
             VStack(spacing: Constraint.smallPadding) {
                 // Apple Sign In button
                 LoginButtonView(
-                    title: "Continue with Apple",
+                    title: NSLocalizedString("continue_with_apple", comment: ""),
                     icon: "applelogo",
                     isApple: true,
                     isSelected: false
@@ -295,7 +295,7 @@ struct LoginScreenView: View {
                 DividerView()
 
                 CustomTextView(
-                    "or",
+                    NSLocalizedString("or", comment: ""),
                     font: .labelMedium,
                     color: .customRichBlack.opacity(Constraint.Opacity.high)
                 )
@@ -324,7 +324,7 @@ struct LoginScreenView: View {
                         )
 
                     CustomTextView(
-                        "Sign in with Face ID",
+                        NSLocalizedString("sign_in_with_faceid", comment: ""),
                         font: .bodySmall,
                         color: .customRichBlack.opacity(Constraint.Opacity.high)
                     )
@@ -351,7 +351,7 @@ struct LoginScreenView: View {
                     .foregroundColor(.white.opacity(0.8))
                 
                 CustomTextView(
-                    "Switch User",
+                    NSLocalizedString("switch_user", comment: ""),
                     font: .labelMedium,
                     color: .white.opacity(0.8)
                 )
@@ -442,7 +442,7 @@ struct LoginScreenView: View {
     private func returningUserCard(for user: User) -> some View {
         VStack(spacing: Constraint.padding) {
             /// Enhanced personalized greeting
-            CustomTextView("Welcome Back!", font: .titleLargeBold, color: .customRichBlack)
+            CustomTextView(NSLocalizedString("welcome_back", comment: ""), font: .titleLargeBold, color: .customRichBlack)
                 .opacity(showContent ? 1 : 0)
                 .offset(y: showContent ? 0 : -20)
                 .scaleEffect(showContent ? 1 : 0.9)

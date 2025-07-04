@@ -42,7 +42,7 @@ struct TotalExpensesCardView: View {
             .buttonStyle(PlainButtonStyle())
 
             CustomTextView(
-                "Total Expenses",
+                NSLocalizedString("total_expenses_title", comment: ""),
                 font: .labelMedium,
                 color: .customWhiteSand.opacity(opacity),
                 uppercase: true

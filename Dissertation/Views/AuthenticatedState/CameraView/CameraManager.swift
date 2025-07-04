@@ -385,13 +385,13 @@ class CameraDelegate: NSObject, AVCapturePhotoCaptureDelegate {
                 if newStatus == .authorized || newStatus == .limited {
                     self.performSave(image, completion: completion)
                 } else {
-                    completion(false, NSError(domain: "PhotoLibraryError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Photo library access denied"]))
+                    completion(false, NSError(domain: "PhotoLibraryError", code: 1, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("photo_library_access_denied", comment: "")]))
                 }
             }
         case .denied, .restricted:
-            completion(false, NSError(domain: "PhotoLibraryError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Photo library access denied"]))
+            completion(false, NSError(domain: "PhotoLibraryError", code: 2, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("photo_library_access_denied", comment: "")]))
         @unknown default:
-            completion(false, NSError(domain: "PhotoLibraryError", code: 3, userInfo: [NSLocalizedDescriptionKey: "Unknown photo library authorization status"]))
+            completion(false, NSError(domain: "PhotoLibraryError", code: 3, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("unknown_photo_authorization", comment: "")]))
         }
     }
     

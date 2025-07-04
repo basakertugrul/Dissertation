@@ -46,7 +46,9 @@ final class AppStateManager: ObservableObject {
     }
     /// Improved balance calculation using start date
     var calculatedBalance: Double {
-        totalBudgetAccumulated - totalExpenses
+        let difference = Decimal(totalBudgetAccumulated) - Decimal(totalExpenses)
+        let rounded = NSDecimalNumber(decimal: difference).doubleValue
+        return rounded
     }
     /// Average daily spending since start date
     var formattedAverageDaily: Double {

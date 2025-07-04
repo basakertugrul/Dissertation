@@ -67,7 +67,7 @@ struct LoadingOverlayView: View {
                     }
                     
                     /// Loading text
-                    CustomTextView("Loading...", font: .bodyLargeBold, color: .customRichBlack)
+                    CustomTextView(NSLocalizedString("loading", comment: ""), font: .bodyLargeBold, color: .customRichBlack)
                 }
                 .padding(Constraint.largePadding)
                 .background(

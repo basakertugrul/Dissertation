@@ -20,9 +20,17 @@ struct LegalInformationOverlay: View {
    @State private var selectedSection: LegalSection? = nil
    
    enum LegalSection: String, CaseIterable {
-       case terms = "Terms of Service"
-       case privacy = "Privacy Policy"
-       case about = "About FundBud"
+       case terms = "terms"
+       case privacy = "privacy"
+       case about = "about"
+       
+       var displayName: String {
+           switch self {
+           case .terms: return NSLocalizedString("terms_of_service", comment: "")
+           case .privacy: return NSLocalizedString("privacy_policy", comment: "")
+           case .about: return NSLocalizedString("about_fundbud", comment: "")
+           }
+       }
    }
    
    var body: some View {
@@ -54,7 +62,7 @@ struct LegalInformationOverlay: View {
                        
                        Spacer()
                        
-                       CustomNavigationBarTitleView(title: createTitle(selectedSection.rawValue))
+                       CustomNavigationBarTitleView(title: createTitle(selectedSection.displayName))
                        
                        Spacer()
                        
@@ -86,7 +94,7 @@ struct LegalInformationOverlay: View {
                } else {
                    // Main Header
                    HStack(alignment: .lastTextBaseline) {
-                       CustomNavigationBarTitleView(title: createTitle("Legal Information"))
+                       CustomNavigationBarTitleView(title: createTitle(NSLocalizedString("legal_information", comment: "")))
                        Spacer()
                        Button {
                            HapticManager.shared.trigger(.cancel)
@@ -111,7 +119,7 @@ struct LegalInformationOverlay: View {
                            } label: {
                                HStack(alignment: .bottom) {
                                    CustomTextView(
-                                       section.rawValue,
+                                       section.displayName,
                                        font: .bodySmall,
                                        color: .customRichBlack
                                    )
@@ -147,161 +155,162 @@ struct LegalInformationOverlay: View {
         switch section {
         case .terms:
             return """
-            TERMS & CONDITIONS
+            \(NSLocalizedString("terms_conditions_title", comment: ""))
             
-            Last updated: \(getCurrentYear())
+            \(NSLocalizedString("last_updated", comment: "")) \(getCurrentYear())
             
-            WHAT IS THIS APP?
-            This is a personal expense tracker that helps you manage your spending. By using this app, you agree to these terms.
+            \(NSLocalizedString("what_is_this_app", comment: ""))
+            \(NSLocalizedString("terms_app_description", comment: ""))
             
-            WHAT YOU CAN DO
-            • Track your expenses and income
-            • Set spending budgets
-            • Take photos of receipts
-            • Export your data anytime
-            • Use all features for personal use
+            \(NSLocalizedString("what_you_can_do", comment: ""))
+            \(NSLocalizedString("terms_can_do_1", comment: ""))
+            \(NSLocalizedString("terms_can_do_2", comment: ""))
+            \(NSLocalizedString("terms_can_do_3", comment: ""))
+            \(NSLocalizedString("terms_can_do_4", comment: ""))
+            \(NSLocalizedString("terms_can_do_5", comment: ""))
             
-            WHAT YOU CAN'T DO
-            • Share false information
-            • Use the app for illegal activities
-            • Try to break or hack the app
-            • Sell or redistribute the app
+            \(NSLocalizedString("what_you_cannot_do", comment: ""))
+            \(NSLocalizedString("terms_cannot_do_1", comment: ""))
+            \(NSLocalizedString("terms_cannot_do_2", comment: ""))
+            \(NSLocalizedString("terms_cannot_do_3", comment: ""))
+            \(NSLocalizedString("terms_cannot_do_4", comment: ""))
             
-            YOUR DATA
-            • Everything stays on your device
-            • We don't see or store your financial data
-            • Camera is only used for receipts
-            • You own and control all your information
+            \(NSLocalizedString("your_data_terms", comment: ""))
+            \(NSLocalizedString("terms_data_1", comment: ""))
+            \(NSLocalizedString("terms_data_2", comment: ""))
+            \(NSLocalizedString("terms_data_3", comment: ""))
+            \(NSLocalizedString("terms_data_4", comment: ""))
             
-            LEGAL SIDE
-            • App provided "as is" - we can't guarantee it's perfect
-            • Not financial advice - make your own money decisions
-            • We're not responsible if you lose money
-            • These terms can change (we'll let you know)
+            \(NSLocalizedString("legal_side", comment: ""))
+            \(NSLocalizedString("terms_legal_1", comment: ""))
+            \(NSLocalizedString("terms_legal_2", comment: ""))
+            \(NSLocalizedString("terms_legal_3", comment: ""))
+            \(NSLocalizedString("terms_legal_4", comment: ""))
             
-            📧 QUESTIONS?
-            Contact us: fundBud2025@gmail.com
+            \(NSLocalizedString("terms_questions", comment: ""))
+            \(NSLocalizedString("contact_us", comment: ""))
             
-            Thanks for using our app responsibly! 🙏
+            \(NSLocalizedString("terms_thanks", comment: ""))
             """
 
         case .privacy:
             return """
-            PRIVACY POLICY
+            \(NSLocalizedString("privacy_policy_title", comment: ""))
             
-            Last updated: \(getCurrentYear())
+            \(NSLocalizedString("last_updated", comment: "")) \(getCurrentYear())
             
-            WE PROTECT YOUR PRIVACY
-            Your financial data is personal. Here's exactly how we handle it.
+            \(NSLocalizedString("privacy_protect_title", comment: ""))
+            \(NSLocalizedString("privacy_protect_description", comment: ""))
             
-            WHAT WE COLLECT
-            On Your Device Only:
-            • Your expense amounts and notes
-            • Budget limits you set
-            • Receipt photos you take
-            • Categories you choose
+            \(NSLocalizedString("what_we_collect", comment: ""))
+            \(NSLocalizedString("on_device_only", comment: ""))
+            \(NSLocalizedString("privacy_collect_1", comment: ""))
+            \(NSLocalizedString("privacy_collect_2", comment: ""))
+            \(NSLocalizedString("privacy_collect_3", comment: ""))
+            \(NSLocalizedString("privacy_collect_4", comment: ""))
             
-            Anonymous Usage Data:
-            • How often features are used
-            • Crash reports (no personal data)
-            • App performance metrics
+            \(NSLocalizedString("anonymous_usage_data", comment: ""))
+            \(NSLocalizedString("privacy_anonymous_1", comment: ""))
+            \(NSLocalizedString("privacy_anonymous_2", comment: ""))
+            \(NSLocalizedString("privacy_anonymous_3", comment: ""))
             
-            WHERE YOUR DATA LIVES
-            • Everything stays on YOUR device
-            • Nothing uploaded to our servers
-            • No cloud storage of personal data
-            • You delete it, it's gone forever
+            \(NSLocalizedString("where_data_lives", comment: ""))
+            \(NSLocalizedString("privacy_data_1", comment: ""))
+            \(NSLocalizedString("privacy_data_2", comment: ""))
+            \(NSLocalizedString("privacy_data_3", comment: ""))
+            \(NSLocalizedString("privacy_data_4", comment: ""))
             
-            CAMERA ACCESS
-            • Only used when you scan receipts
-            • Photos saved to your device only
-            • You can delete photos anytime
-            • We never access your photo library
+            \(NSLocalizedString("camera_access", comment: ""))
+            \(NSLocalizedString("privacy_camera_1", comment: ""))
+            \(NSLocalizedString("privacy_camera_2", comment: ""))
+            \(NSLocalizedString("privacy_camera_3", comment: ""))
+            \(NSLocalizedString("privacy_camera_4", comment: ""))
             
-            WHAT WE DON'T DO
-            • Sell your data (never!)
-            • Share with advertisers
-            • Read your financial information
-            • Track you across other apps
+            \(NSLocalizedString("what_we_dont_do", comment: ""))
+            \(NSLocalizedString("privacy_dont_1", comment: ""))
+            \(NSLocalizedString("privacy_dont_2", comment: ""))
+            \(NSLocalizedString("privacy_dont_3", comment: ""))
+            \(NSLocalizedString("privacy_dont_4", comment: ""))
             
-            KIDS
-            This app isn't for children under 13.
+            \(NSLocalizedString("kids_section", comment: ""))
+            \(NSLocalizedString("privacy_kids", comment: ""))
             
-            YOUR RIGHTS
-            • See all your data (it's in the app!)
-            • Export everything anytime
-            • Delete all data by uninstalling
-            • Ask us questions about privacy
+            \(NSLocalizedString("your_rights", comment: ""))
+            \(NSLocalizedString("privacy_rights_1", comment: ""))
+            \(NSLocalizedString("privacy_rights_2", comment: ""))
+            \(NSLocalizedString("privacy_rights_3", comment: ""))
+            \(NSLocalizedString("privacy_rights_4", comment: ""))
             
-            PRIVACY QUESTIONS?
-            Contact us: fundBud2025@gmail
+            \(NSLocalizedString("privacy_questions", comment: ""))
+            \(NSLocalizedString("privacy_contact", comment: ""))
             
-            Your trust means everything to us! 🔐
+            \(NSLocalizedString("privacy_trust", comment: ""))
             """
 
         case .about:
             return """
-            ABOUT FUNDBUD
+            \(NSLocalizedString("about_title", comment: ""))
             
-            Version \(getAppVersion()) • Made with ❤️
+            \(NSLocalizedString("version_label", comment: "")) \(getAppVersion()) • \(NSLocalizedString("version_made_with", comment: ""))
             
-            OUR MISSION
-            Make expense tracking so simple, you'll actually do it every day.
+            \(NSLocalizedString("our_mission", comment: ""))
+            \(NSLocalizedString("mission_description", comment: ""))
             
-            WHAT MAKES US SPECIAL
+            \(NSLocalizedString("what_makes_special", comment: ""))
             
-            Privacy First:
-            • Everything stays on your device
-            • No accounts or sign-ups needed
-            • Your data belongs to you
+            \(NSLocalizedString("privacy_first", comment: ""))
+            \(NSLocalizedString("about_privacy_1", comment: ""))
+            \(NSLocalizedString("about_privacy_2", comment: ""))
+            \(NSLocalizedString("about_privacy_3", comment: ""))
             
-            Lightning Fast:
-            • Add expenses in seconds
-            • Quick amounts: £1, £2, £5, £10
-            • Home screen widget support
-            • Instant receipt scanning
+            \(NSLocalizedString("lightning_fast", comment: ""))
+            \(NSLocalizedString("about_fast_1", comment: ""))
+            \(NSLocalizedString("about_fast_2", comment: ""))
+            \(NSLocalizedString("about_fast_3", comment: ""))
+            \(NSLocalizedString("about_fast_4", comment: ""))
             
-            Smart & Simple:
-            • Beautiful, easy interface
-            • Helpful spending insights
-            • Budget tracking that works
-            • Works offline always
+            \(NSLocalizedString("smart_simple", comment: ""))
+            \(NSLocalizedString("about_smart_1", comment: ""))
+            \(NSLocalizedString("about_smart_2", comment: ""))
+            \(NSLocalizedString("about_smart_3", comment: ""))
+            \(NSLocalizedString("about_smart_4", comment: ""))
             
-            BUILT WITH
-            • Swift & SwiftUI
-            • Advanced haptic feedback
-            • iOS 16+ optimized
-            • Accessibility focused
+            \(NSLocalizedString("built_with", comment: ""))
+            \(NSLocalizedString("about_built_1", comment: ""))
+            \(NSLocalizedString("about_built_2", comment: ""))
+            \(NSLocalizedString("about_built_3", comment: ""))
+            \(NSLocalizedString("about_built_4", comment: ""))
             
-            FOR EVERYONE
-            • VoiceOver support
-            • Dynamic text sizing
-            • High contrast modes
-            • Simple, clear navigation
+            \(NSLocalizedString("for_everyone", comment: ""))
+            \(NSLocalizedString("about_everyone_1", comment: ""))
+            \(NSLocalizedString("about_everyone_2", comment: ""))
+            \(NSLocalizedString("about_everyone_3", comment: ""))
+            \(NSLocalizedString("about_everyone_4", comment: ""))
             
-            COMING SOON
-            • Better Notifications
-            • Apple Watch app
-            • More currencies
-            • Advanced reports
-            • Even better widgets
+            \(NSLocalizedString("coming_soon", comment: ""))
+            \(NSLocalizedString("about_coming_1", comment: ""))
+            \(NSLocalizedString("about_coming_2", comment: ""))
+            \(NSLocalizedString("about_coming_3", comment: ""))
+            \(NSLocalizedString("about_coming_4", comment: ""))
+            \(NSLocalizedString("about_coming_5", comment: ""))
             
-            💌 GET IN TOUCH
+            \(NSLocalizedString("get_in_touch", comment: ""))
             
-            Love the app? Found a bug? Need help? Tell us!
-            fundBud2025@gmail
+            \(NSLocalizedString("get_in_touch_description", comment: ""))
+            \(NSLocalizedString("about_contact", comment: ""))
             
-            🏆 THANK YOU
-            To everyone who uses this app - you're helping us build something amazing while keeping your privacy intact.
+            \(NSLocalizedString("thank_you_title", comment: ""))
+            \(NSLocalizedString("thank_you_message", comment: ""))
             
-            📱 REQUIREMENTS
-            • iPhone with iOS 16+
-            • Works on all screen sizes
-            • iPad compatible
-            • Dark & Light mode
+            \(NSLocalizedString("requirements_title", comment: ""))
             
-            © \(getCurrentYear()) FundBud
-            Made in the UK 🇬🇧
+            \(NSLocalizedString("about_requirements_1", comment: ""))
+            \(NSLocalizedString("about_requirements_2", comment: ""))
+            \(NSLocalizedString("about_requirements_3", comment: ""))
+            \(NSLocalizedString("about_requirements_4", comment: ""))
+            
+            © \(getCurrentYear()) \(NSLocalizedString("copyright_text", comment: ""))
+            \(NSLocalizedString("made_in_uk", comment: ""))
             """
         }
     }

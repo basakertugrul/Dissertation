@@ -23,7 +23,7 @@ struct ProfileScreen: View {
     @State var showingExportDataAlert = false
 
     var title: AttributedString = {
-        var string = AttributedString.init(stringLiteral: "PROFILE")
+        var string = AttributedString.init(stringLiteral: NSLocalizedString("profile", comment: ""))
         string.foregroundColor = .customBurgundy
         string.font = TextFonts.titleSmallBold.font
         return string
@@ -109,20 +109,20 @@ struct ProfileScreen: View {
         HapticManager.shared.trigger(.navigation)
         if UIApplication.shared.canOpenURL(URL(string: "mailto:")!) {
             let email = "fundBud2025@gmail.com"
-            let subject = "FundBud Feedback - iOS App"
+            let subject = NSLocalizedString("feedback_subject", comment: "")
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
             let iOSVersion = UIDevice.current.systemVersion
             
             let body = """
-        Hi FundBud team,
+        \(NSLocalizedString("feedback_body_greeting", comment: ""))
         
-        I'd like to share feedback about the app:
+        \(NSLocalizedString("feedback_body_message", comment: ""))
         
-        [Please write your feedback here]
+        \(NSLocalizedString("feedback_body_placeholder", comment: ""))
         
-        ---
-        App Version: \(appVersion)
-        iOS Version: \(iOSVersion)
+        \(NSLocalizedString("feedback_body_separator", comment: ""))
+        \(NSLocalizedString("app_version_label", comment: "")) \(appVersion)
+        \(NSLocalizedString("ios_version_label", comment: "")) \(iOSVersion)
         """
             
             var components = URLComponents()
@@ -143,9 +143,7 @@ struct ProfileScreen: View {
     // MARK: - Profile Card
     private var profileCard: some View {
         CustomTextView(
-            (
-                "Hi there!"
-            ),
+            NSLocalizedString("hi_there", comment: ""),
             font: .titleMediumBold,
             color: .customBurgundy
         )
@@ -166,7 +164,7 @@ struct ProfileScreen: View {
                             .font(.body)
                         
                         CustomTextView(
-                            "Daily Budget",
+                            NSLocalizedString("daily_budget", comment: ""),
                             font: .bodySmallBold,
                             color: .customRichBlack
                         )
@@ -198,7 +196,7 @@ struct ProfileScreen: View {
                     .font(.body)
                 
                 CustomTextView(
-                    "Spending Overview",
+                    NSLocalizedString("spending_overview", comment: ""),
                     font: .bodyLargeBold,
                     color: .customRichBlack
                 )
@@ -215,25 +213,25 @@ struct ProfileScreen: View {
                 spacing: Constraint.padding
             ) {
                 expenseStatCard(
-                    "Today's Budget",
-                    value: "\(appState.calculatedBalance)",
+                    NSLocalizedString("todays_budget", comment: ""),
+                    value: "£\(appState.calculatedBalance)",
                     icon: "list.bullet.rectangle.fill",
                     color: .customOliveGreen
                 )
                 expenseStatCard(
-                    "Total Spent",
+                    NSLocalizedString("total_spent", comment: ""),
                     value: "£\(appState.totalExpenses)",
                     icon: "banknote.fill",
                     color: .customBurgundy
                 )
                 expenseStatCard(
-                    "Daily Average",
+                    NSLocalizedString("daily_average", comment: ""),
                     value: "£\(appState.formattedAverageDaily)",
                     icon: "calendar.badge.clock",
                     color: .customGold
                 )
                 expenseStatCard(
-                    "Days Tracked",
+                    NSLocalizedString("days_tracked", comment: ""),
                     value: "\(appState.daysSinceStart)",
                     icon: "clock.fill",
                     color: .customRichBlack
@@ -271,34 +269,34 @@ struct ProfileScreen: View {
     // MARK: - Settings Groups
     private var settingsGroups: some View {
         VStack(spacing: Constraint.largePadding) {
-            settingsGroup("Settings & Support", items: [
-                ("bell.badge.fill", "Notifications", "Budget alerts & reminders", .customBurgundy, {
+            settingsGroup(NSLocalizedString("settings_support", comment: ""), items: [
+                ("bell.badge.fill", NSLocalizedString("notifications", comment: ""), NSLocalizedString("budget_alerts_reminders", comment: ""), .customBurgundy, {
                     HapticManager.shared.trigger(.navigation)
                     appState.manageNotifications()
                 }),
-                ("square.and.arrow.up.fill", "Export Data", "Download expense history", .customRichBlack, {
+                ("square.and.arrow.up.fill", NSLocalizedString("export_data", comment: ""), NSLocalizedString("download_expense_history", comment: ""), .customRichBlack, {
                     HapticManager.shared.trigger(.buttonTap)
                     appState.exportExpenseData()
                 }),
-                ("lock.shield.fill", "Privacy & Security", "Manage your data protection", .customOliveGreen, {
+                ("lock.shield.fill", NSLocalizedString("privacy_security", comment: ""), NSLocalizedString("manage_data_protection", comment: ""), .customOliveGreen, {
                     HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingPrivacyPolicyAlert = true
                     }
                 }),
-                ("envelope.badge.fill", "Send Feedback", "Help us improve the app", .customBurgundy, {
+                ("envelope.badge.fill", NSLocalizedString("send_feedback", comment: ""), NSLocalizedString("help_improve_app", comment: ""), .customBurgundy, {
                     HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingsendFeedbackAlert = true
                     }
                 }),
-                ("star.circle.fill", "Rate FundBud", "Share your experience", .customRichBlack, {
+                ("star.circle.fill", NSLocalizedString("rate_fundbud", comment: ""), NSLocalizedString("share_experience", comment: ""), .customRichBlack, {
                     HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingAppRateAlert = true
                     }
                 }),
-                ("doc.text.fill", "Legal Information", "Terms, privacy & licenses", .customOliveGreen, {
+                ("doc.text.fill", NSLocalizedString("legal_information", comment: ""), NSLocalizedString("terms_privacy_licenses", comment: ""), .customOliveGreen, {
                     HapticManager.shared.trigger(.navigation)
                     withAnimation(.smooth) {
                         showingLegalInfoAlert = true
@@ -320,7 +318,7 @@ struct ProfileScreen: View {
                     .font(.body)
                 
                 CustomTextView(
-                    "Sign Out",
+                    NSLocalizedString("sign_out", comment: ""),
                     font: .bodySmallBold,
                     color: .customBurgundy
                 )

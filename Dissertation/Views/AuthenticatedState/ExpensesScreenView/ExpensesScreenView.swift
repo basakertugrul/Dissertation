@@ -13,24 +13,31 @@ struct ExpensesScreenView: View {
         Dictionary(grouping: expenses) { expense in
             /// Group by date
             if expense.isToday() {
-                return "TODAY"
+                return NSLocalizedString("today", comment: "")
             } else if expense.isYesterday() {
-                return "YESTERDAY"
+                return NSLocalizedString("yesterday", comment: "")
             } else if expense.isInLastWeek() {
-                return "THIS WEEK"
+                return NSLocalizedString("this_week", comment: "")
             } else if expense.isInLastMonth() {
-                return "THIS MONTH"
+                return NSLocalizedString("this_month", comment: "")
             } else {
-                return "EARLIER"
+                return NSLocalizedString("earlier", comment: "")
             }
         }
     }
 
     private var sortedKeys: [String] {
-        let order = ["TODAY", "YESTERDAY", "THIS WEEK", "THIS MONTH", "EARLIER"]
+        let localizedOrder = [
+            NSLocalizedString("today", comment: ""),
+            NSLocalizedString("yesterday", comment: ""),
+            NSLocalizedString("this_week", comment: ""),
+            NSLocalizedString("this_month", comment: ""),
+            NSLocalizedString("earlier", comment: "")
+        ]
+        
         return groupedExpenses.keys.sorted { (key1, key2) in
-            let index1 = order.firstIndex(of: key1) ?? Int.max
-            let index2 = order.firstIndex(of: key2) ?? Int.max
+            let index1 = localizedOrder.firstIndex(of: key1) ?? Int.max
+            let index2 = localizedOrder.firstIndex(of: key2) ?? Int.max
             return index1 < index2
         }
     }

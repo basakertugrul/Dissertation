@@ -19,10 +19,10 @@ struct CurrentBalanceCardView: View {
         appStateManager.calculatedBalance < 0 ? .customBurgundy : .customOliveGreen
     }
     private var statusText: String {
-        appStateManager.calculatedBalance >= 0 ? "Available" : "Overdrawn"
+        appStateManager.calculatedBalance >= 0 ? NSLocalizedString("available", comment: "") : NSLocalizedString("overdrawn", comment: "")
     }
     private var motivationText: String {
-        appStateManager.calculatedBalance >= 0 ? "Crushing it!" : "Oops, went over!"
+        appStateManager.calculatedBalance >= 0 ? NSLocalizedString("crushing_it", comment: "") : NSLocalizedString("oops_went_over", comment: "")
     }
     private var balanceText: String {
         let formatter = NumberFormatter()

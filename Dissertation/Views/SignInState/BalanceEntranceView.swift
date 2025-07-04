@@ -50,13 +50,15 @@ struct BalanceEntranceView: View {
                 /// Header Section
                 VStack(spacing: Constraint.padding) {
                     CustomTextView(
-                        "Set Daily Budget",
+                        NSLocalizedString("set_daily_budget", comment: "Set daily budget title"),
                         font: .bodySmallBold,
                         color: .white
                     )
                     
                     CustomTextView(
-                        hasSetBefore ? "How much do you want to spend per day?" : "Control your spending with smart daily limits",
+                        hasSetBefore ?
+                        NSLocalizedString("daily_budget_question", comment: "Daily budget question for returning users") :
+                        NSLocalizedString("daily_budget_description", comment: "Daily budget description for new users"),
                         font: .labelLarge,
                         color: .customWhiteSand
                     )
@@ -65,13 +67,13 @@ struct BalanceEntranceView: View {
                     /// Amount Input
                     ZStack {
                         CustomTextView(
-                            "£",
+                            NSLocalizedString("currency_symbol", comment: "Currency symbol"),
                             font: .titleSmall,
                             color: .customWhiteSand
                         )
                         .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        TextField("0", text: $balanceText)
+                        TextField(NSLocalizedString("amount_placeholder", comment: "Amount input placeholder"), text: $balanceText)
                             .font(TextFonts.titleSmall.font)
                             .foregroundColor(.white)
                             .keyboardType(.numberPad)
@@ -91,7 +93,7 @@ struct BalanceEntranceView: View {
                     /// Quick Select Presets
                     VStack(spacing: Constraint.smallPadding) {
                         CustomTextView(
-                            "Quick Select",
+                            NSLocalizedString("quick_select", comment: "Quick select section title"),
                             font: .labelMedium,
                             color: .customWhiteSand
                         )
@@ -121,7 +123,7 @@ struct BalanceEntranceView: View {
                     }
                 }) {
                     CustomTextView(
-                        "Continue",
+                        NSLocalizedString("continue", comment: "Continue button text"),
                         font: .bodySmallBold,
                         color: isValidAmount ? .customOliveGreen : .customOliveGreen.opacity(Constraint.Opacity.medium)
                     )
@@ -158,7 +160,7 @@ struct BalanceEntranceView: View {
             }
         }) {
             CustomTextView(
-                "£\(Int(amount))",
+                "\(NSLocalizedString("currency_symbol", comment: "Currency symbol"))\(Int(amount))",
                 font: .bodySmall,
                 color: isSelected ? .customOliveGreen : .customWhiteSand
             )

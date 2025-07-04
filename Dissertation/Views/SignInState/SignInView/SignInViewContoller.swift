@@ -17,23 +17,23 @@ enum SignInError: Error, LocalizedError {
     var errorDescription: String {
         switch self {
         case .appleSignInCanceled:
-            return "Sign in was canceled. Please try again."
+            return NSLocalizedString("signin_canceled", comment: "")
         case .appleSignInFailed:
-            return "Apple Sign In failed. Please check your connection and try again."
+            return NSLocalizedString("apple_signin_failed", comment: "")
         case .faceIDAuthenticationFailed:
-            return "Face ID authentication failed. Please try again."
+            return NSLocalizedString("faceid_auth_failed", comment: "")
         case .faceIDCanceled:
-            return "Face ID authentication was canceled."
+            return NSLocalizedString("faceid_canceled", comment: "")
         case .userDataSaveFailure:
-            return "Failed to save your account information. Please try signing in again."
+            return NSLocalizedString("user_data_save_failure", comment: "")
         case .credentialStateCheckFailed:
-            return "Unable to verify your Apple ID status. Please try again."
+            return NSLocalizedString("credential_state_check_failed", comment: "")
         case .biometryNotEnrolled:
-            return "Face ID is not set up. Please set it up in Settings."
+            return NSLocalizedString("biometry_not_enrolled", comment: "")
         case .biometryLockout:
-            return "Face ID is temporarily locked. Please try again later."
+            return NSLocalizedString("biometry_lockout", comment: "")
         case .unknownError:
-            return "An unexpected error occurred"
+            return NSLocalizedString("unknown_error", comment: "")
         }
     }
 }
@@ -79,11 +79,11 @@ final class SignInWithAppleCoordinator: NSObject {
     /// Request Face ID permission and setup
     func requestFaceIDPermission(completion: @escaping (Result<Bool, SignInError>) -> Void) {
         let context = LAContext()
-        context.localizedFallbackTitle = "Use Passcode"
+        context.localizedFallbackTitle = NSLocalizedString("use_passcode", comment: "")
 
         context.evaluatePolicy(
             .deviceOwnerAuthentication,
-            localizedReason: "Enable Face ID to quickly sign in to FundBud"
+            localizedReason: NSLocalizedString("enable_faceid_reason", comment: "")
         ) { success, error in
             DispatchQueue.main.async {
                 if let error = error {
@@ -113,11 +113,11 @@ final class SignInWithAppleCoordinator: NSObject {
     /// Authenticate with Face ID for returning users
     func authenticateWithFaceID(completion: @escaping (Result<Void, SignInError>) -> Void) {
         let context = LAContext()
-        context.localizedFallbackTitle = "Use Password"
+        context.localizedFallbackTitle = NSLocalizedString("use_password", comment: "")
         
         context.evaluatePolicy(
             .deviceOwnerAuthentication,
-            localizedReason: "Sign in to FundBud with Face ID"
+            localizedReason: NSLocalizedString("signin_faceid_reason", comment: "")
         ) { success, error in
             DispatchQueue.main.async {
                 if let error = error {
