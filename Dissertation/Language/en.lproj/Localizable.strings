@@ -1,4 +1,4 @@
-// **MARK: - Balance Entrance View**
+// MARK: - Balance Entrance View
 "set_daily_budget" = "Set Daily Budget";
 "daily_budget_question" = "How much do you want to spend per day?";
 "daily_budget_description" = "Control your spending with smart daily limits";
@@ -8,7 +8,7 @@
 "continue" = "Continue";
 "skip" = "Skip";
 
-// **MARK: - General UI**
+// MARK: - General UI
 "loading" = "Loading...";
 "secure_private" = "Secure & Private";
 "terms" = "Terms";
@@ -17,40 +17,40 @@
 "cancel" = "Cancel";
 "error" = "Error";
 
-// **MARK: - Voice Recording**
+// MARK: - Voice Recording
 "voice_entry" = "VOICE ENTRY";
 "voice" = "VOICE";
 "entry" = "ENTRY";
 
-// **MARK: - Total Expense Card View
+// MARK: - Total Expense Card View
 "total_expenses_title" = "Total Expenses";
 
-// **MARK: - Text Recognition Errors**
+// MARK: - Text Recognition Errors
 "invalid_image_error" = "Photo quality is too poor. Please try taking a clearer picture.";
 "no_results_error" = "We couldn't read this image. Try taking a new photo with better lighting.";
 "no_text_found_error" = "No text detected. Make sure your receipt is clearly visible and try again.";
 "vision_error" = "Something went wrong while processing your receipt. Please try again.";
 "out_of_date_range_error" = "This receipt appears to be very old. Please check and try again.";
 
-// **MARK: - Budget Chart**
+// MARK: - Budget Chart
 "budget" = "Budget";
 
-// **MARK: - Current Balance Card**
+// MARK: - Current Balance Card
 "available" = "Available";
 "overdrawn" = "Overdrawn";
 "crushing_it" = "Crushing it!";
 "oops_went_over" = "Oops, went over!";
 
-// **MARK: - Daily Allowance Card**
+// MARK: - Daily Allowance Card
 "daily_limit" = "Daily limit";
 
-// **MARK: - Days Tracked Card**
+// MARK: - Days Tracked Card
 "days_tracked" = "Days Tracked";
 "since" = "since";
 "recording" = "Recording...";
 "tap_and_hold" = "Tap and hold";
 
-// **MARK: - Login Screen**
+// MARK: - Login Screen
 "app_name" = "FundBud";
 "app_subtitle" = "Know exactly what you can spend!";
 "get_started" = "Get Started";
@@ -61,7 +61,7 @@
 "switch_user" = "Switch User";
 "welcome_back" = "Welcome Back!";
 
-// **MARK: - Sign In Errors**
+// MARK: - Sign In Errors
 "signin_canceled" = "Sign in was canceled. Please try again.";
 "apple_signin_failed" = "Apple Sign In failed. Please check your connection and try again.";
 "faceid_auth_failed" = "Face ID authentication failed. Please try again.";
@@ -72,13 +72,13 @@
 "biometry_lockout" = "Face ID is temporarily locked. Please try again later.";
 "unknown_error" = "An unexpected error occurred";
 
-// **MARK: - Face ID Authentication**
+// MARK: - Face ID Authentication
 "use_passcode" = "Use Passcode";
 "enable_faceid_reason" = "Enable Face ID to quickly sign in to FundBud";
 "use_password" = "Use Password";
 "signin_faceid_reason" = "Sign in to FundBud with Face ID";
 
-// **MARK: - Onboarding**
+// MARK: - Onboarding
 "onboarding_page1_title" = "Welcome to FundBud";
 "onboarding_page1_subtitle" = "Smart Daily Budget Tracker";
 "onboarding_page1_description" = "Set your daily spending limit and track every expense in real-time.";
@@ -103,7 +103,7 @@
 "onboarding_page4_feature1" = "Set your first daily limit";
 "onboarding_page4_feature2" = "Track expenses immediately";
 
-// **MARK: - Alerts**
+// MARK: - Alerts
 "delete_expense_title" = "Delete Expense";
 "delete_expense_message" = "Are you sure you want to delete this expense?";
 "delete" = "Delete";
@@ -138,7 +138,7 @@
 "receipt_detected_title" = "Receipt Detected!";
 "add_to_expenses" = "Add to Expenses";
 
-// **MARK: - PDF Export**
+// MARK: - PDF Export
 "expense_report" = "Expense Report";
 "fundbud_expense_report" = "FundBud Expense Report";
 "user" = "User";
@@ -156,7 +156,7 @@
 "category" = "Category";
 "description" = "Description";
 
-// **MARK: - Charts**
+// MARK: - Charts
 "daily" = "Daily";
 "weekly" = "Weekly";
 "monthly" = "Monthly";
@@ -165,7 +165,13 @@
 "last_12_months" = "Last 12 Months";
 "expense_trends" = "Expense Trends";
 
-// **MARK: - Profile Screen**
+// MARK: - Time Frame Model
+"daily" = "Daily";
+"weekly" = "Weekly";
+"monthly" = "Monthly";
+"yearly" = "Yearly";
+
+// MARK: - Profile Screen
 "profile" = "PROFILE";
 "hi_there" = "Hi there!";
 "daily_budget" = "Daily Budget";
@@ -189,7 +195,7 @@
 "terms_privacy_licenses" = "Terms, privacy & licenses";
 "sign_out" = "Sign Out";
 
-// **MARK: - Feedback Email**
+// MARK: - Feedback Email
 "feedback_subject" = "FundBud Feedback - iOS App";
 "feedback_body_greeting" = "Hi FundBud team,";
 "feedback_body_message" = "I'd like to share feedback about the app:";
@@ -198,13 +204,13 @@
 "app_version_label" = "App Version:";
 "ios_version_label" = "iOS Version:";
 
-// **MARK: - Legal Information**
+// MARK: - Legal Information
 "legal_information" = "Legal Information";
 "terms_of_service" = "Terms of Service";
 "privacy_policy" = "Privacy Policy";
 "about_fundbud" = "About FundBud";
 
-// **MARK: - Terms of Service**
+// MARK: - Terms of Service
 "terms_conditions_title" = "TERMS & CONDITIONS";
 "last_updated" = "Last updated:";
 "what_is_this_app" = "WHAT IS THIS APP?";
@@ -234,7 +240,7 @@
 "contact_us" = "Contact us: fundBud2025@gmail.com";
 "terms_thanks" = "Thanks for using our app responsibly! 🙏";
 
-// **MARK: - Privacy Policy**
+// MARK: - Privacy Policy
 "privacy_policy_title" = "PRIVACY POLICY";
 "privacy_protect_title" = "WE PROTECT YOUR PRIVACY";
 "privacy_protect_description" = "Your financial data is personal. Here's exactly how we handle it.";
@@ -274,7 +280,7 @@
 "privacy_contact" = "Contact us: fundBud2025@gmail";
 "privacy_trust" = "Your trust means everything to us! 🔐";
 
-// **MARK: - About**
+// MARK: - About
 "about_title" = "ABOUT FUNDBUD";
 "version_made_with" = "Made with ❤️";
 "our_mission" = "OUR MISSION";
@@ -324,26 +330,26 @@
 "made_in_uk" = "Made in the UK 🇬🇧";
 "version_label" = "Version";
 
-// **MARK: - Privacy & Security**
+// MARK: - Privacy & Security
 "privacy_security_title" = "Privacy & Security";
 "data_protection" = "Data Protection";
 "app_permissions" = "App Permissions";
 "data_protection_subtitle" = "How we protect your information";
 "app_permissions_subtitle" = "Control app access to device features";
 
-// **MARK: - Data Protection Content**
+// MARK: - Data Protection Content
 "your_data_safe" = "Your Data is Safe";
 "data_protection_content" = "• All expense data is stored locally on your device\n• No financial information is transmitted to external servers\n• Data is encrypted using industry-standard AES-256 encryption\n• We don't sell or share your personal information\n• No third-party tracking or analytics";
 "data_retention_title" = "Data Retention";
 "data_retention_content" = "Your data remains on your device until you choose to delete the app. We don't automatically collect or backup your information.";
 
-// **MARK: - Security Settings**
+// MARK: - Security Settings
 "biometric_authentication" = "Biometric Authentication";
 "enabled" = "Enabled";
 "security_features" = "Security Features:";
 "security_features_content" = "• Face ID / Touch ID protection\n• App automatically locks when backgrounded\n• Secure data encryption\n• No cloud storage of sensitive data\n• Regular security updates";
 
-// **MARK: - Permissions**
+// MARK: - Permissions
 "camera_access" = "Camera Access";
 "camera_description" = "For receipt scanning and expense photos";
 "photo_library" = "Photo Library";
@@ -354,7 +360,7 @@
 "recommended" = "Recommended";
 "permissions_settings_note" = "You can manage these permissions in your device Settings > FundBud";
 
-// **MARK: - Modify Expense**
+// MARK: - Modify Expense
 "modify_expense" = "MODIFY EXPENSE";
 "add_expense" = "ADD EXPENSE";
 "modify" = "MODIFY";
@@ -367,27 +373,27 @@
 "amount" = "AMOUNT";
 "date" = "DATE";
 
-// **MARK: - Tab Bar**
+// MARK: - Tab Bar
 "remaining" = "REMAINING";
 "budget" = "BUDGET";
 "expenses" = "EXPENSES";
 
-// **MARK: - Expense Groups**
+// MARK: - Expense Groups
 "today" = "TODAY";
 "yesterday" = "YESTERDAY";
 "this_week" = "THIS WEEK";
 "this_month" = "THIS MONTH";
 "earlier" = "EARLIER";
 
-// **MARK: - Camera Errors**
+// MARK: - Camera Errors
 "photo_library_access_denied" = "Photo library access denied";
 "unknown_photo_authorization" = "Unknown photo library authorization status";
 
-// **MARK: - Image Preview**
+// MARK: - Image Preview
 "retake" = "Retake";
 "add" = "Add";
 
-// **MARK: - Camera View**
+// MARK: - Camera View
 "scan_entry" = "SCAN ENTRY";
 "scan" = "SCAN";
 "entry" = "ENTRY";

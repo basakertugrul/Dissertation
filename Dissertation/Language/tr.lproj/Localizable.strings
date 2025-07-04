@@ -1,0 +1,399 @@
+// MARK: - Balance Entrance View
+"set_daily_budget" = "Günlük Bütçe Belirle";
+"daily_budget_question" = "Günde ne kadar harcamak istiyorsunuz?";
+"daily_budget_description" = "Akıllı günlük limitlerle harcamalarınızı kontrol edin";
+"currency_symbol" = "₺";
+"amount_placeholder" = "0";
+"quick_select" = "Hızlı Seçim";
+"continue" = "Devam Et";
+"skip" = "Geç";
+
+// MARK: - General UI
+"loading" = "Yükleniyor...";
+"secure_private" = "Güvenli ve Özel";
+"terms" = "Şartlar";
+"privacy" = "Gizlilik";
+"ok" = "Tamam";
+"cancel" = "İptal";
+"error" = "Hata";
+
+// MARK: - Voice Recording
+"voice_entry" = "SESLİ GİRİŞ";
+"voice" = "SESLİ";
+"entry" = "GİRİŞ";
+
+// MARK: - Total Expense Card View
+"total_expenses_title" = "Toplam Harcamalar";
+
+// MARK: - Text Recognition Errors
+"invalid_image_error" = "Fotoğraf kalitesi çok düşük. Lütfen daha net bir fotoğraf çekmeyi deneyin.";
+"no_results_error" = "Bu görüntüyü okuyamadık. Daha iyi aydınlatma ile yeni bir fotoğraf çekmeyi deneyin.";
+"no_text_found_error" = "Metin algılanmadı. Fişinizin net görünür olduğundan emin olun ve tekrar deneyin.";
+"vision_error" = "Fişinizi işlerken bir sorun oluştu. Lütfen tekrar deneyin.";
+"out_of_date_range_error" = "Bu fiş çok eski görünüyor. Lütfen kontrol edin ve tekrar deneyin.";
+
+// MARK: - Budget Chart
+"budget" = "Bütçe";
+
+// MARK: - Current Balance Card
+"available" = "Kullanılabilir";
+"overdrawn" = "Aşıldı";
+"crushing_it" = "Harika gidiyorsun!";
+"oops_went_over" = "Oops, aştık!";
+
+// MARK: - Daily Allowance Card
+"daily_limit" = "Günlük limit";
+
+// MARK: - Days Tracked Card
+"days_tracked" = "Takip Edilen Günler";
+"since" = "bu tarihten itibaren";
+"recording" = "Kaydediliyor...";
+"tap_and_hold" = "Basılı tut";
+
+// MARK: - Login Screen
+"app_name" = "FundBud";
+"app_subtitle" = "Ne kadar harcayabileceğinizi tam olarak bilin!";
+"get_started" = "Başlayın";
+"choose_signin_method" = "Tercih ettiğiniz giriş yöntemini seçin";
+"continue_with_apple" = "Apple ile Devam Et";
+"or" = "veya";
+"sign_in_with_faceid" = "Face ID ile Giriş Yap";
+"switch_user" = "Kullanıcı Değiştir";
+"welcome_back" = "Tekrar Hoş Geldiniz!";
+
+// MARK: - Sign In Errors
+"signin_canceled" = "Giriş iptal edildi. Lütfen tekrar deneyin.";
+"apple_signin_failed" = "Apple Giriş başarısız oldu. Lütfen bağlantınızı kontrol edin ve tekrar deneyin.";
+"faceid_auth_failed" = "Face ID kimlik doğrulaması başarısız oldu. Lütfen tekrar deneyin.";
+"faceid_canceled" = "Face ID kimlik doğrulaması iptal edildi.";
+"user_data_save_failure" = "Hesap bilgileriniz kaydedilemedi. Lütfen tekrar giriş yapmayı deneyin.";
+"credential_state_check_failed" = "Apple ID durumunuz doğrulanamadı. Lütfen tekrar deneyin.";
+"biometry_not_enrolled" = "Face ID ayarlanmamış. Lütfen Ayarlar'da kurun.";
+"biometry_lockout" = "Face ID geçici olarak kilitlendi. Lütfen daha sonra tekrar deneyin.";
+"unknown_error" = "Beklenmeyen bir hata oluştu";
+
+// MARK: - Face ID Authentication
+"use_passcode" = "Şifre Kullan";
+"enable_faceid_reason" = "FundBud'a hızlıca giriş yapmak için Face ID'yi etkinleştirin";
+"use_password" = "Şifre Kullan";
+"signin_faceid_reason" = "Face ID ile FundBud'a giriş yapın";
+
+// MARK: - Onboarding
+"onboarding_page1_title" = "FundBud'a Hoş Geldiniz";
+"onboarding_page1_subtitle" = "Akıllı Günlük Bütçe Takipçisi";
+"onboarding_page1_description" = "Günlük harcama limitinizi belirleyin ve her gideri gerçek zamanlı takip edin.";
+"onboarding_page1_feature1" = "Günlük harcama limitleri belirleyin";
+"onboarding_page1_feature2" = "Gerçek zamanlı gider takibi";
+
+"onboarding_page2_title" = "Verileriniz Yerel Kalır";
+"onboarding_page2_subtitle" = "%100 Gizlilik ve Güvenlik";
+"onboarding_page2_description" = "Tüm finansal verileriniz telefonunuzda güvenle saklanır. Asla paylaşılmaz veya yüklenmez.";
+"onboarding_page2_feature1" = "Tüm veriler telefonunuzda kalır";
+"onboarding_page2_feature2" = "Face ID ve Touch ID ile korunur";
+
+"onboarding_page3_title" = "Günlük Bütçe Sistemi";
+"onboarding_page3_subtitle" = "Basit ve Etkili";
+"onboarding_page3_description" = "Günlük limitiniz her gün sıfırlanır. Gider ekleyin ve kalan bütçenizin anında güncellenmesini izleyin.";
+"onboarding_page3_feature1" = "Günlük limit otomatik sıfırlanır";
+"onboarding_page3_feature2" = "Giderler bütçenizden düşer";
+
+"onboarding_page4_title" = "Bugün Bütçelemeye Başlayın";
+"onboarding_page4_subtitle" = "Harcamalarınızın Kontrolünü Elinize Alın";
+"onboarding_page4_description" = "Her gün tam olarak ne kadar harcayabileceğinizi bilmeye hazır mısınız? Hadi başlayalım!";
+"onboarding_page4_feature1" = "İlk günlük limitinizi belirleyin";
+"onboarding_page4_feature2" = "Harcamaları hemen takip edin";
+
+// MARK: - Alerts
+"delete_expense_title" = "Harcamayı Sil";
+"delete_expense_message" = "Bu harcamayı silmek istediğinizden emin misiniz?";
+"delete" = "Sil";
+"sign_out_title" = "Çıkış Yap";
+"sign_out_message" = "FundBud'dan çıkış yapmak istediğinizden emin misiniz?";
+"sign_out" = "Çıkış Yap";
+"camera_error_title" = "Kamera Hatası";
+"permissions_required_message" = "İzinler gerekli.";
+"photo_library_error_title" = "Fotoğraf Kütüphanesi Hatası";
+"permissions_required_title" = "İzinler Gerekli";
+"camera_photo_permissions_message" = "Fiş fotoğraflarını çekmek ve saklamak için kamera ve fotoğraf erişimi gerekli.";
+"go_to_settings" = "Ayarlara git";
+"microphone_permissions_message" = "Sesli girişleri kaydetmek ve yazıya dökmek için mikrofon ve konuşma tanıma erişimi gerekli.";
+"recording_error_title" = "Kayıt Hatası";
+"recording_error_message" = "Sesli kayıt tamamlanamadı. Lütfen tekrar deneyin.";
+"try_again" = "Tekrar Dene";
+"added_expense_title" = "Harcama Eklendi";
+"added_expense_message" = "Harika! Bütçenizi takip etmeye devam edin!";
+"deleted_expense_title" = "Harcama Silindi";
+"deleted_expense_message" = "Harcama kaldırıldı.";
+"modified_expense_title" = "Harcama Düzenlendi";
+"modified_expense_message" = "Değişiklikleriniz başarıyla kaydedildi.";
+"daily_limit_updated_title" = "Günlük Limit Güncellendi";
+"daily_limit_updated_message" = "Yeni harcama limitiniz artık aktif.";
+"rate_fundbud_title" = "FundBud'u Değerlendirin";
+"rate_fundbud_message" = "Uygulamamızı AppStore'da değerlendirmek ister misiniz?";
+"send_feedback_title" = "Geri Bildirim Gönder";
+"send_feedback_message" = "Bu, ekibimize geri bildirim göndermek için mail uygulamanızı açacak.";
+"export_data_title" = "Veri Dışa Aktar";
+"export_data_message" = "Bu, tüm gider verilerinizi PDF dosyası olarak dışa aktaracak.";
+"no_receipt_detected_title" = "Fiş Algılanmadı";
+"receipt_detected_title" = "Fiş Algılandı!";
+"add_to_expenses" = "Harcamalara Ekle";
+
+// MARK: - PDF Export
+"expense_report" = "Harcama Raporu";
+"fundbud_expense_report" = "FundBud Harcama Raporu";
+"user" = "Kullanıcı";
+"generated" = "Oluşturuldu:";
+"period" = "Dönem:";
+"total_expenses" = "Toplam Harcamalar:";
+"daily_budget" = "Günlük Bütçe:";
+"days_tracked" = "Takip Edilen Günler:";
+"average_daily" = "Günlük Ortalama:";
+"current_balance" = "Mevcut Bakiye:";
+"summary" = "Özet";
+"expense_details" = "Harcama Detayları";
+"date" = "Tarih";
+"amount" = "Tutar";
+"category" = "Kategori";
+"description" = "Açıklama";
+
+// MARK: - Charts
+"daily" = "Günlük";
+"weekly" = "Haftalık";
+"monthly" = "Aylık";
+"this_week" = "Bu Hafta";
+"last_12_weeks" = "Son 12 Hafta";
+"last_12_months" = "Son 12 Ay";
+"expense_trends" = "Harcama Trendleri";
+
+// MARK: - Time Frame Model
+"daily" = "Günlük";
+"weekly" = "Haftalık";
+"monthly" = "Aylık";
+"yearly" = "Yıllık";
+
+// MARK: - Profile Screen
+"profile" = "PROFİL";
+"hi_there" = "Merhaba!";
+"daily_budget" = "Günlük Bütçe";
+"spending_overview" = "Harcama Genel Bakış";
+"todays_budget" = "Bugünün Bütçesi";
+"total_spent" = "Toplam Harcanan";
+"daily_average" = "Günlük Ortalama";
+"days_tracked" = "Takip Edilen Günler";
+"settings_support" = "Ayarlar ve Destek";
+"notifications" = "Bildirimler";
+"budget_alerts_reminders" = "Bütçe uyarıları ve hatırlatmaları";
+"export_data" = "Veri Dışa Aktar";
+"download_expense_history" = "Harcama geçmişini indir";
+"privacy_security" = "Gizlilik ve Güvenlik";
+"manage_data_protection" = "Veri korumanızı yönetin";
+"send_feedback" = "Geri Bildirim Gönder";
+"help_improve_app" = "Uygulamayı geliştirmemize yardım edin";
+"rate_fundbud" = "FundBud'u Değerlendir";
+"share_experience" = "Deneyiminizi paylaşın";
+"legal_information" = "Yasal Bilgiler";
+"terms_privacy_licenses" = "Şartlar, gizlilik ve lisanslar";
+"sign_out" = "Çıkış Yap";
+
+// MARK: - Feedback Email
+"feedback_subject" = "FundBud Geri Bildirimi - iOS Uygulaması";
+"feedback_body_greeting" = "Merhaba FundBud ekibi,";
+"feedback_body_message" = "Uygulama hakkında geri bildirim paylaşmak istiyorum:";
+"feedback_body_placeholder" = "[Lütfen geri bildiriminizi buraya yazın]";
+"feedback_body_separator" = "---";
+"app_version_label" = "Uygulama Sürümü:";
+"ios_version_label" = "iOS Sürümü:";
+
+// MARK: - Legal Information
+"legal_information" = "Yasal Bilgiler";
+"terms_of_service" = "Hizmet Şartları";
+"privacy_policy" = "Gizlilik Politikası";
+"about_fundbud" = "FundBud Hakkında";
+
+// MARK: - Terms of Service
+"terms_conditions_title" = "ŞARTLAR VE KOŞULLAR";
+"last_updated" = "Son güncelleme:";
+"what_is_this_app" = "BU UYGULAMA NEDİR?";
+"terms_app_description" = "Bu, harcamalarınızı yönetmenize yardımcı olan kişisel bir harcama takipçisidir. Bu uygulamayı kullanarak bu şartları kabul edersiniz.";
+"what_you_can_do" = "YAPABILECEKLER";
+"terms_can_do_1" = "• Harcamalarınızı ve gelirinizi takip edebilirsiniz";
+"terms_can_do_2" = "• Harcama bütçeleri belirleyebilirsiniz";
+"terms_can_do_3" = "• Fiş fotoğrafları çekebilirsiniz";
+"terms_can_do_4" = "• Verilerinizi istediğiniz zaman dışa aktarabilirsiniz";
+"terms_can_do_5" = "• Tüm özellikleri kişisel kullanım için kullanabilirsiniz";
+"what_you_cannot_do" = "YAPAMADIKLARINIZ";
+"terms_cannot_do_1" = "• Yanlış bilgi paylaşamazsınız";
+"terms_cannot_do_2" = "• Uygulamayı yasa dışı faaliyetler için kullanamazsınız";
+"terms_cannot_do_3" = "• Uygulamayı kırmaya veya hacklemeye çalışamazsınız";
+"terms_cannot_do_4" = "• Uygulamayı satamazsınız veya yeniden dağıtamazsınız";
+"your_data_terms" = "VERİLERİNİZ";
+"terms_data_1" = "• Her şey cihazınızda kalır";
+"terms_data_2" = "• Finansal verilerinizi görmez veya saklamayız";
+"terms_data_3" = "• Kamera sadece fişler için kullanılır";
+"terms_data_4" = "• Tüm bilgilerinize sahip olur ve kontrol edersiniz";
+"legal_side" = "YASAL TARAF";
+"terms_legal_1" = "• Uygulama \"olduğu gibi\" sağlanır - mükemmel olduğunu garanti edemeyiz";
+"terms_legal_2" = "• Finansal tavsiye değildir - kendi para kararlarınızı verin";
+"terms_legal_3" = "• Para kaybederseniz sorumlu değiliz";
+"terms_legal_4" = "• Bu şartlar değişebilir (size haber veririz)";
+"terms_questions" = "📧 SORULAR?";
+"contact_us" = "Bize ulaşın: fundBud2025@gmail.com";
+"terms_thanks" = "Uygulamamızı sorumlu bir şekilde kullandığınız için teşekkürler! 🙏";
+
+// MARK: - Privacy Policy
+"privacy_policy_title" = "GİZLİLİK POLİTİKASI";
+"privacy_protect_title" = "GİZLİLİĞİNİZİ KORUYORUZ";
+"privacy_protect_description" = "Finansal verileriniz kişiseldir. İşte bunları tam olarak nasıl ele aldığımız.";
+"what_we_collect" = "NELERİ TOPLUYORUZ";
+"on_device_only" = "Sadece Cihazınızda:";
+"privacy_collect_1" = "• Harcama tutarlarınız ve notlarınız";
+"privacy_collect_2" = "• Belirlediğiniz bütçe limitleri";
+"privacy_collect_3" = "• Çektiğiniz fiş fotoğrafları";
+"privacy_collect_4" = "• Seçtiğiniz kategoriler";
+"anonymous_usage_data" = "Anonim Kullanım Verileri:";
+"privacy_anonymous_1" = "• Özelliklerin ne sıklıkla kullanıldığı";
+"privacy_anonymous_2" = "• Çökme raporları (kişisel veri yok)";
+"privacy_anonymous_3" = "• Uygulama performans ölçümleri";
+"where_data_lives" = "VERİLERİNİZ NEREDE YAŞAR";
+"privacy_data_1" = "• Her şey SİZİN cihazınızda kalır";
+"privacy_data_2" = "• Sunucularımıza hiçbir şey yüklenmez";
+"privacy_data_3" = "• Kişisel verilerin bulut depolaması yok";
+"privacy_data_4" = "• Siz silerseniz, sonsuza kadar gider";
+"camera_access" = "KAMERA ERİŞİMİ";
+"privacy_camera_1" = "• Sadece fiş taradığınızda kullanılır";
+"privacy_camera_2" = "• Fotoğraflar sadece cihazınızda saklanır";
+"privacy_camera_3" = "• Fotoğrafları istediğiniz zaman silebilirsiniz";
+"privacy_camera_4" = "• Fotoğraf kütüphanenize asla erişmeyiz";
+"what_we_dont_do" = "YAPMADIKLARIMIZ";
+"privacy_dont_1" = "• Verilerinizi satmayız (asla!)";
+"privacy_dont_2" = "• Reklamcılarla paylaşmayız";
+"privacy_dont_3" = "• Finansal bilgilerinizi okumayız";
+"privacy_dont_4" = "• Sizi diğer uygulamalarda takip etmeyiz";
+"kids_section" = "ÇOCUKLAR";
+"privacy_kids" = "Bu uygulama 13 yaşından küçük çocuklar için değildir.";
+"your_rights" = "HAKLARINIZ";
+"privacy_rights_1" = "• Tüm verilerinizi görebilirsiniz (uygulamada!)";
+"privacy_rights_2" = "• Her şeyi istediğiniz zaman dışa aktarabilirsiniz";
+"privacy_rights_3" = "• Uygulamayı kaldırarak tüm verileri silebilirsiniz";
+"privacy_rights_4" = "• Gizlilik hakkında bize sorular sorabilirsiniz";
+"privacy_questions" = "GİZLİLİK SORULARI?";
+"privacy_contact" = "Bize ulaşın: fundBud2025@gmail";
+"privacy_trust" = "Güveniniz bizim için her şey demektir! 🔐";
+
+// MARK: - About
+"about_title" = "FUNDBUD HAKKINDA";
+"version_made_with" = "❤️ ile yapıldı";
+"our_mission" = "MİSYONUMUZ";
+"mission_description" = "Harcama takibini o kadar basit hale getirmek ki, gerçekten her gün yapasınız.";
+"what_makes_special" = "BİZİ ÖZEL YAPAN";
+"privacy_first" = "Önce Gizlilik:";
+"about_privacy_1" = "• Her şey cihazınızda kalır";
+"about_privacy_2" = "• Hesap veya kayıt gerekmez";
+"about_privacy_3" = "• Verileriniz size aittir";
+"lightning_fast" = "Şimşek Hızında:";
+"about_fast_1" = "• Saniyeler içinde harcama ekleyin";
+"about_fast_2" = "• Hızlı tutarlar: ₺5, ₺10, ₺25, ₺50";
+"about_fast_3" = "• Ana ekran widget desteği";
+"about_fast_4" = "• Anında fiş tarama";
+"smart_simple" = "Akıllı ve Basit:";
+"about_smart_1" = "• Güzel, kolay arayüz";
+"about_smart_2" = "• Yararlı harcama içgörüleri";
+"about_smart_3" = "• İşe yarayan bütçe takibi";
+"about_smart_4" = "• Her zaman çevrimdışı çalışır";
+"built_with" = "İLE YAPILDI";
+"about_built_1" = "• Swift ve SwiftUI";
+"about_built_2" = "• Gelişmiş haptic geri bildirim";
+"about_built_3" = "• iOS 16+ için optimize edildi";
+"about_built_4" = "• Erişilebilirlik odaklı";
+"for_everyone" = "HERKES İÇİN";
+"about_everyone_1" = "• VoiceOver desteği";
+"about_everyone_2" = "• Dinamik metin boyutlandırma";
+"about_everyone_3" = "• Yüksek karşıtlık modları";
+"about_everyone_4" = "• Basit, net navigasyon";
+"coming_soon" = "YAKINDA GELİYOR";
+"about_coming_1" = "• Daha İyi Bildirimler";
+"about_coming_2" = "• Apple Watch uygulaması";
+"about_coming_3" = "• Daha fazla para birimi";
+"about_coming_4" = "• Gelişmiş raporlar";
+"about_coming_5" = "• Daha da iyi widget'lar";
+"get_in_touch" = "💌 İLETİŞİME GEÇİN";
+"get_in_touch_description" = "Uygulamayı seviyor musunuz? Hata mı buldunuz? Yardıma mı ihtiyacınız var? Bize söyleyin!";
+"about_contact" = "fundBud2025@gmail";
+"thank_you_title" = "🏆 TEŞEKKÜRLER";
+"thank_you_message" = "Bu uygulamayı kullanan herkese - gizliliğinizi korurken harika bir şey inşa etmemize yardım ediyorsunuz.";
+"requirements_title" = "📱 GEREKSİNİMLER";
+"about_requirements_1" = "• iOS 16+ ile iPhone";
+"about_requirements_2" = "• Tüm ekran boyutlarında çalışır";
+"about_requirements_3" = "• iPad uyumlu";
+"about_requirements_4" = "• Karanlık ve Açık mod";
+"copyright_text" = "FundBud";
+"made_in_uk" = "İngiltere'de Yapıldı 🇬🇧";
+"version_label" = "Sürüm";
+
+// MARK: - Privacy & Security
+"privacy_security_title" = "Gizlilik ve Güvenlik";
+"data_protection" = "Veri Koruması";
+"app_permissions" = "Uygulama İzinleri";
+"data_protection_subtitle" = "Bilgilerinizi nasıl koruyoruz";
+"app_permissions_subtitle" = "Cihaz özelliklerine uygulama erişimini kontrol edin";
+
+// MARK: - Data Protection Content
+"your_data_safe" = "Verileriniz Güvende";
+"data_protection_content" = "• Tüm harcama verileri cihazınızda yerel olarak saklanır\n• Hiçbir finansal bilgi harici sunuculara iletilmez\n• Veriler endüstri standardı AES-256 şifreleme ile şifrelenir\n• Kişisel bilgilerinizi satmaz veya paylaşmayız\n• Üçüncü taraf takibi veya analitik yok";
+"data_retention_title" = "Veri Saklama";
+"data_retention_content" = "Verileriniz, uygulamayı silmeyi seçene kadar cihazınızda kalır. Bilgilerinizi otomatik olarak toplamaz veya yedeklemeyiz.";
+
+// MARK: - Security Settings
+"biometric_authentication" = "Biyometrik Kimlik Doğrulama";
+"enabled" = "Etkin";
+"security_features" = "Güvenlik Özellikleri:";
+"security_features_content" = "• Face ID / Touch ID koruması\n• Uygulama arka plana alındığında otomatik kilitlenir\n• Güvenli veri şifreleme\n• Hassas verilerin bulut depolaması yok\n• Düzenli güvenlik güncellemeleri";
+
+// MARK: - Permissions
+"camera_access" = "Kamera Erişimi";
+"camera_description" = "Fiş tarama ve gider fotoğrafları için";
+"photo_library" = "Fotoğraf Kütüphanesi";
+"photo_library_description" = "Fiş görüntülerini kaydetmek ve erişmek için";
+"biometric_data" = "Biyometrik Veri";
+"biometric_description" = "Güvenli uygulama kimlik doğrulaması için";
+"optional" = "İsteğe Bağlı";
+"recommended" = "Önerilen";
+"permissions_settings_note" = "Bu izinleri cihaz Ayarları > FundBud'dan yönetebilirsiniz";
+
+// MARK: - Modify Expense
+"modify_expense" = "HARCAMA DÜZENLE";
+"add_expense" = "HARCAMA EKLE";
+"modify" = "DÜZENLE";
+"add_capital" = "EKLE";
+"expense" = "HARCAMA";
+"update" = "GÜNCELLE";
+"save" = "KAYDET";
+"delete" = "SİL";
+"name" = "İSİM";
+"amount" = "TUTAR";
+"date" = "TARİH";
+
+// MARK: - Tab Bar
+"remaining" = "KALAN";
+"budget" = "BÜTÇE";
+"expenses" = "HARCAMALAR";
+
+// MARK: - Expense Groups
+"today" = "BUGÜN";
+"yesterday" = "DÜN";
+"this_week" = "BU HAFTA";
+"this_month" = "BU AY";
+"earlier" = "DAHA ÖNCE";
+
+// MARK: - Camera Errors
+"photo_library_access_denied" = "Fotoğraf kütüphanesi erişimi reddedildi";
+"unknown_photo_authorization" = "Bilinmeyen fotoğraf kütüphanesi yetkilendirme durumu";
+
+// MARK: - Image Preview
+"retake" = "Tekrar Çek";
+"add" = "Ekle";
+
+// MARK: - Camera View
+"scan_entry" = "TARAMA GİRİŞİ";
+"scan" = "TARA";
+"entry" = "GİRİŞ";

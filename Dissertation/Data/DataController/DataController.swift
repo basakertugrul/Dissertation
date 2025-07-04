@@ -60,7 +60,7 @@ struct DataController {
     public func saveTimeFrame(_ timeFrame: TimeFrame) -> Result<Void, DataControllerError> {
         switch validateUser() {
         case .success(let userId):
-            UserDefaults.standard.set(timeFrame.rawValue, forKey: UserDefaultsKeys.timeFrame(for: userId))
+            UserDefaults.standard.set(timeFrame.localizedString, forKey: UserDefaultsKeys.timeFrame(for: userId))
             return .success(())
         case .failure(let error):
             return .failure(error)
@@ -74,7 +74,7 @@ struct DataController {
         
         let savedTimeFrameString = UserDefaults.standard.string(forKey: UserDefaultsKeys.timeFrame(for: userId))
         if let savedTimeFrameString = savedTimeFrameString,
-           let timeFrame = TimeFrame(rawValue: savedTimeFrameString) {
+           let timeFrame = TimeFrame(from: savedTimeFrameString) {
             return timeFrame
         }
         return .weekly

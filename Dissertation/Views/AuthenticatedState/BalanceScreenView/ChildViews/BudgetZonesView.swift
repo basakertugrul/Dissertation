@@ -167,7 +167,7 @@ struct BudgetZonesView: View {
                      }
                  }) {
                      CustomTextView(
-                         frame.rawValue,
+                         frame.localizedString,
                          font: timeFrame == frame ? .labelLargeBold : .labelLarge,
                          color: timeFrame == frame ? .customWhiteSand : .customWhiteSand.opacity(Constraint.Opacity.high),
                          uppercase: true
