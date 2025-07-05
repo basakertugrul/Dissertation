@@ -165,6 +165,17 @@ struct OnboardingPage {
             ]
         ),
         OnboardingPage(
+            title: NSLocalizedString("onboarding_page5_title", comment: ""),
+            subtitle: NSLocalizedString("onboarding_page5_subtitle", comment: ""),
+            description: NSLocalizedString("onboarding_page5_description", comment: ""),
+            systemImage: "checkmark.circle.fill",
+            accentColor: .customBurgundy,
+            features: [
+                NSLocalizedString("onboarding_page5_feature1", comment: ""),
+                NSLocalizedString("onboarding_page5_feature2", comment: "")
+            ]
+        ),
+        OnboardingPage(
             title: NSLocalizedString("onboarding_page4_title", comment: ""),
             subtitle: NSLocalizedString("onboarding_page4_subtitle", comment: ""),
             description: NSLocalizedString("onboarding_page4_description", comment: ""),

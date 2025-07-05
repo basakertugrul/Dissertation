@@ -81,7 +81,7 @@
 "onboarding_page1_title" = "Welcome to FundBud";
 "onboarding_page1_subtitle" = "Smart Daily Budget Tracker";
 "onboarding_page1_description" = "Set your daily spending limit and track every expense in real-time.";
-"onboarding_page1_feature1" = "Set daily spending limits";
+"onboarding_page1_feature1" = "Set daily spending limit";
 "onboarding_page1_feature2" = "Real-time expense tracking";
 
 "onboarding_page2_title" = "Your Data Stays Local";
@@ -101,6 +101,12 @@
 "onboarding_page4_description" = "Ready to know exactly what you can spend every day? Let's get started!";
 "onboarding_page4_feature1" = "Set your first daily limit";
 "onboarding_page4_feature2" = "Track expenses immediately";
+
+"onboarding_page5_title" = "Easy Expense Entry";
+"onboarding_page5_subtitle" = "Multiple Ways to Add Expenses";
+"onboarding_page5_description" = "Add your expenses quickly with our smart input methods.";
+"onboarding_page5_feature1" = "Scan receipts with your camera";
+"onboarding_page5_feature2" = "Voice input - just say the amount";
 
 // MARK: - Alerts
 "delete_expense_title" = "Delete Expense";

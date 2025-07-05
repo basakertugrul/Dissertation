@@ -81,7 +81,7 @@
 "onboarding_page1_title" = "FundBud'a Hoş Geldiniz";
 "onboarding_page1_subtitle" = "Akıllı Günlük Bütçe Takipçisi";
 "onboarding_page1_description" = "Günlük harcama limitinizi belirleyin ve her gideri gerçek zamanlı takip edin.";
-"onboarding_page1_feature1" = "Günlük harcama limitleri belirleyin";
+"onboarding_page1_feature1" = "Günlük harcama limiti belirleyin";
 "onboarding_page1_feature2" = "Gerçek zamanlı gider takibi";
 
 "onboarding_page2_title" = "Verileriniz Yerel Kalır";
@@ -101,6 +101,12 @@
 "onboarding_page4_description" = "Her gün tam olarak ne kadar harcayabileceğinizi bilmeye hazır mısınız? Hadi başlayalım!";
 "onboarding_page4_feature1" = "İlk günlük limitinizi belirleyin";
 "onboarding_page4_feature2" = "Harcamaları hemen takip edin";
+
+"onboarding_page5_title" = "Kolay Harcama Girişi";
+"onboarding_page5_subtitle" = "Harcama Eklemenin Birden Fazla Yolu";
+"onboarding_page5_description" = "Akıllı giriş yöntemlerimizle harcamalarınızı hızlıca ekleyin.";
+"onboarding_page5_feature1" = "Kameranızla fiş tarayın";
+"onboarding_page5_feature2" = "Sesli giriş - sadece tutarı söyleyin";
 
 // MARK: - Alerts
 "delete_expense_title" = "Harcamayı Sil";
