@@ -29,7 +29,7 @@ struct CurrentBalanceCardView: View {
         formatter.numberStyle = .currency
         formatter.locale = Locale.current
         return formatter
-            .string(from: NSNumber(value: animatedBalance)) ?? "£0"
+            .string(from: NSNumber(value: animatedBalance)) ?? "\(getCurrencySymbol())0"
     }
 
     var body: some View {

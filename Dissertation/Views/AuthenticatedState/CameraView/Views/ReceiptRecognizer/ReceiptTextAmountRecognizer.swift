@@ -57,10 +57,23 @@ extension ReceiptDataExtractor {
         private func extractCurrencyAmount(from line: String) -> Double? {
             // Patterns for currency amounts
             let currencyPatterns = [
-                #"^[£$€](\d{1,4}\.\d{2})$"#,                               // £41.11
-                #"^(\d{1,4}\.\d{2})$"#,                                     // 41.11
-                #"^[£$€](\d{1,4})$"#,                                       // £41
-                #"^(\d{1,4})$"#                                             // 41
+                // Pattern 1: Any currency symbol + amount with decimals (e.g., $41.11, €41,11, ₺41.11, ¥41.11)
+                #"^[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿](\d{1,6}[.,]\d{1,3})$"#,
+                
+                // Pattern 2: Amount with decimals only (e.g., 41.11, 41,11)
+                #"^(\d{1,6}[.,]\d{1,3})$"#,
+                
+                // Pattern 3: Any currency symbol + whole amount (e.g., $41, €41, ₺41, ¥4111)
+                #"^[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿](\d{1,8})$"#,
+                
+                // Pattern 4: Whole amount only (e.g., 41, 4111)
+                #"^(\d{1,8})$"#,
+                
+                // Pattern 5: Amount + currency symbol at end (e.g., 41.11€, 41,11₺)
+                #"^(\d{1,6}[.,]\d{1,3})\s?[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]$"#,
+                
+                // Pattern 6: Whole amount + currency symbol at end (e.g., 41€, 4111¥)
+                #"^(\d{1,8})\s?[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]$"#
             ]
             
             for pattern in currencyPatterns {
@@ -84,9 +97,29 @@ extension ReceiptDataExtractor {
         
         private func extractAmountFromTotalLine(_ line: String) -> Double? {
             let totalPatterns = [
-                #"(?i)total\s*:?\s*[£$€]?(\d{1,4}\.\d{2})"#,
-                #"[£$€]?(\d{1,4}\.\d{2})\s*(?i)total"#,
-                #"(?i)total\s*[£$€]?(\d{1,4})"#
+                // Pattern 1: "Total:" + any currency + flexible decimals
+                #"(?i)total\s*:?\s*[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]?\s*(\d{1,8}[.,]\d{1,3})"#,
+                
+                // Pattern 2: Amount + currency + "total"
+                #"[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]?\s*(\d{1,8}[.,]\d{1,3})\s*(?i)total"#,
+                
+                // Pattern 3: Amount + currency at end + "total"
+                #"(\d{1,8}[.,]\d{1,3})\s*[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]\s*(?i)total"#,
+                
+                // Pattern 4: "Total:" + whole amounts + any currency
+                #"(?i)total\s*:?\s*[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]?\s*(\d{1,8})"#,
+                
+                // Pattern 5: Whole amount + currency + "total"
+                #"[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]?\s*(\d{1,8})\s*(?i)total"#,
+                
+                // Pattern 6: Whole amount + currency at end + "total"
+                #"(\d{1,8})\s*[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]\s*(?i)total"#,
+                
+                // Pattern 7: "Total:" + amount + currency at end
+                #"(?i)total\s*:?\s*(\d{1,8}[.,]\d{1,3})\s*[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]"#,
+                
+                // Pattern 8: "Total:" + whole amount + currency at end
+                #"(?i)total\s*:?\s*(\d{1,8})\s*[£$€₺¥₹₽₩¢₪₫₡₦₵₸₴₱₲₯₧₨₭﷼₼₾₿]"#
             ]
             
             for pattern in totalPatterns {

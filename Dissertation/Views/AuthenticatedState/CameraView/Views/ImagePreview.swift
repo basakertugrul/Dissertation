@@ -208,7 +208,8 @@ struct ImagePreview: View {
         }
 
         guard let receipt = receipt else { return }
-        let newExpense: ExpenseViewModel = .createWithPound(
+        let newExpense: ExpenseViewModel = .create(
+            id: UUID(),
             name: receipt.merchantName ?? "",
             date: receipt.date ?? .now,
             amount: receipt.totalAmount ?? .zero,

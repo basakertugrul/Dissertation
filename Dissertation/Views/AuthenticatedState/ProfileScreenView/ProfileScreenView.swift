@@ -21,6 +21,7 @@ struct ProfileScreen: View {
     @State var showingsendFeedbackAlert = false
     @State var showingPrivacyPolicyAlert = false
     @State var showingExportDataAlert = false
+    @State var showingProfileDataAlert = false
 
     var title: AttributedString = {
         var string = AttributedString.init(stringLiteral: NSLocalizedString("profile", comment: ""))
@@ -89,6 +90,9 @@ struct ProfileScreen: View {
         .showSendFeedbackConfirmationAlert(isPresented: $showingsendFeedbackAlert, onTap: sendFeedback)
         .showPrivacySecurityAlert(isPresented: $showingPrivacyPolicyAlert)
         .showExportDataConfirmationAlert(isPresented: $showingExportDataAlert, onTap: exportData)
+        .showComingSoonAlert(isPresented: $showingProfileDataAlert, buttonAction: { withAnimation(.smooth) {
+            showingProfileDataAlert = false
+        } })
     }
 
     private func rateApp() {
@@ -214,19 +218,19 @@ struct ProfileScreen: View {
             ) {
                 expenseStatCard(
                     NSLocalizedString("todays_budget", comment: ""),
-                    value: "£\(appState.calculatedBalance)",
+                    value: "\(getCurrencySymbol())\(appState.calculatedBalance)",
                     icon: "list.bullet.rectangle.fill",
                     color: .customOliveGreen
                 )
                 expenseStatCard(
                     NSLocalizedString("total_spent", comment: ""),
-                    value: "£\(appState.totalExpenses)",
+                    value: "\(getCurrencySymbol())\(appState.totalExpenses)",
                     icon: "banknote.fill",
                     color: .customBurgundy
                 )
                 expenseStatCard(
                     NSLocalizedString("daily_average", comment: ""),
-                    value: "£\(appState.formattedAverageDaily)",
+                    value: "\(getCurrencySymbol())\(appState.formattedAverageDaily)",
                     icon: "calendar.badge.clock",
                     color: .customGold
                 )
@@ -271,6 +275,9 @@ struct ProfileScreen: View {
         VStack(spacing: Constraint.largePadding) {
             settingsGroup(NSLocalizedString("settings_support", comment: ""), items: [
                 ("bell.badge.fill", NSLocalizedString("notifications", comment: ""), NSLocalizedString("budget_alerts_reminders", comment: ""), .customBurgundy, {
+                    withAnimation(.smooth) {
+                        showingProfileDataAlert = true
+                    }
                     HapticManager.shared.trigger(.navigation)
                     appState.manageNotifications()
                 }),

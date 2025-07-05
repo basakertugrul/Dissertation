@@ -5,13 +5,11 @@ struct LineChartItem {
     let id = UUID()
     let date: Date
     let moneySpent: Double
-    let currency: String
     
-    static func createWithPound(date: Date, moneySpent: Double) -> LineChartItem {
+    static func create(date: Date, moneySpent: Double) -> LineChartItem {
         return LineChartItem(
             date: date,
-            moneySpent: moneySpent,
-            currency: "GBP"
+            moneySpent: moneySpent
         )
     }
 }

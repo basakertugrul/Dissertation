@@ -38,7 +38,7 @@ extension ReceiptDataExtractor {
                if trimmedLine.isEmpty ||
                   trimmedLine.lowercased().contains("item") ||
                   trimmedLine.lowercased().contains("total") ||
-                  trimmedLine.contains("£") || trimmedLine.contains("$") || trimmedLine.contains("€") {
+                  trimmedLine.contains("\(getCurrencySymbol())") {
                    continue
                }
                

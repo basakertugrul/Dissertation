@@ -7,8 +7,7 @@ struct LoadingOverlayView: View {
     /// Internal state for animations
     @State private var rotationAngle: Double = 0
     @State private var pulseScale: CGFloat = 1.0
-    @State private var contentScale: CGFloat = 0.8
-    @State private var contentOpacity: Double = 0
+    @State private var pulseOpacity: Double = 0.3
     
     var body: some View {
         if isPresented {
@@ -17,7 +16,6 @@ struct LoadingOverlayView: View {
                 Rectangle()
                     .fill(.ultraThinMaterial.opacity(Constraint.Opacity.medium))
                     .ignoresSafeArea()
-                    .transition(.opacity)
                 
                 /// Loading content
                 VStack(spacing: Constraint.padding) {
@@ -53,7 +51,7 @@ struct LoadingOverlayView: View {
                             .fill(
                                 RadialGradient(
                                     gradient: Gradient(colors: [
-                                        .customWhiteSand.opacity(0.3),
+                                        .customWhiteSand.opacity(pulseOpacity),
                                         .clear
                                     ]),
                                     center: .center,
@@ -63,7 +61,6 @@ struct LoadingOverlayView: View {
                             )
                             .frame(width: 80, height: 80)
                             .scaleEffect(pulseScale)
-                            .opacity(2 - pulseScale)
                     }
                     
                     /// Loading text
@@ -78,16 +75,8 @@ struct LoadingOverlayView: View {
                         )
                         .shadow(color: .customRichBlack.opacity(Constraint.Opacity.medium), radius: Constraint.shadowRadius)
                 )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(
-                    Color.customWhiteSand
-                        .opacity(Constraint.Opacity.low)
-                )
-                .scaleEffect(contentScale)
-                .opacity(contentOpacity)
-                .transition(.scale.combined(with: .opacity))
             }
-            .animation(.easeInOut(duration: 0.3), value: isPresented)
+            .transition(.scale(scale: 0.8).combined(with: .opacity))
             .onAppear {
                 startAnimations()
             }
@@ -100,35 +89,29 @@ struct LoadingOverlayView: View {
 
     // MARK: - Animation Control
     private func startAnimations() {
-        /// Content entrance animation
         HapticManager.shared.trigger(.buttonTap)
-        withAnimation(.smooth()) {
-            contentScale = 1.0
-            contentOpacity = 1.0
-        }
         
-        /// Continuous rotation animation
-        withAnimation(.smooth(duration: 1.5).repeatForever(autoreverses: false)) {
+        /// Continuous rotation animation - faster and smoother
+        withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: false)) {
             rotationAngle = 360
         }
         
-        /// Pulse animation
-        withAnimation(.smooth(duration: 1.5).repeatForever(autoreverses: false)) {
-            pulseScale = 1.5
+        /// Pulse animation - slower and more subtle
+        withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
+            pulseScale = 1.3
+            pulseOpacity = 0.1
         }
     }
     
     private func stopAnimations() {
-        /// Reset all animation states
-        contentScale = 0.8
-        contentOpacity = 0
-        
-        /// Stop repeating animations by setting to current values
-        rotationAngle = rotationAngle.truncatingRemainder(dividingBy: 360)
-        pulseScale = 1.0
+        /// Reset animation states
+        withAnimation(.none) {
+            rotationAngle = 0
+            pulseScale = 1.0
+            pulseOpacity = 0.3
+        }
     }
 }
-
 
 // MARK: - View Extension
 extension View {

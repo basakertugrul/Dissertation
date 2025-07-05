@@ -149,8 +149,8 @@ struct BudgetZonesView: View {
 
         timeFrameBalanceLimit = timeFrameLimit
         lineChartItems = [
-            LineChartItem.createWithPound(date: now, moneySpent: timeFrameLimit), /// Limit bar
-            LineChartItem.createWithPound(date: now, moneySpent: totalSpent) /// Spent bar
+            LineChartItem.create(date: now, moneySpent: timeFrameLimit), /// Limit bar
+            LineChartItem.create(date: now, moneySpent: totalSpent) /// Spent bar
         ]
     }
 
@@ -193,6 +193,6 @@ struct BudgetZonesView: View {
     func daysBetween(_ date1: Date, _ date2: Date) -> Double {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.day], from: date1, to: date2)
-        return Double(abs(components.day ?? 0))
+        return Double(abs(components.day ?? 0)) + 1
     }
 }

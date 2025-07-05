@@ -2,7 +2,6 @@
 "set_daily_budget" = "Günlük Bütçe Belirle";
 "daily_budget_question" = "Günde ne kadar harcamak istiyorsunuz?";
 "daily_budget_description" = "Akıllı günlük limitlerle harcamalarınızı kontrol edin";
-"currency_symbol" = "₺";
 "amount_placeholder" = "0";
 "quick_select" = "Hızlı Seçim";
 "continue" = "Devam Et";
@@ -397,3 +396,7 @@
 "scan_entry" = "TARAMA GİRİŞİ";
 "scan" = "TARA";
 "entry" = "GİRİŞ";
+
+// MARK: - Coming Soon
+"coming_soon_title" = "Yakında Geliyor";
+"coming_soon_message" = "Bu özellik yakında geliyor. Güncellemeler için takipte kalın!";

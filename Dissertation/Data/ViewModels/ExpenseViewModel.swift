@@ -5,7 +5,6 @@ class ExpenseViewModel {
     var name: String
     var date: Date
     var amount: Double
-    var currencyCode: String
     let createDate: Date
     let id: UUID
 
@@ -14,14 +13,12 @@ class ExpenseViewModel {
         date: Date,
         amount: Double,
         createDate: Date,
-        currencyCode: String,
         id: UUID
     ) {
         self.name = name
         self.date = date
         self.amount = amount
         self.createDate = createDate
-        self.currencyCode = currencyCode
         self.id = id
     }
 
@@ -35,22 +32,7 @@ class ExpenseViewModel {
         self.amount = amount
     }
 
-    static func createWithPound(
-        name: String,
-        date: Date,
-        amount: Double,
-        createDate: Date
-    ) -> ExpenseViewModel {
-        return .createWithPound(
-            id: .none,
-            name: name,
-            date: date,
-            amount: amount,
-            createDate: createDate
-        )
-    }
-
-    private static func createWithPound(
+    static func create(
         id: UUID?,
         name: String,
         date: Date,
@@ -62,7 +44,6 @@ class ExpenseViewModel {
             date: date,
             amount: amount,
             createDate: createDate,
-            currencyCode: "GBP",
             id: id ?? UUID()
         )
     }
@@ -71,7 +52,6 @@ class ExpenseViewModel {
         self.id         = model.id!
         self.name       = model.name ?? ""
         self.amount     = model.amount
-        self.currencyCode   = model.currencyCode ?? ""
         self.date       = model.date   ?? Date()
         self.createDate = model.createDate ?? Date()
     }
@@ -121,4 +101,17 @@ extension ExpenseViewModel {
         let response = calendar.isDate(date, equalTo: Date(), toGranularity: .year)
         return response
     }
+}
+
+func getAmountString(of amount: Double) -> String {
+    let locale = Locale.current
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .currency
+    formatter.locale = locale
+    return formatter.string(from: NSNumber(value: amount)) ?? "0.00"
+}
+
+func getCurrencySymbol() -> String {
+    let locale = Locale.current
+    return locale.currencySymbol ?? "$"
 }

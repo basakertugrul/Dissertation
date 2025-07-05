@@ -44,13 +44,12 @@ struct CustomTextView: View {
     static func currency(
         _ value: Double,
         font: TextFonts,
-        currencySymbol: String = "£",
         color: Color
     ) -> some View {
         let formattedValue = value.formatted()
 
         return HStack(alignment: .bottom, spacing: .zero) {
-            Text(currencySymbol)
+            Text(getCurrencySymbol())
                 .font(font.font)
                 .tracking(font.tracking)
 

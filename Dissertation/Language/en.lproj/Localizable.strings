@@ -2,7 +2,6 @@
 "set_daily_budget" = "Set Daily Budget";
 "daily_budget_question" = "How much do you want to spend per day?";
 "daily_budget_description" = "Control your spending with smart daily limits";
-"currency_symbol" = "£";
 "amount_placeholder" = "0";
 "quick_select" = "Quick Select";
 "continue" = "Continue";
@@ -292,7 +291,7 @@
 "about_privacy_3" = "• Your data belongs to you";
 "lightning_fast" = "Lightning Fast:";
 "about_fast_1" = "• Add expenses in seconds";
-"about_fast_2" = "• Quick amounts: £1, £2, £5, £10";
+"about_fast_2" = "• Quick amounts: 1.0, 2.0, 5.0, 10.0";
 "about_fast_3" = "• Home screen widget support";
 "about_fast_4" = "• Instant receipt scanning";
 "smart_simple" = "Smart & Simple:";
@@ -397,3 +396,7 @@
 "scan_entry" = "SCAN ENTRY";
 "scan" = "SCAN";
 "entry" = "ENTRY";
+
+// MARK: - Coming Soon
+"coming_soon_title" = "Coming Soon";
+"coming_soon_message" = "This feature is coming soon. Stay tuned for updates!";

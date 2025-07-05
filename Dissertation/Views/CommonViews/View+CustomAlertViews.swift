@@ -414,5 +414,30 @@ extension View {
             }
         }
     }
+
+    /// Show Coming Soon Alert
+        func showComingSoonAlert(
+            isPresented: Binding<Bool>,
+            buttonAction: @escaping () -> Void = {},
+        ) -> some View {
+            ZStack {
+                self
+                if isPresented.wrappedValue {
+                    CustomAlertView(
+                        isShowing: isPresented,
+                        title: NSLocalizedString("coming_soon_title", comment: ""),
+                        message: NSLocalizedString("coming_soon_message", comment: ""),
+                        buttonText: NSLocalizedString("ok", comment: ""),
+                        buttonAction: {
+                            isPresented.wrappedValue = false
+                            buttonAction()
+                        },
+                        secondaryButtonText: .none,
+                        secondaryButtonAction: .none,
+                        alertColor: .customOliveGreen
+                    )
+                    .animation(.smooth, value: isPresented.wrappedValue)
+                }
+            }
+        }
 }
- /// For report: the request ones are for to be used later the release

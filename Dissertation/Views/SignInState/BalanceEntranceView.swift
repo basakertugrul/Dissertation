@@ -67,7 +67,7 @@ struct BalanceEntranceView: View {
                     /// Amount Input
                     ZStack {
                         CustomTextView(
-                            NSLocalizedString("currency_symbol", comment: "Currency symbol"),
+                            getCurrencySymbol(),
                             font: .titleSmall,
                             color: .customWhiteSand
                         )
@@ -160,7 +160,7 @@ struct BalanceEntranceView: View {
             }
         }) {
             CustomTextView(
-                "\(NSLocalizedString("currency_symbol", comment: "Currency symbol"))\(Int(amount))",
+                "\(getCurrencySymbol())\(Int(amount))",
                 font: .bodySmall,
                 color: isSelected ? .customOliveGreen : .customWhiteSand
             )

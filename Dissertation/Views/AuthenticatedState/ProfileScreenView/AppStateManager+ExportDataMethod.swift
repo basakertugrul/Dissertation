@@ -83,11 +83,11 @@ extension AppStateManager {
         let valueFont = UIFont.systemFont(ofSize: 16)
         
         let summaryData: [(String, String)] = [
-            (NSLocalizedString("total_expenses", comment: ""), "£\(String(format: "%.2f", totalExpenses))"),
-            (NSLocalizedString("daily_budget", comment: ""), "£\(String(format: "%.2f", dailyBalance ?? 0))"),
+            (NSLocalizedString("total_expenses", comment: ""), "\(getCurrencySymbol())\(String(format: "%.2f", totalExpenses))"),
+            (NSLocalizedString("daily_budget", comment: ""), "\(getCurrencySymbol())\(String(format: "%.2f", dailyBalance ?? 0))"),
             (NSLocalizedString("days_tracked", comment: ""), "\(daysSinceStart)"),
             (NSLocalizedString("average_daily", comment: ""), "\(formattedAverageDaily)"),
-            (NSLocalizedString("current_balance", comment: ""), "£\(String(format: "%.2f", calculatedBalance))")
+            (NSLocalizedString("current_balance", comment: ""), "\(getCurrencySymbol())\(String(format: "%.2f", calculatedBalance))")
         ]
         
         var currentY = yPosition
@@ -190,7 +190,7 @@ extension AppStateManager {
             
             let rowData = [
                 dateFormatter.string(from: expense.date),
-                "£\(String(format: "%.2f", expense.amount))",
+                "\(getCurrencySymbol())\(String(format: "%.2f", expense.amount))",
                 expense.name
             ]
             

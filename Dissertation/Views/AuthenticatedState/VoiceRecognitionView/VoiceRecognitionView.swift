@@ -66,7 +66,7 @@ struct VoiceRecordingView: View {
     private var headerSection: some View {
         var attributedTitle: AttributedString {
             var attributedString = AttributedString(NSLocalizedString("voice_entry", comment: ""))
-            
+
             if let helloRange = attributedString.range(of: NSLocalizedString("voice", comment: "")) {
                 attributedString[helloRange].foregroundColor = .customWhiteSand.opacity(Constraint.Opacity.high)
                 attributedString[helloRange].font = TextFonts.titleSmall.font
@@ -127,7 +127,6 @@ struct VoiceRecordingView: View {
                         radius: isRecording ? 16 : 8,
                         y: 4
                     )
-                
                 if isRecording {
                     RoundedRectangle(cornerRadius: 6)
                         .fill(.customRichBlack)
@@ -161,7 +160,7 @@ struct VoiceRecordingView: View {
     
     private func startRecording() {
         isRecording = true
-        
+
         waveformTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
             updateWaveform()
         }
@@ -171,10 +170,10 @@ struct VoiceRecordingView: View {
     
     private func stopRecording() {
         isRecording = false
-        
+
         waveformTimer?.invalidate()
         waveformTimer = nil
-        
+
         withAnimation(.easeOut(duration: 0.4)) {
             waveformAmplitudes = Array(repeating: 0.3, count: 20)
         }
@@ -272,7 +271,8 @@ struct VoiceRecordingView: View {
         }
 
         guard let receipt = receipt else { return }
-        let newExpense: ExpenseViewModel = .createWithPound(
+        let newExpense: ExpenseViewModel = .create(
+            id: UUID(),
             name: receipt.merchantName ?? "",
             date: receipt.date ?? .now,
             amount: receipt.totalAmount ?? .zero,

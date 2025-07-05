@@ -133,7 +133,8 @@ struct ModifyExpenseView: View {
             }
         } else {
             /// Create a new expense
-            let newExpense = ExpenseViewModel.createWithPound(
+            let newExpense = ExpenseViewModel.create(
+                id: UUID(),
                 name: expenseName,
                 date: expenseDate,
                 amount: expenseAmount,
@@ -405,12 +406,12 @@ struct ActionButtonsView: View {
 }
 
 #Preview("Edit Mode") {
-    let sampleExpense = ExpenseViewModel.createWithPound(
+    let sampleExpense = ExpenseViewModel.create(
+        id: .init(),
         name: "Name",
         date: .now,
         amount: 22,
         createDate: .now
     )
-    
     ModifyExpenseView(expenseToModify: .constant(sampleExpense), startDay: .now)
 }

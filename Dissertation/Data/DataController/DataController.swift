@@ -173,7 +173,7 @@ struct DataController {
         }
     }
 
-    // MARK: - EXPENSES (User-Specific)
+    // MARK: - EXPENSES
     public func saveExpense(of expense: ExpenseViewModel) -> Result<Void, DataControllerError> {
         switch validateUser() {
         case let .success(userId):
@@ -183,7 +183,6 @@ struct DataController {
                 newExpense.date = expense.date
                 newExpense.id = expense.id
                 newExpense.name = expense.name
-                newExpense.currencyCode = expense.currencyCode
                 newExpense.createDate = expense.createDate
                 newExpense.userID = userId
                 
@@ -242,7 +241,6 @@ struct DataController {
                 }
                 existingExpense.name = updatedExpense.name
                 existingExpense.amount = updatedExpense.amount
-                existingExpense.currencyCode = updatedExpense.currencyCode
                 existingExpense.date = updatedExpense.date
                 existingExpense.createDate = updatedExpense.createDate
                 
