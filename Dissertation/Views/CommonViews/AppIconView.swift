@@ -1,14 +1,22 @@
 import SwiftUI
 
-extension Bundle {
-  var icon: UIImage? {
-    if let icons = infoDictionary?["CFBundleIcons"] as? [String: Any],
-       let primary = icons["CFBundlePrimaryIcon"] as? [String: Any],
-       let files = primary["CFBundleIconFiles"] as? [String],
-       let icon = files.last
-    {
-      return UIImage(named: icon)
+var appIconImage: Image {
+    // Asset Catalog kontrolü
+    if let assetCatalogPath = Bundle.main.path(forResource: "Assets", ofType: "car") {
+        print("✅ Assets.car bulundu: \(assetCatalogPath)")
+    } else {
+        print("❌ Assets.car bulunamadı")
     }
-    return nil
-  }
+
+    // Bundle identifier kontrolü
+    print("📱 Bundle identifier: \(Bundle.main.bundleIdentifier ?? "nil")")
+
+    // Tüm bundle resource'ları
+    print("📁 Bundle resource keys: \(Bundle.main.infoDictionary?.keys.sorted() ?? [])")
+
+    // Asset catalog'u kontrol et
+    print("📱 Ana bundle path: \(Bundle.main.bundlePath)")
+    return Image("elephantIcon")
+        .resizable()
+        .renderingMode(.template)
 }

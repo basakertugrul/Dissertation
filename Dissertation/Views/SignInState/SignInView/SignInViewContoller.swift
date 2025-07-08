@@ -60,9 +60,7 @@ final class SignInWithAppleCoordinator: NSObject {
         
         let authController = ASAuthorizationController(authorizationRequests: [request])
         authController.delegate = self
-        
         appleSignInCompletion = completion
-        
         authController.performRequests()
     }
     
@@ -232,13 +230,13 @@ extension SignInWithAppleCoordinator: ASAuthorizationControllerDelegate {
             let fullName = (givenName + " " + familyName).trimmingCharacters(in: .whitespacesAndNewlines)
             setUserInfo(
                 for: credential.user,
-                fullName: fullName.isEmpty ? nil : fullName,
+                fullName: fullName,
                 email: credential.email
             ) { result in
                 switch result {
                 case .success:
                     self.appleSignInCompletion?(.success(authorization))
-                case .failure(let error):
+                case let .failure(error):
                     self.appleSignInCompletion?(.failure(error))
                 }
                 self.appleSignInCompletion = nil

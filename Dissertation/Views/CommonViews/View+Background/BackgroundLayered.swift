@@ -99,9 +99,7 @@ enum BackgroundStyle {
                         borderColor(for: color),
                         lineWidth: 1.5
                     )
-                Image(uiImage: Bundle.main.icon ?? UIImage())
-                    .resizable()
-                    .renderingMode(.template)
+                appIconImage
                     .foregroundStyle(.separator.opacity(Constraint.Opacity.medium))
                     .scaledToFit()
                     .shadow(

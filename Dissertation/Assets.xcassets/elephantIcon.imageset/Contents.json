@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "iTunesArtwork@1x_imresizer.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

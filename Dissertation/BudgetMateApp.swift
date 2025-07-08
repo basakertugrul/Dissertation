@@ -56,6 +56,12 @@ struct BudgetMateApp: App {
     }
 }
 
+extension BudgetMateApp {
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return .portrait
+    }
+}
+
 // MARK: - App Setup & Event Handling
 private extension BudgetMateApp {
     func setupApp() {

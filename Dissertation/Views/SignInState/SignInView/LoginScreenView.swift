@@ -128,8 +128,7 @@ struct LoginScreenView: View {
                         )
 
                     /// Logo
-                    Image(uiImage: Bundle.main.icon ?? UIImage())
-                        .resizable()
+                    appIconImage
                         .frame(
                             width: Constraint.regularImageSize * 0.5,
                             height: Constraint.regularImageSize * 0.5

@@ -21,7 +21,7 @@ struct LoadingOverlayView: View {
                 VStack(spacing: Constraint.padding) {
                     ZStack {
                         /// Background circle
-                        Image(uiImage: Bundle.main.icon ?? UIImage())
+                        appIconImage
                             .frame(width: 70, height: 70)
 
                         Circle()
