@@ -22,6 +22,7 @@ struct ProfileScreen: View {
     @State var showingPrivacyPolicyAlert = false
     @State var showingExportDataAlert = false
     @State var showingProfileDataAlert = false
+    @State var showingDeleteAccountAlert = false // New state for account deletion
 
     var title: AttributedString = {
         var string = AttributedString.init(stringLiteral: NSLocalizedString("profile", comment: ""))
@@ -51,13 +52,14 @@ struct ProfileScreen: View {
             }
 
             ScrollView {
-                VStack(spacing: Constraint.largePadding) {
+                VStack(spacing: Constraint.padding) {
                     profileCard
                     budgetCard
-                    expenseChartCard // New chart card
+                    expenseChartCard
                     expenseDataCard
                     settingsGroups
                     logoutButton
+                    deleteAccountButton
                 }
                 .padding(Constraint.padding)
             }
@@ -93,6 +95,7 @@ struct ProfileScreen: View {
         .showComingSoonAlert(isPresented: $showingProfileDataAlert, buttonAction: { withAnimation(.smooth) {
             showingProfileDataAlert = false
         } })
+        .showDeleteAccountConfirmationAlert(isPresented: $showingDeleteAccountAlert, onTap: appState.deleteAccount)
     }
 
     private func rateApp() {
@@ -311,6 +314,30 @@ struct ProfileScreen: View {
                 })
             ])
         }
+    }
+
+    // MARK: - Delete Account Button
+    private var deleteAccountButton: some View {
+        Button {
+            HapticManager.shared.trigger(.warning)
+            showingDeleteAccountAlert = true
+        } label: {
+            HStack(spacing: Constraint.padding) {
+                Image(systemName: "trash.circle.fill")
+                    .foregroundColor(.customBurgundy)
+                    .font(.body)
+                
+                CustomTextView(
+                    NSLocalizedString("delete_account", comment: ""),
+                    font: .bodySmallBold,
+                    color: .customBurgundy
+                )
+                
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .addLayeredBackground(.customBurgundy, style: .card(isColorFilled: false))
     }
 
     // MARK: - Logout Button

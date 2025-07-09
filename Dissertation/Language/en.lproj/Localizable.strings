@@ -406,3 +406,10 @@
 // MARK: - Coming Soon
 "coming_soon_title" = "Coming Soon";
 "coming_soon_message" = "This feature is coming soon. Stay tuned for updates!";
+
+// MARK: - Delete Account
+"delete_account" = "Delete Account";
+"permanently_delete_account" = "Permanently delete your account and all data";
+"delete_account_title" = "Delete Account";
+"delete_account_confirm" = "Delete Forever";
+"delete_account_message" = "This action cannot be undone. Your account and all associated data will be permanently deleted.";

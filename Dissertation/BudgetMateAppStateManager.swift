@@ -209,7 +209,7 @@ extension AppStateManager: ProfileActionsDelegate {
             HapticManager.shared.trigger(.error)
         }
     }
-    
+
     func signOut() {
         self.hasLoggedIn = false
         self.isProfileScreenOpen = false
@@ -232,6 +232,52 @@ extension AppStateManager: ProfileActionsDelegate {
             DispatchQueue.main.async {
                 self.sharePDF(pdfData: pdfData)
                 HapticManager.shared.trigger(.success)
+            }
+        }
+    }
+
+    func deleteAccount() {
+        HapticManager.shared.trigger(.warning)
+        enableLoadingView()
+        // Perform account deletion on background queue to avoid blocking UI
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+
+            // Delete all user data from Core Data/storage
+            let _ = self.dataController.resetTimeFrame()
+            let _ = self.dataController.resetTargetSpending()
+            let _ = self.dataController.resetExpenses()
+
+            // Clear any cached user preferences or settings
+            // You might want to add additional cleanup here based on what other data you store
+            UserDefaults.standard.removeObject(forKey: "user_preferences")
+            UserDefaults.standard.removeObject(forKey: "app_settings")
+            UserDefaults.standard.synchronize()
+            
+            // Sign out the user from authentication services
+            UserAuthService.shared.signOut()
+            
+            // Update UI on main thread
+            DispatchQueue.main.async {
+                // Reset all app state variables
+                self.dailyBalance = nil
+                self.expenseViewModels = []
+                self.startDate = .now
+                self.hasLoggedIn = false
+                self.isProfileScreenOpen = false
+                self.hasAddedExpense = false
+                self.hasUpdatedExpense = false
+                self.hasDeletedExpense = false
+                self.hasSavedDailyLimit = false
+                self.error = nil
+                self.signInError = nil
+                
+                // Disable loading and provide success feedback
+                self.disableLoadingView()
+                HapticManager.shared.trigger(.success)
+                
+                // Account successfully deleted - user will be taken back to login screen
+                // due to hasLoggedIn being set to false
             }
         }
     }

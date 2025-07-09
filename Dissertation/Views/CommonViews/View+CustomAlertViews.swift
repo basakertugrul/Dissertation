@@ -24,7 +24,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show Logout Confirm Alert
     func showLogOutConfirmationAlert(
         isPresented: Binding<Bool>,
@@ -48,8 +48,8 @@ extension View {
             }
         }
     }
-
-
+    
+    
     /// Show Camera Error Alert
     func showCameraErrorAlert(
         isPresented: Binding<Bool>,
@@ -95,7 +95,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show Photo Library Error Alert
     func showSettingsErrorAlert(
         isPresented: Binding<Bool>,
@@ -118,7 +118,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show Voice Error Alert
     func showVoiceErrorAlert(
         isPresented: Binding<Bool>,
@@ -141,7 +141,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show Voice General Error Alert
     func showVoiceGeneralErrorAlert(
         isPresented: Binding<Bool>,
@@ -166,7 +166,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show Photo Library Error Alert
     func showAddedExpenseAlert(
         isPresented: Binding<Bool>
@@ -190,7 +190,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show Deleted Expense Alert
     func showDeletedExpenseAlert(
         isPresented: Binding<Bool>
@@ -234,7 +234,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show Modified Expense Alert
     func showSavedDailyLimitAlert(
         isPresented: Binding<Bool>
@@ -280,7 +280,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show App Rate Confirmation Alert
     func showAppRateConfirmationAlert(
         isPresented: Binding<Bool>,
@@ -303,7 +303,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show App Rate Confirmation Alert
     func showSendFeedbackConfirmationAlert(
         isPresented: Binding<Bool>,
@@ -326,7 +326,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show App Rate Confirmation Alert
     func showExportDataConfirmationAlert(
         isPresented: Binding<Bool>,
@@ -349,7 +349,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show App Rate Confirmation Alert
     func showNoReceiptFoundErrorAlert(
         isPresented: Binding<Bool>,
@@ -376,7 +376,7 @@ extension View {
             }
         }
     }
-
+    
     /// Show App Rate Confirmation Alert
     func showReceiptFoundAlert(
         isPresented: Binding<Bool>,
@@ -391,7 +391,7 @@ extension View {
         let name: String = receiptData.merchantName ?? ""
         let amount: String = receiptData.formattedAmount ?? ""
         let date: String = receiptData.formattedDate ?? formattedCurrentDate
-
+        
         return ZStack {
             self
             if isPresented.wrappedValue {
@@ -414,30 +414,54 @@ extension View {
             }
         }
     }
-
+    
     /// Show Coming Soon Alert
-        func showComingSoonAlert(
-            isPresented: Binding<Bool>,
-            buttonAction: @escaping () -> Void = {},
-        ) -> some View {
-            ZStack {
-                self
-                if isPresented.wrappedValue {
-                    CustomAlertView(
-                        isShowing: isPresented,
-                        title: NSLocalizedString("coming_soon_title", comment: ""),
-                        message: NSLocalizedString("coming_soon_message", comment: ""),
-                        buttonText: NSLocalizedString("ok", comment: ""),
-                        buttonAction: {
-                            isPresented.wrappedValue = false
-                            buttonAction()
-                        },
-                        secondaryButtonText: .none,
-                        secondaryButtonAction: .none,
-                        alertColor: .customOliveGreen
-                    )
-                    .animation(.smooth, value: isPresented.wrappedValue)
-                }
+    func showComingSoonAlert(
+        isPresented: Binding<Bool>,
+        buttonAction: @escaping () -> Void = {},
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: NSLocalizedString("coming_soon_title", comment: ""),
+                    message: NSLocalizedString("coming_soon_message", comment: ""),
+                    buttonText: NSLocalizedString("ok", comment: ""),
+                    buttonAction: {
+                        isPresented.wrappedValue = false
+                        buttonAction()
+                    },
+                    secondaryButtonText: .none,
+                    secondaryButtonAction: .none,
+                    alertColor: .customOliveGreen
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
             }
         }
+    }
+    
+    /// Show Delete Account Confirmation Alert
+    func showDeleteAccountConfirmationAlert(
+        isPresented: Binding<Bool>,
+        onTap: @escaping () -> Void
+    ) -> some View {
+        ZStack {
+            self
+            if isPresented.wrappedValue {
+                CustomAlertView(
+                    isShowing: isPresented,
+                    title: NSLocalizedString("delete_account_title", comment: ""),
+                    message: NSLocalizedString("delete_account_message", comment: ""),
+                    buttonText: NSLocalizedString("delete_account_confirm", comment: ""),
+                    buttonAction: onTap,
+                    secondaryButtonText: NSLocalizedString("cancel", comment: ""),
+                    secondaryButtonAction: { isPresented.wrappedValue = false },
+                    alertColor: .customBurgundy
+                )
+                .animation(.smooth, value: isPresented.wrappedValue)
+            }
+        }
+    }
 }
+

@@ -406,3 +406,7 @@
 // MARK: - Coming Soon
 "coming_soon_title" = "Yakında Geliyor";
 "coming_soon_message" = "Bu özellik yakında geliyor. Güncellemeler için takipte kalın!";
+
+// MARK: - Delete Account
+"delete_account" = "Hesabı sil";
+"permanently_delete_account" = "Hesabınız ve datanız kalıcı olarak silinir";
