@@ -271,13 +271,9 @@ extension AppStateManager: ProfileActionsDelegate {
                 self.hasSavedDailyLimit = false
                 self.error = nil
                 self.signInError = nil
-                
-                // Disable loading and provide success feedback
+
                 self.disableLoadingView()
                 HapticManager.shared.trigger(.success)
-                
-                // Account successfully deleted - user will be taken back to login screen
-                // due to hasLoggedIn being set to false
             }
         }
     }
