@@ -238,7 +238,7 @@ struct PrivacySecurityOverlay: View {
             VStack(spacing: Constraint.smallPadding) {
                 permissionRow(
                     icon: "camera.fill",
-                    title: NSLocalizedString("camera_access", comment: ""),
+                    title: NSLocalizedString("camera_access_capital", comment: ""),
                     description: NSLocalizedString("camera_description", comment: ""),
                     status: NSLocalizedString("optional", comment: "")
                 )

@@ -19,7 +19,6 @@
 // MARK: - Voice Recording
 "voice_entry" = "VOICE ENTRY";
 "voice" = "VOICE";
-"entry" = "ENTRY";
 
 // MARK: - Total Expense Card View
 "total_expenses_title" = "Total Expenses";
@@ -31,8 +30,16 @@
 "vision_error" = "Something went wrong while processing your receipt. Please try again.";
 "out_of_date_range_error" = "This receipt appears to be very old. Please check and try again.";
 
-// MARK: - Budget Chart
-"budget" = "Budget";
+// MARK: - Expense Management Errors
+"save_failure_error" = "Couldn't save your expense. Please try again.";
+"delete_failure_error" = "Unable to delete expense. Please try again.";
+"fetch_failure_error" = "Couldn't load your expenses. Check your connection and try again.";
+"update_failure_error" = "Failed to update expense. Please try again.";
+"expense_not_found_error" = "This expense no longer exists.";
+"date_parsing_failure_error" = "Invalid date format. Please check your date settings.";
+"time_frame_not_found_error" = "Unable to load your time preferences. Using default settings.";
+"user_not_authenticated_error" = "Please sign in to access your data.";
+"user_data_migration_failure_error" = "Failed to migrate your data. Please contact support.";
 
 // MARK: - Current Balance Card
 "available" = "Available";
@@ -150,8 +157,8 @@
 "generated" = "Generated:";
 "period" = "Period:";
 "total_expenses" = "Total Expenses:";
-"daily_budget" = "Daily Budget:";
-"days_tracked" = "Days Tracked:";
+"daily_budget_bullet" = "Daily Budget:";
+"days_tracked_bullet" = "Days Tracked:";
 "average_daily" = "Average Daily:";
 "current_balance" = "Current Balance:";
 "summary" = "Summary";
@@ -171,9 +178,6 @@
 "expense_trends" = "Expense Trends";
 
 // MARK: - Time Frame Model
-"daily" = "Daily";
-"weekly" = "Weekly";
-"monthly" = "Monthly";
 "yearly" = "Yearly";
 
 // MARK: - Profile Screen
@@ -184,7 +188,6 @@
 "todays_budget" = "Today's Budget";
 "total_spent" = "Total Spent";
 "daily_average" = "Daily Average";
-"days_tracked" = "Days Tracked";
 "settings_support" = "Settings & Support";
 "notifications" = "Notifications";
 "budget_alerts_reminders" = "Budget alerts & reminders";
@@ -196,9 +199,7 @@
 "help_improve_app" = "Help us improve the app";
 "rate_fundbud" = "Rate FundBud";
 "share_experience" = "Share your experience";
-"legal_information" = "Legal Information";
 "terms_privacy_licenses" = "Terms, privacy & licenses";
-"sign_out" = "Sign Out";
 
 // MARK: - Feedback Email
 "feedback_subject" = "FundBud Feedback - iOS App";
@@ -264,7 +265,7 @@
 "privacy_data_2" = "• Nothing uploaded to our servers";
 "privacy_data_3" = "• No cloud storage of personal data";
 "privacy_data_4" = "• You delete it, it's gone forever";
-"camera_access" = "CAMERA ACCESS";
+"camera_access_capital" = "CAMERA ACCESS";
 "privacy_camera_1" = "• Only used when you scan receipts";
 "privacy_camera_2" = "• Photos saved to your device only";
 "privacy_camera_3" = "• You can delete photos anytime";
@@ -373,10 +374,10 @@
 "expense" = "EXPENSE";
 "update" = "UPDATE";
 "save" = "SAVE";
-"delete" = "DELETE";
+"delete_capital" = "DELETE";
 "name" = "NAME";
-"amount" = "AMOUNT";
-"date" = "DATE";
+"amount_capital" = "AMOUNT";
+"date_capital" = "DATE";
 
 // MARK: - Tab Bar
 "remaining" = "REMAINING";
@@ -386,7 +387,7 @@
 // MARK: - Expense Groups
 "today" = "TODAY";
 "yesterday" = "YESTERDAY";
-"this_week" = "THIS WEEK";
+"this_week_capital" = "THIS WEEK";
 "this_month" = "THIS MONTH";
 "earlier" = "EARLIER";
 

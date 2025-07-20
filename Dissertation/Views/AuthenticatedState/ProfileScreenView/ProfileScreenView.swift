@@ -12,7 +12,7 @@ protocol ProfileActionsDelegate: AnyObject {
 // MARK: - Profile Screen
 struct ProfileScreen: View {
     @EnvironmentObject var appState: AppStateManager
-
+    
     /// UI related
     @State var showingBudgetSheet = false
     @State var showingLogoutAlert = false
@@ -23,7 +23,7 @@ struct ProfileScreen: View {
     @State var showingExportDataAlert = false
     @State var showingProfileDataAlert = false
     @State var showingDeleteAccountAlert = false // New state for account deletion
-
+    
     var title: AttributedString = {
         var string = AttributedString.init(stringLiteral: NSLocalizedString("profile", comment: ""))
         string.foregroundColor = .customBurgundy
@@ -50,7 +50,7 @@ struct ProfileScreen: View {
                 .padding([.top, .horizontal], Constraint.padding)
                 .padding(.bottom, Constraint.largePadding)
             }
-
+            
             ScrollView {
                 VStack(spacing: Constraint.padding) {
                     profileCard
@@ -97,21 +97,21 @@ struct ProfileScreen: View {
         } })
         .showDeleteAccountConfirmationAlert(isPresented: $showingDeleteAccountAlert, onTap: appState.deleteAccount)
     }
-
+    
     private func rateApp() {
         HapticManager.shared.trigger(.success)
         if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-               AppStore.requestReview(in: scene)
-           }
+            AppStore.requestReview(in: scene)
+        }
     }
     
     private func exportData() {
         HapticManager.shared.trigger(.buttonTap)
         if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-               AppStore.requestReview(in: scene)
-           }
+            AppStore.requestReview(in: scene)
+        }
     }
-
+    
     private func sendFeedback() {
         HapticManager.shared.trigger(.navigation)
         if UIApplication.shared.canOpenURL(URL(string: "mailto:")!) {
@@ -177,7 +177,7 @@ struct ProfileScreen: View {
                         )
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
-
+                    
                     CustomTextView.currency(appState.dailyBalance ?? .zero, font: .titleMediumBold, color: .customOliveGreen)
                 }
                 Image(systemName: "pencil.circle.fill")
@@ -272,7 +272,7 @@ struct ProfileScreen: View {
         .background(.white.opacity(Constraint.Opacity.medium))
         .cornerRadius(Constraint.regularCornerRadius)
     }
-
+    
     // MARK: - Settings Groups
     private var settingsGroups: some View {
         VStack(spacing: Constraint.largePadding) {
@@ -315,7 +315,7 @@ struct ProfileScreen: View {
             ])
         }
     }
-
+    
     // MARK: - Delete Account Button
     private var deleteAccountButton: some View {
         Button {
@@ -339,7 +339,7 @@ struct ProfileScreen: View {
         }
         .addLayeredBackground(.customBurgundy, style: .card(isColorFilled: false))
     }
-
+    
     // MARK: - Logout Button
     private var logoutButton: some View {
         Button {
@@ -438,3 +438,8 @@ struct ProfileScreen: View {
         .buttonStyle(.plain)
     }
 }
+
+// para birimini de sor
+// bütçenin altına -deysen aylık günlük bu kadar harcamalısın mesajı çıkmalı
+// video gibi bişi yap appin başına
+// dil seçimi ekle

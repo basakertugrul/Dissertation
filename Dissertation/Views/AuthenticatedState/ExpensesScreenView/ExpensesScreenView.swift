@@ -30,7 +30,7 @@ struct ExpensesScreenView: View {
         let localizedOrder = [
             NSLocalizedString("today", comment: ""),
             NSLocalizedString("yesterday", comment: ""),
-            NSLocalizedString("this_week", comment: ""),
+            NSLocalizedString("this_week_capital", comment: ""),
             NSLocalizedString("this_month", comment: ""),
             NSLocalizedString("earlier", comment: "")
         ]

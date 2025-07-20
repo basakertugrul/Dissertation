@@ -19,7 +19,6 @@
 // MARK: - Voice Recording
 "voice_entry" = "SESLİ GİRİŞ";
 "voice" = "SESLİ";
-"entry" = "GİRİŞ";
 
 // MARK: - Total Expense Card View
 "total_expenses_title" = "Toplam Harcamalar";
@@ -31,8 +30,16 @@
 "vision_error" = "Fişinizi işlerken bir sorun oluştu. Lütfen tekrar deneyin.";
 "out_of_date_range_error" = "Bu fiş çok eski görünüyor. Lütfen kontrol edin ve tekrar deneyin.";
 
-// MARK: - Budget Chart
-"budget" = "Bütçe";
+// MARK: - Expense Management Errors
+"save_failure_error" = "Harcamanız kaydedilemedi. Lütfen tekrar deneyin.";
+"delete_failure_error" = "Harcama silinemedi. Lütfen tekrar deneyin.";
+"fetch_failure_error" = "Harcamalarınız yüklenemedi. Bağlantınızı kontrol edin ve tekrar deneyin.";
+"update_failure_error" = "Harcama güncellenemedi. Lütfen tekrar deneyin.";
+"expense_not_found_error" = "Bu harcama artık mevcut değil.";
+"date_parsing_failure_error" = "Geçersiz tarih formatı. Lütfen tarih ayarlarınızı kontrol edin.";
+"time_frame_not_found_error" = "Zaman tercihleriniz yüklenemedi. Varsayılan ayarlar kullanılıyor.";
+"user_not_authenticated_error" = "Verilerinize erişmek için lütfen giriş yapın.";
+"user_data_migration_failure_error" = "Verileriniz taşınamadı. Lütfen destek ile iletişime geçin.";
 
 // MARK: - Current Balance Card
 "available" = "Kullanılabilir";
@@ -150,8 +157,8 @@
 "generated" = "Oluşturuldu:";
 "period" = "Dönem:";
 "total_expenses" = "Toplam Harcamalar:";
-"daily_budget" = "Günlük Bütçe:";
-"days_tracked" = "Takip Edilen Günler:";
+"daily_budget_bullet" = "Günlük Bütçe:";
+"days_tracked_bullet" = "Takip Edilen Günler:";
 "average_daily" = "Günlük Ortalama:";
 "current_balance" = "Mevcut Bakiye:";
 "summary" = "Özet";
@@ -171,9 +178,6 @@
 "expense_trends" = "Harcama Trendleri";
 
 // MARK: - Time Frame Model
-"daily" = "Günlük";
-"weekly" = "Haftalık";
-"monthly" = "Aylık";
 "yearly" = "Yıllık";
 
 // MARK: - Profile Screen
@@ -184,7 +188,6 @@
 "todays_budget" = "Bugünün Bütçesi";
 "total_spent" = "Toplam Harcanan";
 "daily_average" = "Günlük Ortalama";
-"days_tracked" = "Takip Edilen Günler";
 "settings_support" = "Ayarlar ve Destek";
 "notifications" = "Bildirimler";
 "budget_alerts_reminders" = "Bütçe uyarıları ve hatırlatmaları";
@@ -196,9 +199,7 @@
 "help_improve_app" = "Uygulamayı geliştirmemize yardım edin";
 "rate_fundbud" = "FundBud'u Değerlendir";
 "share_experience" = "Deneyiminizi paylaşın";
-"legal_information" = "Yasal Bilgiler";
 "terms_privacy_licenses" = "Şartlar, gizlilik ve lisanslar";
-"sign_out" = "Çıkış Yap";
 
 // MARK: - Feedback Email
 "feedback_subject" = "FundBud Geri Bildirimi - iOS Uygulaması";
@@ -264,7 +265,7 @@
 "privacy_data_2" = "• Sunucularımıza hiçbir şey yüklenmez";
 "privacy_data_3" = "• Kişisel verilerin bulut depolaması yok";
 "privacy_data_4" = "• Siz silerseniz, sonsuza kadar gider";
-"camera_access" = "KAMERA ERİŞİMİ";
+"camera_access_capital" = "KAMERA ERİŞİMİ";
 "privacy_camera_1" = "• Sadece fiş taradığınızda kullanılır";
 "privacy_camera_2" = "• Fotoğraflar sadece cihazınızda saklanır";
 "privacy_camera_3" = "• Fotoğrafları istediğiniz zaman silebilirsiniz";
@@ -373,10 +374,10 @@
 "expense" = "HARCAMA";
 "update" = "GÜNCELLE";
 "save" = "KAYDET";
-"delete" = "SİL";
+"delete_capital" = "SİL";
 "name" = "İSİM";
-"amount" = "TUTAR";
-"date" = "TARİH";
+"amount_capital" = "TUTAR";
+"date_capital" = "TARİH";
 
 // MARK: - Tab Bar
 "remaining" = "KALAN";
@@ -386,7 +387,7 @@
 // MARK: - Expense Groups
 "today" = "BUGÜN";
 "yesterday" = "DÜN";
-"this_week" = "BU HAFTA";
+"this_week_capital" = "BU HAFTA";
 "this_month" = "BU AY";
 "earlier" = "DAHA ÖNCE";
 
@@ -408,5 +409,8 @@
 "coming_soon_message" = "Bu özellik yakında geliyor. Güncellemeler için takipte kalın!";
 
 // MARK: - Delete Account
-"delete_account" = "Hesabı sil";
-"permanently_delete_account" = "Hesabınız ve datanız kalıcı olarak silinir";
+"delete_account" = "Hesabı Sil";
+"permanently_delete_account" = "Hesabınızı ve tüm verilerinizi kalıcı olarak silin";
+"delete_account_title" = "Hesabı Sil";
+"delete_account_confirm" = "Sonsuza Kadar Sil";
+"delete_account_message" = "Bu eylem geri alınamaz. Hesabınız ve tüm ilişkili verileriniz kalıcı olarak silinecektir.";

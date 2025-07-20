@@ -84,8 +84,8 @@ extension AppStateManager {
         
         let summaryData: [(String, String)] = [
             (NSLocalizedString("total_expenses", comment: ""), "\(getCurrencySymbol())\(String(format: "%.2f", totalExpenses))"),
-            (NSLocalizedString("daily_budget", comment: ""), "\(getCurrencySymbol())\(String(format: "%.2f", dailyBalance ?? 0))"),
-            (NSLocalizedString("days_tracked", comment: ""), "\(daysSinceStart)"),
+            (NSLocalizedString("daily_budget_bullet", comment: ""), "\(getCurrencySymbol())\(String(format: "%.2f", dailyBalance ?? 0))"),
+            (NSLocalizedString("days_tracked_bullet", comment: ""), "\(daysSinceStart)"),
             (NSLocalizedString("average_daily", comment: ""), "\(formattedAverageDaily)"),
             (NSLocalizedString("current_balance", comment: ""), "\(getCurrencySymbol())\(String(format: "%.2f", calculatedBalance))")
         ]

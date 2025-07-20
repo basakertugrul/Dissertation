@@ -300,7 +300,7 @@ struct ExpenseAmountFieldView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Constraint.smallPadding) {
             CustomTextView(
-                NSLocalizedString("amount", comment: ""),
+                NSLocalizedString("amount_capital", comment: ""),
                 font: .labelLarge,
                 color: .customWhiteSand
             )
@@ -329,7 +329,7 @@ struct DateSelectorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Constraint.smallPadding) {
             CustomTextView(
-                NSLocalizedString("date", comment: ""),
+                NSLocalizedString("date_capital", comment: ""),
                 font: .labelLarge,
                 color: .customWhiteSand
             )
@@ -389,7 +389,7 @@ struct ActionButtonsView: View {
             /// Delete button (only in edit mode)
             if isEditMode {
                 Button(action: deleteAction) {
-                    CustomTextView(NSLocalizedString("delete", comment: ""), font: .bodySmallBold, color: .customWhiteSand)
+                    CustomTextView(NSLocalizedString("delete_capital", comment: ""), font: .bodySmallBold, color: .customWhiteSand)
                         .tracking(1)
                         .addLayeredBackground(.customBurgundy)
                 }
