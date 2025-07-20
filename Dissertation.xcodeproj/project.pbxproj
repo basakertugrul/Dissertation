@@ -263,9 +263,8 @@
 				CODE_SIGN_ENTITLEMENTS = BudgetMate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"$(SRCROOT)/Preview Content\"";
 				DEVELOPMENT_TEAM = J4MP6X34JN;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BudgetMate-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FundBud;
@@ -302,9 +301,8 @@
 				CODE_SIGN_ENTITLEMENTS = BudgetMate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"$(SRCROOT)/Preview Content\"";
 				DEVELOPMENT_TEAM = J4MP6X34JN;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BudgetMate-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FundBud;
